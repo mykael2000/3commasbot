@@ -199,7 +199,7 @@ try {
         <div>
           <label class="block text-sm text-slate-400 mb-1.5">Amount</label>
           <input type="number" name="amount" min="0.00000001" step="0.00000001" required
-            max="<?= (float)$user['balance'] ?>"
+            max="<?= sanitize(number_format((float)$user['balance'], 2, '.', '')) ?>"
             class="w-full bg-slate-700 border border-slate-600 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
             placeholder="0.00">
           <p class="text-slate-500 text-xs mt-1">Available: $<?= number_format((float)$user['balance'], 2) ?></p>

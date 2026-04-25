@@ -18,6 +18,13 @@ function send_email(string $to, string $subject, string $htmlBody): bool
         }
         require_once $vendorAutoload;
 
+        $fromEmail = env('SES_FROM_EMAIL', '');
+        $fromName  = env('SES_FROM_NAME', '3Commas');
+        if ($fromEmail === '') {
+            error_log('[email] SES_FROM_EMAIL not configured; skipping email to ' . $to);
+            return false;
+        }
+
         $client = new \Aws\SesV2\SesV2Client([
             'version'     => 'latest',
             'region'      => env('AWS_REGION', 'us-east-1'),
@@ -28,7 +35,7 @@ function send_email(string $to, string $subject, string $htmlBody): bool
         ]);
 
         $client->sendEmail([
-            'FromEmailAddress' => sprintf('%s <%s>', env('SES_FROM_NAME', '3Commas'), env('SES_FROM_EMAIL', '')),
+            'FromEmailAddress' => sprintf('%s <%s>', $fromName, $fromEmail),
             'Destination'      => ['ToAddresses' => [$to]],
             'Content'          => [
                 'Simple' => [

@@ -49,7 +49,10 @@ function price_for_symbol(string $symbol): float
 
     try {
         $url = 'https://api.binance.com/api/v3/ticker/price?symbol=' . urlencode($symbol);
-        $ctx = stream_context_create(['http' => ['timeout' => 3, 'ignore_errors' => true]]);
+        $ctx = stream_context_create([
+            'http' => ['timeout' => 3, 'ignore_errors' => true],
+            'ssl'  => ['verify_peer' => true, 'verify_peer_name' => true],
+        ]);
         $raw = @file_get_contents($url, false, $ctx);
         if ($raw !== false) {
             $data = json_decode($raw, true);

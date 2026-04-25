@@ -127,7 +127,11 @@ INSERT INTO investment_plans (name, description, min_deposit, max_deposit, durat
 ('Growth',     'Balanced plan for growing your portfolio over 60 days.',           1000.00,  4999.99, 60, 12.00, 1),
 ('Pro Trader', 'High-yield plan for serious investors.',                           5000.00,  99999.99,90, 25.00, 1);
 
--- Seed default deposit addresses
+-- =============================================================================
+-- WARNING: Seed deposit addresses below are PLACEHOLDERS for development only.
+-- These MUST be replaced with your own real wallet addresses before production
+-- deployment. Using placeholder addresses will result in LOST USER FUNDS.
+-- =============================================================================
 INSERT INTO deposit_addresses (asset_ticker, address, network, active) VALUES
 ('BTC',  '1A1zP1eP5QGefi2DMPTfTL5SLmv7Divf2X', 'Bitcoin',        1),
 ('ETH',  '0x742d35Cc6634C0532925a3b844Bc454e4438f44e', 'Ethereum', 1),

@@ -65,10 +65,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user->execute([$userId]);
         login_user($user->fetch());
 
-        // Welcome email (non-fatal)
+        // Send welcome email (non-fatal)
         try {
             send_welcome_email($email, $name);
-        } catch (Throwable) {}
+        } catch (Throwable $emailErr) {
+            error_log('[register] Welcome email failed: ' . $emailErr->getMessage());
+        }
 
         redirect('/web/public/app/index.php');
     } catch (Throwable $e) {

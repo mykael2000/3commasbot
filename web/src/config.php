@@ -40,7 +40,7 @@ define('WEB_ROOT', dirname(__DIR__));
 
 function env(string $key, mixed $default = null): mixed
 {
-    return $_ENV[$key] ?? getenv($key) ?: $default;
+    return $_ENV[$key] ?? (getenv($key) !== false ? getenv($key) : $default);
 }
 
 // ---------------------------------------------------------------------------
