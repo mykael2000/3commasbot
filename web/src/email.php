@@ -9,14 +9,21 @@ require_once __DIR__ . '/config.php';
  */
 function send_email(string $to, string $subject, string $htmlBody): bool
 {
-    try {
-        // Attempt to use AWS SDK if autoloaded
+    static $sdkLoaded = null;
+
+    if ($sdkLoaded === null) {
         $vendorAutoload = WEB_ROOT . '/vendor/autoload.php';
-        if (!file_exists($vendorAutoload)) {
+        $sdkLoaded = file_exists($vendorAutoload);
+        if ($sdkLoaded) {
+            require_once $vendorAutoload;
+        }
+    }
+
+    try {
+        if (!$sdkLoaded) {
             error_log('[email] AWS SDK not installed; skipping email to ' . $to);
             return false;
         }
-        require_once $vendorAutoload;
 
         $fromEmail = env('SES_FROM_EMAIL', '');
         $fromName  = env('SES_FROM_NAME', '3Commas');

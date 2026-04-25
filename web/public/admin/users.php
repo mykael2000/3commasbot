@@ -150,8 +150,9 @@ try {
                   <input type="hidden" name="action" value="update_balance">
                   <input type="hidden" name="id" value="<?= (int)$u['id'] ?>">
                   <input type="number" name="balance" step="0.01" min="0"
-                    value="<?= sanitize(number_format((float)$u['balance'], 2, '.', '')) ?>"
-                    class="w-24 bg-slate-600 border border-slate-500 text-white rounded px-2 py-1 text-xs text-right focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                    value="<?= sanitize(number_format((float)$u['balance'], 8, '.', '')) ?>"
+                    class="w-24 bg-slate-600 border border-slate-500 text-white rounded px-2 py-1 text-xs text-right focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                    step="0.00000001" min="0">
                   <button type="submit" class="text-emerald-400 hover:text-emerald-300 text-xs bg-emerald-500/10 px-2 py-1 rounded transition">Set</button>
                 </form>
               </td>

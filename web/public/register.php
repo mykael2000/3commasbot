@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt   = $pdo->prepare(
             'INSERT INTO users (name, email, password, role, status, balance) VALUES (?, ?, ?, ?, ?, ?)'
         );
-        $stmt->execute([$name, $email, $hashed, 'user', 'active', '0.00000000']);
+        $stmt->execute([$name, $email, $hashed, 'user', 'active', 0.0]);
         $userId = (int) $pdo->lastInsertId();
 
         // Auto-login

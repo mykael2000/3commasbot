@@ -53,7 +53,7 @@ function price_for_symbol(string $symbol): float
             'http' => ['timeout' => 3, 'ignore_errors' => true],
             'ssl'  => ['verify_peer' => true, 'verify_peer_name' => true],
         ]);
-        $raw = @file_get_contents($url, false, $ctx);
+        $raw = file_get_contents($url, false, $ctx);
         if ($raw !== false) {
             $data = json_decode($raw, true);
             if (isset($data['price'])) {

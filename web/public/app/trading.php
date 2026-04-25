@@ -263,7 +263,9 @@ try {
               '$' + parseFloat(d.price).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
           }
         })
-        .catch(() => {});
+        .catch(err => {
+          console.error('Price fetch error:', err);
+        });
     });
   </script>
 
