@@ -12,7 +12,7 @@ if (is_logged_in()) {
 
 $login_error = get_flash('error');
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_login'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'login') {
     csrf_verify();
 
     $email    = trim($_POST['email']    ?? '');
@@ -201,7 +201,7 @@ try {
 
             <form method="POST" action="index.php" class="space-y-4">
               <?= csrf_field() ?>
-              <input type="hidden" name="_login" value="1">
+              <input type="hidden" name="action" value="login">
 
               <!-- Email -->
               <div>
