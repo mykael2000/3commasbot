@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
-require_once __DIR__ . '/../../src/config.php';
-require_once __DIR__ . '/../../src/auth.php';
-require_once __DIR__ . '/../../src/helpers.php';
+require_once __DIR__ . '/../src/config.php';
+require_once __DIR__ . '/../src/auth.php';
+require_once __DIR__ . '/../src/helpers.php';
 
 // Fetch active plans from DB (gracefully handle no DB)
 $plans = [];
@@ -36,12 +36,12 @@ try {
      ============================================================ -->
 <header class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-800">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
-    <a href="/web/public/index.php" class="text-2xl font-extrabold text-emerald-400 tracking-tight">3Commas</a>
+    <a href="../public/index.php" class="text-2xl font-extrabold text-emerald-400 tracking-tight">3Commas</a>
     <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
       <a href="#features" class="hover:text-white transition">Features</a>
       <a href="#pricing"  class="hover:text-white transition">Pricing</a>
-      <a href="/web/public/login.php"    class="hover:text-white transition">Login</a>
-      <a href="/web/public/register.php" class="bg-emerald-500 hover:bg-emerald-400 text-white px-4 py-2 rounded-lg transition font-semibold">Get Started</a>
+      <a href="../public/login.php"    class="hover:text-white transition">Login</a>
+      <a href="../public/register.php" class="bg-emerald-500 hover:bg-emerald-400 text-white px-4 py-2 rounded-lg transition font-semibold">Get Started</a>
     </nav>
     <!-- Mobile hamburger -->
     <button id="mobileMenuBtn" class="md:hidden text-slate-300 hover:text-white focus:outline-none">
@@ -54,8 +54,8 @@ try {
   <div id="mobileMenu" class="hidden md:hidden bg-slate-800 border-t border-slate-700 px-4 py-4 space-y-3">
     <a href="#features" class="block text-slate-300 hover:text-white">Features</a>
     <a href="#pricing"  class="block text-slate-300 hover:text-white">Pricing</a>
-    <a href="/web/public/login.php"    class="block text-slate-300 hover:text-white">Login</a>
-    <a href="/web/public/register.php" class="block bg-emerald-500 text-white px-4 py-2 rounded-lg text-center font-semibold">Get Started</a>
+    <a href="../public/login.php"    class="block text-slate-300 hover:text-white">Login</a>
+    <a href="../public/register.php" class="block bg-emerald-500 text-white px-4 py-2 rounded-lg text-center font-semibold">Get Started</a>
   </div>
 </header>
 
@@ -87,7 +87,7 @@ try {
       Smart bots, portfolio tracking and risk management — all in one platform built for serious crypto traders.
     </p>
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      <a href="/web/public/register.php" class="bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-8 py-4 rounded-xl text-lg transition shadow-lg shadow-emerald-500/25">
+      <a href="../public/register.php" class="bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-8 py-4 rounded-xl text-lg transition shadow-lg shadow-emerald-500/25">
         Get Started Free
       </a>
       <a href="#features" class="border border-slate-600 hover:border-slate-400 text-slate-300 hover:text-white font-bold px-8 py-4 rounded-xl text-lg transition">

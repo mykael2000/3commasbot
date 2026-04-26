@@ -78,9 +78,9 @@ function db(): PDO
         return $pdo;
     }
 
-    $host = env('DB_HOST', '127.0.0.1');
+    $host = env('DB_HOST', 'localhost');
     $port = env('DB_PORT', '3306');
-    $name = env('DB_NAME', 'commas_web');
+    $name = env('DB_NAME', '3commas');
     $user = env('DB_USER', 'root');
     $pass = env('DB_PASS', '');
 
