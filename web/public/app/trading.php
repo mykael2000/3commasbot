@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'open'
 
     if (!in_array($symbol, $symbols, true) || $qty <= 0) {
         flash('error', 'Invalid symbol or quantity.');
-        redirect('/web/public/app/trading.php');
+        redirect('trading.php');
     }
 
     $priceOpen = price_for_symbol($symbol);
@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'open'
     } catch (Throwable) {
         flash('error', 'Failed to place order. Please try again.');
     }
-    redirect('/web/public/app/trading.php');
+    redirect('trading.php');
 }
 
 // Handle Close Position
@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'close
 
         if (!$trade) {
             flash('error', 'Trade not found or already closed.');
-            redirect('/web/public/app/trading.php');
+            redirect('trading.php');
         }
 
         $priceClose = price_for_symbol($trade['symbol']);
@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'close
     } catch (Throwable) {
         flash('error', 'Failed to close position.');
     }
-    redirect('/web/public/app/trading.php');
+    redirect('trading.php');
 }
 
 $selectedSymbol = strtoupper(trim($_GET['symbol'] ?? 'BTCUSDT'));
@@ -118,7 +118,7 @@ try {
     <div class="bg-slate-800 rounded-2xl p-5">
       <h2 class="font-bold text-white mb-4">Place Demo Order</h2>
 
-      <form method="POST" action="/web/public/app/trading.php" id="tradeForm" class="space-y-4">
+      <form method="POST" action="trading.php" id="tradeForm" class="space-y-4">
         <?= csrf_field() ?>
         <input type="hidden" name="action" value="open">
 
@@ -205,7 +205,7 @@ try {
             <p class="font-bold <?= $pnlClass ?>">
               <?= $pnl >= 0 ? '+' : '' ?>$<?= format_currency($pnl) ?>
             </p>
-            <form method="POST" action="/web/public/app/trading.php" class="mt-2">
+            <form method="POST" action="trading.php" class="mt-2">
               <?= csrf_field() ?>
               <input type="hidden" name="action" value="close">
               <input type="hidden" name="trade_id" value="<?= (int)$trade['id'] ?>">
@@ -229,23 +229,23 @@ try {
 
   <!-- Bottom Navigation -->
   <nav class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-700 flex justify-around py-2 z-50">
-    <a href="/web/public/app/index.php" class="flex flex-col items-center text-xs text-slate-400 hover:text-emerald-400 transition gap-1">
+    <a href="index.php" class="flex flex-col items-center text-xs text-slate-400 hover:text-emerald-400 transition gap-1">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
       Home
     </a>
-    <a href="/web/public/app/markets.php" class="flex flex-col items-center text-xs text-slate-400 hover:text-emerald-400 transition gap-1">
+    <a href="markets.php" class="flex flex-col items-center text-xs text-slate-400 hover:text-emerald-400 transition gap-1">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
       Markets
     </a>
-    <a href="/web/public/app/trading.php" class="flex flex-col items-center text-xs text-emerald-400 gap-1">
+    <a href="trading.php" class="flex flex-col items-center text-xs text-emerald-400 gap-1">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
       Trade
     </a>
-    <a href="/web/public/app/wallet.php" class="flex flex-col items-center text-xs text-slate-400 hover:text-emerald-400 transition gap-1">
+    <a href="wallet.php" class="flex flex-col items-center text-xs text-slate-400 hover:text-emerald-400 transition gap-1">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
       Wallet
     </a>
-    <a href="/web/public/app/profile.php" class="flex flex-col items-center text-xs text-slate-400 hover:text-emerald-400 transition gap-1">
+    <a href="profile.php" class="flex flex-col items-center text-xs text-slate-400 hover:text-emerald-400 transition gap-1">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
       Profile
     </a>

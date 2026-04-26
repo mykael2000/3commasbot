@@ -81,11 +81,12 @@ php -S localhost:8000
 
 Then visit: **http://localhost:8000**
 
-Or to serve from the repo root (adjust paths accordingly):
-
-```bash
-php -S localhost:8000 -t web/public
-```
+> **Important – routing note:** All URLs in the app are **relative** (no leading `/` and no absolute paths).
+> Always start the PHP built-in server with `web/public` as the document root (using `-t web/public` or by `cd`-ing into that directory first).
+> Starting the server from the repository root and accessing pages via `/web/public/...` paths will cause 404 errors on form submissions and redirects.
+>
+> Correct: `cd web/public && php -S localhost:8000`  
+> Also correct: `php -S localhost:8000 -t web/public`
 
 ---
 
@@ -106,9 +107,9 @@ web/
 │   ├── email.php         # AWS SES email functions
 │   └── helpers.php       # Utilities (redirect, flash, price fetch, etc.)
 └── public/
-    ├── index.php         # Landing page (dark hero, plans, features)
-    ├── login.php         # Login form
-    ├── register.php      # Registration form
+    ├── index.php         # Combined landing page + embedded login form
+    ├── login.php         # Legacy redirect → index.php
+    ├── register.php      # Registration form (same dark card design as login)
     ├── logout.php        # Session destroy + redirect
     ├── forgot_password.php  # Password reset request
     ├── reset_password.php   # Password reset form (token-based)

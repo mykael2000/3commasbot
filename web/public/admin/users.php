@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'toggl
     } catch (Throwable) {
         flash('error', 'Failed to update user status.');
     }
-    redirect('/web/public/admin/users.php');
+    redirect('users.php');
 }
 
 // Toggle role
@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'toggl
     // Prevent self-demotion
     if ($id === (int)($_SESSION['user_id'] ?? 0)) {
         flash('error', 'You cannot change your own role.');
-        redirect('/web/public/admin/users.php');
+        redirect('users.php');
     }
     try {
         $pdo  = db();
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'toggl
     } catch (Throwable) {
         flash('error', 'Failed to update user role.');
     }
-    redirect('/web/public/admin/users.php');
+    redirect('users.php');
 }
 
 // Update balance
@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'updat
     $balance = (float)($_POST['balance'] ?? 0);
     if ($id <= 0 || $balance < 0) {
         flash('error', 'Invalid balance value.');
-        redirect('/web/public/admin/users.php');
+        redirect('users.php');
     }
     try {
         db()->prepare('UPDATE users SET balance = ? WHERE id = ?')->execute([$balance, $id]);
@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'updat
     } catch (Throwable) {
         flash('error', 'Failed to update balance.');
     }
-    redirect('/web/public/admin/users.php');
+    redirect('users.php');
 }
 
 $users = [];
@@ -91,13 +91,13 @@ try {
   <aside class="w-64 bg-slate-900 min-h-screen p-4 flex-shrink-0">
     <div class="text-emerald-400 font-bold text-xl mb-8">3Commas Admin</div>
     <nav class="space-y-1">
-      <a href="/web/public/admin/index.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Dashboard</a>
-      <a href="/web/public/admin/plans.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Plans</a>
-      <a href="/web/public/admin/addresses.php"   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Addresses</a>
-      <a href="/web/public/admin/withdrawals.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Withdrawals</a>
-      <a href="/web/public/admin/users.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-slate-800 text-emerald-400">Users</a>
+      <a href="index.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Dashboard</a>
+      <a href="plans.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Plans</a>
+      <a href="addresses.php"   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Addresses</a>
+      <a href="withdrawals.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Withdrawals</a>
+      <a href="users.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-slate-800 text-emerald-400">Users</a>
       <hr class="border-slate-700 my-3">
-      <a href="/web/public/logout.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 transition">Logout</a>
+      <a href="../logout.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 transition">Logout</a>
     </nav>
   </aside>
 
@@ -145,7 +145,7 @@ try {
                 </span>
               </td>
               <td class="px-4 py-3 text-right">
-                <form method="POST" action="/web/public/admin/users.php" class="flex items-center justify-end gap-1">
+                <form method="POST" action="users.php" class="flex items-center justify-end gap-1">
                   <?= csrf_field() ?>
                   <input type="hidden" name="action" value="update_balance">
                   <input type="hidden" name="id" value="<?= (int)$u['id'] ?>">
@@ -160,7 +160,7 @@ try {
               <td class="px-4 py-3">
                 <div class="flex gap-2 justify-end">
                   <!-- Toggle Status -->
-                  <form method="POST" action="/web/public/admin/users.php">
+                  <form method="POST" action="users.php">
                     <?= csrf_field() ?>
                     <input type="hidden" name="action" value="toggle_status">
                     <input type="hidden" name="id" value="<?= (int)$u['id'] ?>">
@@ -171,7 +171,7 @@ try {
                   </form>
                   <!-- Toggle Role -->
                   <?php if ((int)$u['id'] !== (int)($_SESSION['user_id'] ?? 0)): ?>
-                  <form method="POST" action="/web/public/admin/users.php">
+                  <form method="POST" action="users.php">
                     <?= csrf_field() ?>
                     <input type="hidden" name="action" value="toggle_role">
                     <input type="hidden" name="id" value="<?= (int)$u['id'] ?>">
