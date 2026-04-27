@@ -4,6 +4,7 @@ require_once __DIR__ . '/../src/config.php';
 require_once __DIR__ . '/../src/auth.php';
 require_once __DIR__ . '/../src/helpers.php';
 
+
 // Fetch active plans from DB (gracefully handle no DB)
 $plans = [];
 try {
