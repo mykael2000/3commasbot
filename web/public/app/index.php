@@ -8,30 +8,53 @@ require_once __DIR__ . '/../../../src/helpers.php';
 require_login();
 $user = current_user();
 
-// Fetch real-time prices
-$symbols = ['BTCUSDT', 'ETHUSDT', 'USDTUSDT'];
-$prices = [];
-$priceChanges = [];
+// Fetch real-time prices (BTC and ETH only; USDT is always $1)
+$symbols = ['BTCUSDT', 'ETHUSDT'];
+$prices  = [];
 foreach ($symbols as $sym) {
     $prices[$sym] = price_for_symbol($sym);
-    $priceChanges[$sym] = rand(-5, 15) / 100; // Mock 24h change for demo
 }
+$prices['USDTUSDT'] = 1.0;
 
-// Simulate wallet balances for different cryptocurrencies
-$walletBalances = [
-    'BTC' => ['balance' => 0.5234, 'value' => 0.5234 * ($prices['BTCUSDT'] ?? 42000)],
-    'ETH' => ['balance' => 2.847, 'value' => 2.847 * ($prices['ETHUSDT'] ?? 2200)],
-    'USDT' => ['balance' => 5234.50, 'value' => 5234.50],
+// Mock 24h change percentages (kept deterministic per session via user id seed)
+srand((int)$user['id'] + (int)date('Ymd'));
+$priceChanges = [
+    'BTCUSDT'  => (rand(-800, 1500) / 100),
+    'ETHUSDT'  => (rand(-600, 1200) / 100),
+    'USDTUSDT' => 0.00,
 ];
 
-$totalBalance = array_sum(array_column($walletBalances, 'value'));
-$todayPnl = rand(-500, 2000) + (rand(0, 100) / 100); // Mock today's PnL
-$todayPnlPercent = ($todayPnl / $totalBalance) * 100;
+// Use actual DB balance for USDT; mock BTC/ETH holdings
+$usdtBalance = (float)($user['balance'] ?? 0);
+$btcBalance  = 0.5234;
+$ethBalance  = 2.847;
 
-// Simulate equity and margin data
-$equity = $totalBalance * 1.15;
-$margin = $totalBalance * 0.3;
-$freeMargin = $margin * 0.7;
+$walletBalances = [
+    'BTC'  => [
+        'balance' => $btcBalance,
+        'value'   => $btcBalance * $prices['BTCUSDT'],
+        'color'   => 'orange',
+    ],
+    'ETH'  => [
+        'balance' => $ethBalance,
+        'value'   => $ethBalance * $prices['ETHUSDT'],
+        'color'   => 'blue',
+    ],
+    'USDT' => [
+        'balance' => $usdtBalance,
+        'value'   => $usdtBalance,
+        'color'   => 'teal',
+    ],
+];
+
+$totalBalance    = array_sum(array_column($walletBalances, 'value'));
+$todayPnl        = (rand(-500, 2000) + rand(0, 100) / 100);
+$todayPnlPercent = $totalBalance > 0 ? ($todayPnl / $totalBalance) * 100 : 0;
+
+// Derived account metrics
+$equity     = $totalBalance * 1.15;
+$margin     = $totalBalance * 0.30;
+$freeMargin = $margin * 0.70;
 
 // Fetch open demo trades
 $openTrades = [];
@@ -58,17 +81,34 @@ try {
 } catch (Throwable) {}
 
 // Handle currency swap
-$swapMessage = '';
+$swapMessage      = '';
+$swapMessageType  = 'success';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'swap') {
     csrf_verify();
     $fromCurrency = sanitize($_POST['from_currency'] ?? '');
-    $toCurrency = sanitize($_POST['to_currency'] ?? '');
-    $amount = (float)($_POST['amount'] ?? 0);
-    
-    if ($fromCurrency && $toCurrency && $amount > 0) {
-        $swapMessage = "Swapped $amount $fromCurrency to $toCurrency successfully!";
+    $toCurrency   = sanitize($_POST['to_currency']   ?? '');
+    $amount       = (float)($_POST['amount'] ?? 0);
+
+    if (!$fromCurrency || !$toCurrency) {
+        $swapMessage     = 'Please select valid currencies.';
+        $swapMessageType = 'error';
+    } elseif ($fromCurrency === $toCurrency) {
+        $swapMessage     = 'From and To currencies must be different.';
+        $swapMessageType = 'error';
+    } elseif ($amount <= 0) {
+        $swapMessage     = 'Please enter a valid amount greater than zero.';
+        $swapMessageType = 'error';
+    } else {
+        $swapMessage = "Successfully swapped {$amount} {$fromCurrency} → {$toCurrency}.";
     }
 }
+
+// PHP prices JSON for JS exchange-rate widget
+$pricesJson = json_encode([
+    'BTC'  => $prices['BTCUSDT'],
+    'ETH'  => $prices['ETHUSDT'],
+    'USDT' => 1.0,
+], JSON_THROW_ON_ERROR);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -78,313 +118,443 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     <title>Dashboard – 3Commas</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .bg-gradient-premium {
-            background: linear-gradient(135deg, #0d1e3b 0%, #1a2b4a 50%, #0f1e35 100%);
+        /* ── Premium page background ── */
+        body {
+            background: linear-gradient(160deg, #060d1f 0%, #0d1e3b 40%, #0f1e35 100%);
         }
+
+        /* ── Balance hero glow ── */
         .card-glow {
-            box-shadow: 0 0 40px rgba(16, 185, 129, 0.1);
+            box-shadow: 0 0 60px rgba(16, 185, 129, 0.15), 0 0 120px rgba(16, 185, 129, 0.05);
         }
-        .stat-card {
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            backdrop-filter: blur(10px);
+
+        /* ── Glassmorphic stat cards ── */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
         }
-        .crypto-badge {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
+
+        /* ── Crypto badge colour variants ── */
+        .crypto-btc  { background: rgba(249,115,22,.12); border: 1px solid rgba(249,115,22,.35); }
+        .crypto-eth  { background: rgba(99,102,241,.12); border: 1px solid rgba(99,102,241,.35); }
+        .crypto-usdt { background: rgba(20,184,166,.12); border: 1px solid rgba(20,184,166,.35); }
+
+        /* ── P&L colour helpers ── */
+        .pnl-pos { color: #10b981; }
+        .pnl-neg { color: #ef4444; }
+
+        /* ── Swap card gradient ── */
+        .swap-gradient {
+            background: linear-gradient(145deg, rgba(37,99,235,.18) 0%, rgba(14,165,233,.10) 100%);
+            border: 1px solid rgba(99,162,255,.25);
         }
-        .pnl-positive {
-            color: #10b981;
-        }
-        .pnl-negative {
-            color: #ef4444;
-        }
-        .swap-card {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(14, 165, 233, 0.05) 100%);
-        }
+
+        /* ── Subtle hover lift ── */
+        .hover-lift { transition: transform .2s, box-shadow .2s; }
+        .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,.35); }
     </style>
 </head>
-<body class="bg-gradient-premium text-white min-h-screen pb-24">
+<body class="text-white min-h-screen pb-28 antialiased">
 
-    <!-- Top bar with user info -->
-    <header class="sticky top-0 z-40 bg-slate-900/95 backdrop-blur border-b border-emerald-500/20 px-4 py-3">
+    <!-- ════════════════════════════════════════
+         TOP HEADER
+    ════════════════════════════════════════ -->
+    <header class="sticky top-0 z-40 bg-slate-950/90 backdrop-blur border-b border-white/5 px-4 py-3">
         <div class="flex items-center justify-between max-w-7xl mx-auto">
-            <div>
-                <h1 class="text-2xl font-extrabold text-emerald-400">3Commas</h1>
-                <p class="text-xs text-slate-400">Automated Crypto Trading Dashboard</p>
-            </div>
-            <div class="flex items-center gap-4">
-                <div class="text-right hidden sm:block">
-                    <p class="text-sm font-semibold text-slate-200"><?= sanitize($user['name']) ?></p>
-                    <p class="text-xs text-slate-400"><?= sanitize($user['email']) ?></p>
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-lg flex items-center justify-center text-slate-900 font-black text-sm">3C</div>
+                <div>
+                    <h1 class="text-lg font-extrabold text-white leading-none">3Commas</h1>
+                    <p class="text-[10px] text-slate-500 leading-none">Pro Trading Dashboard</p>
                 </div>
-                <a href="/web/public/logout.php" class="text-slate-400 hover:text-red-400 transition text-xs px-3 py-1.5 border border-slate-600 rounded-lg hover:border-red-500">Logout</a>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <!-- live badge -->
+                <span class="hidden sm:flex items-center gap-1.5 bg-emerald-500/15 border border-emerald-500/30 px-3 py-1 rounded-full">
+                    <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
+                    <span class="text-emerald-400 text-xs font-semibold tracking-wide">LIVE</span>
+                </span>
+                <div class="text-right hidden sm:block">
+                    <p class="text-sm font-semibold text-slate-100 leading-tight"><?= sanitize($user['name']) ?></p>
+                    <p class="text-[11px] text-slate-500"><?= sanitize($user['email']) ?></p>
+                </div>
+                <a href="../logout.php" class="text-slate-400 hover:text-red-400 transition text-xs px-3 py-1.5 border border-slate-700 hover:border-red-500/60 rounded-lg">
+                    Logout
+                </a>
             </div>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
 
-        <!-- Verification Status & Plan Badge -->
+        <!-- ── Active Plan Banner ── -->
         <?php if ($activePlan): ?>
-        <div class="flex items-center justify-between bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-4">
+        <div class="flex items-center justify-between bg-emerald-500/10 border border-emerald-500/25 rounded-2xl px-5 py-3">
             <div class="flex items-center gap-3">
-                <span class="w-3 h-3 bg-emerald-400 rounded-full animate-pulse"></span>
+                <span class="w-2.5 h-2.5 bg-emerald-400 rounded-full animate-pulse flex-shrink-0"></span>
                 <div>
-                    <p class="text-sm font-semibold text-emerald-400">Active Investment Plan</p>
-                    <p class="text-xs text-slate-300"><?= sanitize($activePlan['plan_name']) ?> • <?= format_currency((float)$activePlan['roi_percent']) ?>% ROI</p>
+                    <p class="text-sm font-semibold text-emerald-300">Active Investment Plan</p>
+                    <p class="text-xs text-slate-400"><?= sanitize($activePlan['plan_name']) ?> &bull; <?= format_currency((float)$activePlan['roi_percent']) ?>% ROI</p>
                 </div>
             </div>
-            <span class="bg-emerald-500/20 text-emerald-400 text-xs px-3 py-1 rounded-full">VERIFIED</span>
+            <span class="bg-emerald-500/20 text-emerald-400 text-[11px] font-bold px-3 py-1 rounded-full tracking-wide">VERIFIED</span>
         </div>
         <?php endif; ?>
 
-        <!-- Main Balance Overview - Premium Card -->
-        <div class="bg-gradient-to-br from-emerald-900/40 via-slate-800/40 to-slate-900/40 border-2 border-emerald-500/30 rounded-3xl p-8 card-glow">
-            <div class="flex items-start justify-between mb-8">
+        <!-- ════════════════════════════════════════
+             MAIN BALANCE HERO CARD
+        ════════════════════════════════════════ -->
+        <div class="relative overflow-hidden bg-gradient-to-br from-emerald-950/60 via-slate-900/70 to-slate-950/80 border border-emerald-500/25 rounded-3xl p-7 sm:p-9 card-glow">
+            <!-- decorative glow orbs -->
+            <div class="absolute -top-16 -right-16 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-20 -left-20 w-72 h-72 bg-cyan-500/8 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="relative flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6 mb-8">
                 <div>
-                    <p class="text-emerald-200 text-sm font-medium uppercase tracking-wide mb-2">Total Balance</p>
-                    <h2 class="text-5xl sm:text-6xl font-extrabold text-white mb-2">$<?= number_format($totalBalance, 2) ?></h2>
-                    <p class="text-emerald-300 text-lg">USDT Equivalent</p>
+                    <p class="text-emerald-300/80 text-xs font-semibold uppercase tracking-widest mb-2">Total Portfolio Balance</p>
+                    <h2 class="text-5xl sm:text-6xl font-black text-white tabular-nums mb-1 leading-none">
+                        $<?= number_format($totalBalance, 2) ?>
+                    </h2>
+                    <p class="text-emerald-400/70 text-base font-medium">≈ <?= number_format($totalBalance, 2) ?> USDT</p>
                 </div>
-                <div class="flex items-center gap-1 bg-emerald-500/20 px-4 py-2 rounded-full">
-                    <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-                    <span class="text-emerald-400 text-sm font-semibold">LIVE</span>
+
+                <div class="flex flex-row sm:flex-col gap-2 sm:items-end">
+                    <span class="flex items-center gap-1.5 bg-emerald-500/15 border border-emerald-500/30 px-3 py-1.5 rounded-full">
+                        <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
+                        <span class="text-emerald-400 text-xs font-bold tracking-wide">LIVE</span>
+                    </span>
+                    <span class="text-xs text-slate-500">Updated just now</span>
                 </div>
             </div>
 
             <!-- Stats Grid -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-                <div class="stat-card rounded-2xl p-4">
-                    <p class="text-slate-400 text-xs uppercase tracking-wide mb-1">Today's P&L</p>
-                    <p class="text-2xl font-bold <?= $todayPnl >= 0 ? 'pnl-positive' : 'pnl-negative' ?>"><?= $todayPnl >= 0 ? '+' : '' ?><?= number_format($todayPnl, 2) ?></p>
-                    <p class="text-xs <?= $todayPnl >= 0 ? 'text-emerald-400' : 'text-red-400' ?>"><?= $todayPnl >= 0 ? '+' : '' ?><?= number_format($todayPnlPercent, 2) ?>%</p>
+            <div class="relative grid grid-cols-2 sm:grid-cols-4 gap-3 mb-7">
+                <!-- Today's P&L -->
+                <div class="glass-card rounded-2xl p-4 hover-lift">
+                    <p class="text-slate-400 text-[11px] font-semibold uppercase tracking-wider mb-2">Today's P&amp;L</p>
+                    <p class="text-xl sm:text-2xl font-black tabular-nums <?= $todayPnl >= 0 ? 'pnl-pos' : 'pnl-neg' ?>">
+                        <?= $todayPnl >= 0 ? '+' : '' ?>$<?= number_format(abs($todayPnl), 2) ?>
+                    </p>
+                    <p class="text-xs <?= $todayPnl >= 0 ? 'text-emerald-400' : 'text-red-400' ?> font-semibold mt-1">
+                        <?= $todayPnl >= 0 ? '▲' : '▼' ?> <?= number_format(abs($todayPnlPercent), 2) ?>%
+                    </p>
                 </div>
-                <div class="stat-card rounded-2xl p-4">
-                    <p class="text-slate-400 text-xs uppercase tracking-wide mb-1">Equity</p>
-                    <p class="text-2xl font-bold text-emerald-400">$<?= number_format($equity, 2) ?></p>
-                    <p class="text-xs text-slate-400">Account Value</p>
+
+                <!-- Equity -->
+                <div class="glass-card rounded-2xl p-4 hover-lift">
+                    <p class="text-slate-400 text-[11px] font-semibold uppercase tracking-wider mb-2">Equity</p>
+                    <p class="text-xl sm:text-2xl font-black tabular-nums text-emerald-400">$<?= number_format($equity, 2) ?></p>
+                    <p class="text-xs text-slate-500 mt-1">Account value</p>
                 </div>
-                <div class="stat-card rounded-2xl p-4">
-                    <p class="text-slate-400 text-xs uppercase tracking-wide mb-1">Margin</p>
-                    <p class="text-2xl font-bold text-blue-400">$<?= number_format($margin, 2) ?></p>
-                    <p class="text-xs text-slate-400">Available</p>
+
+                <!-- Margin -->
+                <div class="glass-card rounded-2xl p-4 hover-lift">
+                    <p class="text-slate-400 text-[11px] font-semibold uppercase tracking-wider mb-2">Margin</p>
+                    <p class="text-xl sm:text-2xl font-black tabular-nums text-blue-400">$<?= number_format($margin, 2) ?></p>
+                    <p class="text-xs text-slate-500 mt-1">Available</p>
                 </div>
-                <div class="stat-card rounded-2xl p-4">
-                    <p class="text-slate-400 text-xs uppercase tracking-wide mb-1">Free Margin</p>
-                    <p class="text-2xl font-bold text-cyan-400">$<?= number_format($freeMargin, 2) ?></p>
-                    <p class="text-xs text-slate-400">Usable</p>
+
+                <!-- Free Margin -->
+                <div class="glass-card rounded-2xl p-4 hover-lift">
+                    <p class="text-slate-400 text-[11px] font-semibold uppercase tracking-wider mb-2">Free Margin</p>
+                    <p class="text-xl sm:text-2xl font-black tabular-nums text-cyan-400">$<?= number_format($freeMargin, 2) ?></p>
+                    <p class="text-xs text-slate-500 mt-1">Usable</p>
                 </div>
             </div>
 
             <!-- Action Buttons -->
-            <div class="flex gap-3">
-                <a href="/web/public/app/wallet.php#deposit" class="flex-1 bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-6 py-3 rounded-xl transition transform hover:scale-105">
+            <div class="relative flex flex-col sm:flex-row gap-3">
+                <a href="wallet.php#deposit"
+                   class="flex-1 text-center bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold px-6 py-3.5 rounded-xl transition-all transform hover:scale-[1.02] shadow-lg shadow-emerald-900/40">
                     ↓ Deposit
                 </a>
-                <a href="/web/public/app/wallet.php#withdraw" class="flex-1 bg-yellow-500 hover:bg-yellow-400 text-white font-bold px-6 py-3 rounded-xl transition transform hover:scale-105">
+                <a href="wallet.php#withdraw"
+                   class="flex-1 text-center bg-gradient-to-r from-amber-600 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-white font-bold px-6 py-3.5 rounded-xl transition-all transform hover:scale-[1.02] shadow-lg shadow-amber-900/40">
                     ↑ Withdraw
                 </a>
-                <a href="/web/public/app/trading.php" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-3 rounded-xl transition transform hover:scale-105">
+                <a href="trading.php"
+                   class="flex-1 text-center bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-600 hover:to-blue-500 text-white font-bold px-6 py-3.5 rounded-xl transition-all transform hover:scale-[1.02] shadow-lg shadow-blue-900/40">
                     ⚡ Trade
                 </a>
             </div>
         </div>
 
-        <!-- Crypto Holdings & Swap Section -->
+        <!-- ════════════════════════════════════════
+             CRYPTO HOLDINGS  +  SWAP WIDGET
+        ════════════════════════════════════════ -->
         <div class="grid lg:grid-cols-3 gap-6">
-            <!-- Crypto Holdings -->
-            <div class="lg:col-span-2 bg-slate-800/50 border border-slate-700/50 rounded-3xl p-6">
-                <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                    <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    Crypto Holdings
-                </h3>
+
+            <!-- ── Crypto Holdings ── -->
+            <div class="lg:col-span-2 glass-card rounded-3xl p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Crypto Holdings
+                    </h3>
+                    <span class="text-[11px] text-slate-500">Portfolio breakdown</span>
+                </div>
+
                 <div class="space-y-3">
-                    <?php foreach ($walletBalances as $crypto => $data): ?>
-                        <?php $percentage = ($data['value'] / $totalBalance) * 100; ?>
-                        <div class="crypto-badge rounded-2xl p-4">
-                            <div class="flex items-center justify-between mb-2">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-emerald-500/20 rounded-full flex items-center justify-center font-bold text-emerald-400"><?= $crypto[0] ?></div>
-                                    <div>
-                                        <p class="font-bold text-white"><?= $crypto ?></p>
-                                        <p class="text-xs text-slate-400"><?= number_format($data['balance'], 8) ?> <?= $crypto ?></p>
-                                    </div>
+                    <?php
+                    $cryptoColors = [
+                        'BTC'  => ['badge' => 'crypto-btc',  'icon' => 'text-orange-400', 'bar' => 'from-orange-500 to-amber-400',   'pct' => 'text-orange-400'],
+                        'ETH'  => ['badge' => 'crypto-eth',  'icon' => 'text-indigo-400', 'bar' => 'from-indigo-500 to-blue-400',    'pct' => 'text-indigo-400'],
+                        'USDT' => ['badge' => 'crypto-usdt', 'icon' => 'text-teal-400',   'bar' => 'from-teal-500 to-emerald-400',   'pct' => 'text-teal-400'],
+                    ];
+                    foreach ($walletBalances as $crypto => $data):
+                        $pct = $totalBalance > 0 ? ($data['value'] / $totalBalance) * 100 : 0;
+                        $col = $cryptoColors[$crypto] ?? $cryptoColors['USDT'];
+                        $decimals = $crypto === 'USDT' ? 2 : 6;
+                    ?>
+                    <div class="<?= $col['badge'] ?> rounded-2xl p-4 hover-lift">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 <?= $col['badge'] ?> rounded-full flex items-center justify-center font-black <?= $col['icon'] ?> text-sm">
+                                    <?= $crypto ?>
                                 </div>
-                                <div class="text-right">
-                                    <p class="font-bold text-white">$<?= number_format($data['value'], 2) ?></p>
-                                    <p class="text-xs text-emerald-400"><?= number_format($percentage, 1) ?>%</p>
+                                <div>
+                                    <p class="font-bold text-white leading-tight"><?= $crypto ?></p>
+                                    <p class="text-xs text-slate-400"><?= number_format($data['balance'], $decimals) ?> <?= $crypto ?></p>
                                 </div>
                             </div>
-                            <div class="w-full bg-slate-700 rounded-full h-2">
-                                <div class="bg-gradient-to-r from-emerald-500 to-cyan-500 h-2 rounded-full" style="width: <?= $percentage ?>%"></div>
+                            <div class="text-right">
+                                <p class="font-bold text-white tabular-nums">$<?= number_format($data['value'], 2) ?></p>
+                                <p class="text-xs <?= $col['pct'] ?> font-semibold"><?= number_format($pct, 1) ?>%</p>
                             </div>
                         </div>
+                        <div class="w-full bg-slate-800 rounded-full h-1.5">
+                            <div class="bg-gradient-to-r <?= $col['bar'] ?> h-1.5 rounded-full transition-all duration-500"
+                                 style="width: <?= min(100, $pct) ?>%"></div>
+                        </div>
+                    </div>
                     <?php endforeach; ?>
                 </div>
             </div>
 
-            <!-- Swap Section -->
-            <div class="bg-gradient-to-br from-blue-900/30 via-slate-800/50 to-slate-900/30 border border-blue-500/30 rounded-3xl p-6">
-                <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                    <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m0 0l4 4m10-4v12m0 0l4-4m0 0l-4-4"/></svg>
+            <!-- ── Quick Swap ── -->
+            <div class="swap-gradient rounded-3xl p-6 flex flex-col">
+                <h3 class="text-lg font-bold text-white mb-5 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m10 4v12m0 0l-4-4m4 4l4-4"/></svg>
                     Quick Swap
                 </h3>
-                <form method="POST" class="space-y-4">
+
+                <form method="POST" class="space-y-4 flex-1 flex flex-col" id="swapForm">
                     <?= csrf_field() ?>
                     <input type="hidden" name="action" value="swap">
-                    
+
                     <div>
-                        <label class="block text-xs text-slate-400 uppercase tracking-wide mb-2">From</label>
-                        <select name="from_currency" required class="w-full bg-slate-700/50 border border-slate-600 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
-                            <option value="BTC">BTC – Bitcoin</option>
-                            <option value="ETH">ETH – Ethereum</option>
-                            <option value="USDT">USDT – Tether</option>
+                        <label class="block text-[11px] text-slate-400 font-semibold uppercase tracking-wider mb-1.5">From</label>
+                        <select name="from_currency" id="swapFrom" required
+                                class="w-full bg-slate-800/70 border border-slate-600/60 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500/60 text-sm appearance-none cursor-pointer">
+                            <option value="BTC">₿ BTC – Bitcoin</option>
+                            <option value="ETH">Ξ ETH – Ethereum</option>
+                            <option value="USDT" selected>$ USDT – Tether</option>
                         </select>
                     </div>
 
                     <div>
-                        <label class="block text-xs text-slate-400 uppercase tracking-wide mb-2">Amount</label>
-                        <input type="number" name="amount" step="0.00000001" min="0" required
-                            class="w-full bg-slate-700/50 border border-slate-600 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                            placeholder="0.00">
+                        <label class="block text-[11px] text-slate-400 font-semibold uppercase tracking-wider mb-1.5">Amount</label>
+                        <input type="number" name="amount" id="swapAmount" step="0.00000001" min="0.00000001" required
+                               class="w-full bg-slate-800/70 border border-slate-600/60 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500/60 text-sm tabular-nums"
+                               placeholder="0.00">
                     </div>
 
                     <div>
-                        <label class="block text-xs text-slate-400 uppercase tracking-wide mb-2">To</label>
-                        <select name="to_currency" required class="w-full bg-slate-700/50 border border-slate-600 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
-                            <option value="ETH">ETH – Ethereum</option>
-                            <option value="BTC">BTC – Bitcoin</option>
-                            <option value="USDT">USDT – Tether</option>
+                        <label class="block text-[11px] text-slate-400 font-semibold uppercase tracking-wider mb-1.5">To</label>
+                        <select name="to_currency" id="swapTo" required
+                                class="w-full bg-slate-800/70 border border-slate-600/60 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500/60 text-sm appearance-none cursor-pointer">
+                            <option value="BTC">₿ BTC – Bitcoin</option>
+                            <option value="ETH" selected>Ξ ETH – Ethereum</option>
+                            <option value="USDT">$ USDT – Tether</option>
                         </select>
                     </div>
 
-                    <div class="bg-slate-700/30 rounded-xl p-3">
-                        <p class="text-xs text-slate-400 mb-1">Real-time Rate</p>
-                        <p class="text-sm font-bold text-emerald-400">1 BTC = $<?= number_format($prices['BTCUSDT'] ?? 42000, 2) ?></p>
+                    <!-- Live Rate Display -->
+                    <div class="bg-slate-900/60 border border-slate-700/50 rounded-xl p-3 space-y-1" id="rateBox">
+                        <p class="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">Live Exchange Rate</p>
+                        <p class="text-sm font-bold text-blue-300 tabular-nums" id="rateDisplay">— loading —</p>
+                        <p class="text-[11px] text-slate-500" id="receiveDisplay"></p>
                     </div>
 
-                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition transform hover:scale-105">
-                        Swap Now
+                    <button type="submit"
+                            class="mt-auto w-full bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-600 hover:to-blue-500 text-white font-bold py-3.5 rounded-xl transition-all transform hover:scale-[1.02] shadow-lg shadow-blue-900/40">
+                        ⇄ Swap Now
                     </button>
                 </form>
 
                 <?php if ($swapMessage): ?>
-                    <div class="mt-4 bg-emerald-500/20 border border-emerald-500/50 text-emerald-400 text-xs rounded-lg px-3 py-2">
-                        ✓ <?= sanitize($swapMessage) ?>
-                    </div>
+                <div class="mt-4 <?= $swapMessageType === 'success' ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400' : 'bg-red-500/15 border-red-500/40 text-red-400' ?> border rounded-xl px-4 py-3 text-sm flex items-start gap-2">
+                    <span><?= $swapMessageType === 'success' ? '✓' : '✕' ?></span>
+                    <span><?= sanitize($swapMessage) ?></span>
+                </div>
                 <?php endif; ?>
             </div>
         </div>
 
-        <!-- Market Watchlist -->
-        <div class="bg-slate-800/50 border border-slate-700/50 rounded-3xl p-6">
-            <h3 class="text-xl font-bold text-white mb-6 flex items-center justify-between">
-                <span class="flex items-center gap-2">
-                    <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        <!-- ════════════════════════════════════════
+             LIVE MARKETS
+        ════════════════════════════════════════ -->
+        <div class="glass-card rounded-3xl p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                     Live Markets
-                </span>
-                <a href="/web/public/app/markets.php" class="text-emerald-400 text-xs hover:text-emerald-300 transition">View All →</a>
-            </h3>
+                </h3>
+                <a href="markets.php" class="text-emerald-400 text-xs hover:text-emerald-300 transition font-semibold">View All →</a>
+            </div>
+
             <div class="grid sm:grid-cols-3 gap-4">
-                <?php foreach ($symbols as $sym): ?>
-                    <?php $base = str_replace('USDT', '', $sym); ?>
-                    <?php $change = $priceChanges[$sym] ?? 0; ?>
-                    <div class="stat-card rounded-2xl p-4 hover:border-emerald-500/50 transition cursor-pointer">
-                        <div class="flex items-start justify-between mb-3">
-                            <div>
-                                <p class="font-bold text-white text-lg"><?= $base ?></p>
-                                <p class="text-xs text-slate-400"><?= $sym ?></p>
+                <?php
+                $marketDefs = [
+                    ['sym' => 'BTCUSDT',  'label' => 'Bitcoin',  'badge_bg' => 'bg-orange-500/15', 'badge_text' => 'text-orange-400', 'price_color' => 'text-orange-300'],
+                    ['sym' => 'ETHUSDT',  'label' => 'Ethereum', 'badge_bg' => 'bg-indigo-500/15', 'badge_text' => 'text-indigo-400', 'price_color' => 'text-indigo-300'],
+                    ['sym' => 'USDTUSDT', 'label' => 'Tether',   'badge_bg' => 'bg-teal-500/15',   'badge_text' => 'text-teal-400',   'price_color' => 'text-teal-300'],
+                ];
+                foreach ($marketDefs as $m):
+                    $base   = str_replace('USDT', '', $m['sym']);
+                    $change = $priceChanges[$m['sym']] ?? 0;
+                    $isPos  = $change >= 0;
+                ?>
+                <div class="glass-card rounded-2xl p-5 hover-lift cursor-pointer group">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 <?= $m['badge_bg'] ?> <?= $m['badge_text'] ?> rounded-full flex items-center justify-center font-black text-sm">
+                                <?= $base ?>
                             </div>
-                            <span class="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded">LIVE</span>
+                            <div>
+                                <p class="font-bold text-white text-sm leading-tight"><?= $base ?>/USDT</p>
+                                <p class="text-[11px] text-slate-500"><?= $m['label'] ?></p>
+                            </div>
                         </div>
-                        <p class="text-2xl font-bold text-white mb-1">$<?= number_format($prices[$sym] ?? 0, 2) ?></p>
-                        <p class="text-sm <?= $change >= 0 ? 'text-emerald-400' : 'text-red-400' ?>"><?= $change >= 0 ? '↑' : '↓' ?> <?= abs($change) ?>%</p>
+                        <span class="flex items-center gap-1 text-[10px] bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 px-2 py-1 rounded-full font-bold">
+                            <span class="w-1 h-1 bg-emerald-400 rounded-full animate-pulse"></span>LIVE
+                        </span>
                     </div>
+                    <p class="text-2xl font-black <?= $m['price_color'] ?> tabular-nums mb-1">
+                        $<?= number_format($prices[$m['sym']], 2) ?>
+                    </p>
+                    <p class="text-sm font-semibold <?= $isPos ? 'text-emerald-400' : 'text-red-400' ?>">
+                        <?= $isPos ? '▲' : '▼' ?> <?= number_format(abs($change), 2) ?>%
+                        <span class="text-[11px] text-slate-500 font-normal ml-1">24h</span>
+                    </p>
+                </div>
                 <?php endforeach; ?>
             </div>
         </div>
 
-        <!-- Open Positions & Account Section -->
+        <!-- ════════════════════════════════════════
+             OPEN POSITIONS  +  ACCOUNT STATUS
+        ════════════════════════════════════════ -->
         <div class="grid lg:grid-cols-2 gap-6">
-            <!-- Open Positions -->
+
             <?php if (!empty($openTrades)): ?>
-            <div class="bg-slate-800/50 border border-slate-700/50 rounded-3xl p-6">
-                <h3 class="text-xl font-bold text-white mb-6 flex items-center justify-between">
-                    <span class="flex items-center gap-2">
-                        <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+            <!-- Open Positions -->
+            <div class="glass-card rounded-3xl p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
                         Open Positions
-                    </span>
-                    <a href="/web/public/app/trading.php" class="text-emerald-400 text-xs hover:text-emerald-300 transition">View All →</a>
-                </h3>
+                    </h3>
+                    <a href="trading.php" class="text-emerald-400 text-xs hover:text-emerald-300 transition font-semibold">View All →</a>
+                </div>
                 <div class="space-y-3">
-                    <?php foreach (array_slice($openTrades, 0, 3) as $trade): ?>
-                        <?php
-                            $curPrice = price_for_symbol($trade['symbol']);
-                            $pnl = $trade['side'] === 'buy'
-                                ? ($curPrice - (float)$trade['price_open']) * (float)$trade['qty']
-                                : ((float)$trade['price_open'] - $curPrice) * (float)$trade['qty'];
-                            $pnlPercent = (($pnl / ((float)$trade['price_open'] * (float)$trade['qty'])) * 100);
-                        ?>
-                        <div class="stat-card rounded-2xl p-4">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <div class="flex items-center gap-2 mb-1">
-                                        <p class="font-bold text-white"><?= sanitize($trade['symbol']) ?></p>
-                                        <span class="text-xs px-2 py-0.5 rounded <?= $trade['side']==='buy' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400' ?>">
-                                            <?= strtoupper($trade['side']) ?>
-                                        </span>
-                                    </div>
-                                    <p class="text-xs text-slate-400">Qty: <?= number_format((float)$trade['qty'], 8) ?></p>
+                    <?php foreach (array_slice($openTrades, 0, 3) as $trade):
+                        $curPrice   = price_for_symbol($trade['symbol']);
+                        $openPrice  = (float)$trade['price_open'];
+                        $qty        = (float)$trade['qty'];
+                        $pnl        = $trade['side'] === 'buy'
+                                        ? ($curPrice - $openPrice) * $qty
+                                        : ($openPrice - $curPrice) * $qty;
+                        $pnlPct     = $openPrice > 0 ? ($pnl / ($openPrice * $qty)) * 100 : 0;
+                    ?>
+                    <div class="glass-card rounded-2xl p-4 hover-lift">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <p class="font-bold text-white text-sm"><?= sanitize($trade['symbol']) ?></p>
+                                    <span class="text-[11px] px-2 py-0.5 rounded-full font-bold <?= $trade['side']==='buy' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400' ?>">
+                                        <?= strtoupper($trade['side']) ?>
+                                    </span>
                                 </div>
-                                <div class="text-right">
-                                    <p class="font-bold <?= $pnl >= 0 ? 'pnl-positive' : 'pnl-negative' ?>">
-                                        <?= $pnl >= 0 ? '+' : '' ?><?= number_format($pnl, 2) ?> USDT
-                                    </p>
-                                    <p class="text-xs <?= $pnlPercent >= 0 ? 'text-emerald-400' : 'text-red-400' ?>">
-                                        <?= $pnlPercent >= 0 ? '+' : '' ?><?= number_format($pnlPercent, 2) ?>%
-                                    </p>
-                                </div>
+                                <p class="text-xs text-slate-500">Qty: <?= number_format($qty, 6) ?></p>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-bold tabular-nums <?= $pnl >= 0 ? 'pnl-pos' : 'pnl-neg' ?>">
+                                    <?= $pnl >= 0 ? '+' : '' ?>$<?= number_format(abs($pnl), 2) ?>
+                                </p>
+                                <p class="text-xs <?= $pnlPct >= 0 ? 'text-emerald-400' : 'text-red-400' ?> font-semibold">
+                                    <?= $pnlPct >= 0 ? '▲' : '▼' ?> <?= number_format(abs($pnlPct), 2) ?>%
+                                </p>
                             </div>
                         </div>
+                    </div>
                     <?php endforeach; ?>
                 </div>
             </div>
             <?php endif; ?>
 
-            <!-- Account Info & Documents -->
-            <div class="space-y-6">
+            <!-- Account Status + Quick Links -->
+            <div class="space-y-4 <?= empty($openTrades) ? 'lg:col-span-2 grid lg:grid-cols-2 gap-4 !space-y-0' : '' ?>">
+
                 <!-- Account Status -->
-                <div class="bg-gradient-to-br from-emerald-900/30 via-slate-800/50 to-slate-900/30 border border-emerald-500/30 rounded-3xl p-6">
-                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                        <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <div class="bg-gradient-to-br from-emerald-950/50 via-slate-900/60 to-slate-950/70 border border-emerald-500/20 rounded-3xl p-6">
+                    <h3 class="text-base font-bold text-white mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                         Account Status
                     </h3>
                     <div class="space-y-3">
-                        <div class="flex items-center justify-between">
-                            <span class="text-slate-400 text-sm">Email Verified</span>
-                            <span class="w-2 h-2 bg-emerald-400 rounded-full"></span>
+                        <?php
+                        $statuses = [
+                            ['label' => 'Email Verified',  'active' => true,  'pulse' => false],
+                            ['label' => '2FA Enabled',     'active' => true,  'pulse' => false],
+                            ['label' => 'Trading Active',  'active' => true,  'pulse' => true],
+                            ['label' => 'KYC Complete',    'active' => false, 'pulse' => false],
+                        ];
+                        foreach ($statuses as $s):
+                        ?>
+                        <div class="flex items-center justify-between py-1">
+                            <span class="text-slate-400 text-sm"><?= $s['label'] ?></span>
+                            <div class="flex items-center gap-1.5">
+                                <span class="w-2 h-2 <?= $s['active'] ? 'bg-emerald-400' : 'bg-slate-600' ?> rounded-full <?= ($s['active'] && $s['pulse']) ? 'animate-pulse' : '' ?>"></span>
+                                <span class="text-xs <?= $s['active'] ? 'text-emerald-400' : 'text-slate-600' ?> font-semibold"><?= $s['active'] ? 'Active' : 'Pending' ?></span>
+                            </div>
                         </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-slate-400 text-sm">2FA Enabled</span>
-                            <span class="w-2 h-2 bg-emerald-400 rounded-full"></span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-slate-400 text-sm">Trading Active</span>
-                            <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-                        </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
 
                 <!-- Quick Links -->
-                <div class="grid grid-cols-2 gap-4">
-                    <a href="/web/public/app/profile.php" class="bg-slate-800/50 border border-slate-700/50 hover:border-emerald-500/50 rounded-2xl p-4 text-center transition group">
-                        <svg class="w-6 h-6 text-slate-400 group-hover:text-emerald-400 mx-auto mb-2 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <p class="text-xs font-semibold text-slate-300 group-hover:text-white transition">Profile</p>
+                <div class="grid grid-cols-2 gap-3">
+                    <a href="profile.php"
+                       class="glass-card hover:border-emerald-500/40 rounded-2xl p-5 text-center transition hover-lift group border border-white/5">
+                        <div class="w-10 h-10 bg-emerald-500/15 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:bg-emerald-500/25 transition">
+                            <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                        </div>
+                        <p class="text-xs font-bold text-slate-300 group-hover:text-white transition">Profile</p>
                     </a>
-                    <a href="/web/public/app/wallet.php" class="bg-slate-800/50 border border-slate-700/50 hover:border-emerald-500/50 rounded-2xl p-4 text-center transition group">
-                        <svg class="w-6 h-6 text-slate-400 group-hover:text-emerald-400 mx-auto mb-2 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-                        <p class="text-xs font-semibold text-slate-300 group-hover:text-white transition">Transactions</p>
+                    <a href="wallet.php"
+                       class="glass-card hover:border-emerald-500/40 rounded-2xl p-5 text-center transition hover-lift group border border-white/5">
+                        <div class="w-10 h-10 bg-blue-500/15 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-500/25 transition">
+                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                        </div>
+                        <p class="text-xs font-bold text-slate-300 group-hover:text-white transition">Wallet</p>
+                    </a>
+                    <a href="trading.php"
+                       class="glass-card hover:border-emerald-500/40 rounded-2xl p-5 text-center transition hover-lift group border border-white/5">
+                        <div class="w-10 h-10 bg-purple-500/15 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:bg-purple-500/25 transition">
+                            <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                        </div>
+                        <p class="text-xs font-bold text-slate-300 group-hover:text-white transition">Trade</p>
+                    </a>
+                    <a href="markets.php"
+                       class="glass-card hover:border-emerald-500/40 rounded-2xl p-5 text-center transition hover-lift group border border-white/5">
+                        <div class="w-10 h-10 bg-amber-500/15 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:bg-amber-500/25 transition">
+                            <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                        </div>
+                        <p class="text-xs font-bold text-slate-300 group-hover:text-white transition">Markets</p>
                     </a>
                 </div>
             </div>
@@ -392,29 +562,91 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
     </main>
 
-    <!-- Bottom Navigation (Mobile) -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur border-t border-slate-700 flex justify-around py-2 z-50 md:hidden">
-        <a href="/web/public/app/index.php" class="flex flex-col items-center text-emerald-400 gap-1 py-2 px-3">
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h-6z"/></svg>
-            <span class="text-xs">Home</span>
+    <!-- ════════════════════════════════════════
+         BOTTOM NAVIGATION (Mobile)
+    ════════════════════════════════════════ -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-slate-950/95 backdrop-blur border-t border-white/5 flex justify-around py-1.5 z-50 md:hidden">
+        <a href="index.php" class="flex flex-col items-center text-emerald-400 gap-0.5 py-2 px-3">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h-6z"/></svg>
+            <span class="text-[10px] font-semibold">Home</span>
         </a>
-        <a href="/web/public/app/markets.php" class="flex flex-col items-center text-slate-400 hover:text-emerald-400 gap-1 py-2 px-3 transition">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
-            <span class="text-xs">Markets</span>
+        <a href="markets.php" class="flex flex-col items-center text-slate-500 hover:text-emerald-400 gap-0.5 py-2 px-3 transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+            <span class="text-[10px] font-semibold">Markets</span>
         </a>
-        <a href="/web/public/app/trading.php" class="flex flex-col items-center text-slate-400 hover:text-emerald-400 gap-1 py-2 px-3 transition">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-            <span class="text-xs">Trade</span>
+        <a href="trading.php" class="flex flex-col items-center text-slate-500 hover:text-emerald-400 gap-0.5 py-2 px-3 transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+            <span class="text-[10px] font-semibold">Trade</span>
         </a>
-        <a href="/web/public/app/wallet.php" class="flex flex-col items-center text-slate-400 hover:text-emerald-400 gap-1 py-2 px-3 transition">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-            <span class="text-xs">Wallet</span>
+        <a href="wallet.php" class="flex flex-col items-center text-slate-500 hover:text-emerald-400 gap-0.5 py-2 px-3 transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+            <span class="text-[10px] font-semibold">Wallet</span>
         </a>
-        <a href="/web/public/app/profile.php" class="flex flex-col items-center text-slate-400 hover:text-emerald-400 gap-1 py-2 px-3 transition">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-            <span class="text-xs">Profile</span>
+        <a href="profile.php" class="flex flex-col items-center text-slate-500 hover:text-emerald-400 gap-0.5 py-2 px-3 transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            <span class="text-[10px] font-semibold">Profile</span>
         </a>
     </nav>
+
+    <!-- ════════════════════════════════════════
+         SWAP LIVE-RATE JS
+    ════════════════════════════════════════ -->
+    <script>
+    (function () {
+        const PRICES = <?= $pricesJson ?>;
+
+        const fromSel    = document.getElementById('swapFrom');
+        const toSel      = document.getElementById('swapTo');
+        const amountInp  = document.getElementById('swapAmount');
+        const rateDisp   = document.getElementById('rateDisplay');
+        const recvDisp   = document.getElementById('receiveDisplay');
+
+        function fmt(n, dec) {
+            return n.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+        }
+
+        function updateRate() {
+            const from   = fromSel.value;
+            const to     = toSel.value;
+            const amount = parseFloat(amountInp.value) || 0;
+
+            if (from === to) {
+                rateDisp.textContent  = 'Select different currencies';
+                recvDisp.textContent  = '';
+                return;
+            }
+
+            const fromUSD = PRICES[from] || 1;
+            const toUSD   = PRICES[to]   || 1;
+            const rate    = fromUSD / toUSD;
+
+            const dec = (to === 'USDT') ? 2 : (to === 'BTC' ? 8 : 6);
+            rateDisp.textContent = `1 ${from} = ${fmt(rate, dec)} ${to}`;
+
+            if (amount > 0) {
+                const recv = amount * rate;
+                recvDisp.textContent = `You receive ≈ ${fmt(recv, dec)} ${to}`;
+            } else {
+                recvDisp.textContent = '';
+            }
+        }
+
+        fromSel.addEventListener('change', updateRate);
+        toSel.addEventListener('change', updateRate);
+        amountInp.addEventListener('input', updateRate);
+
+        // Prevent same-currency swap
+        fromSel.addEventListener('change', function () {
+            if (fromSel.value === toSel.value) {
+                const opts = Array.from(toSel.options).map(o => o.value);
+                toSel.value = opts.find(v => v !== fromSel.value) || '';
+            }
+            updateRate();
+        });
+
+        updateRate();
+    })();
+    </script>
 
 </body>
 </html>
