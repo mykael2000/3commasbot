@@ -2,14 +2,58 @@
 declare(strict_types=1);
 require_once __DIR__ . '/../src/config.php';
 require_once __DIR__ . '/../src/auth.php';
+require_once __DIR__ . '/../src/csrf.php';
 require_once __DIR__ . '/../src/helpers.php';
 
+// Already logged in → go to dashboard
+if (is_logged_in()) {
+    redirect('app/index.php');
+}
 
-// Fetch active plans from DB (gracefully handle no DB)
-$plans = [];
-try {
-    $plans = db()->query('SELECT * FROM investment_plans WHERE active = 1 ORDER BY min_deposit ASC')->fetchAll();
-} catch (Throwable) {}
+$error = get_flash('error');
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    csrf_verify();
+
+    $email    = trim($_POST['email']    ?? '');
+    $password = trim($_POST['password'] ?? '');
+    $remember = !empty($_POST['remember']);
+
+    if ($email === '' || $password === '') {
+        flash('error', 'Email and password are required.');
+        redirect('index.php');
+    }
+
+    try {
+        $stmt = db()->prepare('SELECT * FROM users WHERE email = ? LIMIT 1');
+        $stmt->execute([$email]);
+        $user = $stmt->fetch();
+
+        if (!$user || !password_verify($password, $user['password'])) {
+            flash('error', 'Invalid email or password.');
+            redirect('index.php');
+        }
+
+        if ($user['status'] === 'disabled') {
+            flash('error', 'Your account has been disabled. Please contact support.');
+            redirect('index.php');
+        }
+
+        login_user($user);
+
+        if ($remember) {
+            // Extend cookie lifetime to 30 days
+            $params = session_get_cookie_params();
+            setcookie(session_name(), session_id(), time() + 60 * 60 * 24 * 30,
+                $params['path'], $params['domain'], $params['secure'], $params['httponly']);
+        }
+
+        redirect('app/index.php');
+    } catch (Throwable $e) {
+        flash('error', 'A system error occurred. Please try again.');
+        redirect('index.php');
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
@@ -37,7 +81,7 @@ try {
      ============================================================ -->
 <header class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-800">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
-    <a href="../public/index.php" class="text-2xl font-extrabold text-emerald-400 tracking-tight">3Commas</a>
+    <a href="../public/index.php" class="text-2xl font-extrabold text-emerald-400 tracking-tight"><svg aria-labelledby="logo" class="Logo_logo__5KyRR" width="150px" height="150px" viewBox="0 0 125 31" fill="none" xmlns="http://www.w3.org/2000/svg"><text id="logo" class="visually-hidden" font-size="0">3Commas logo, link to main page</text><g fill-rule="evenodd"><path fill="currentColor" d="M30.795 0v30.918H0V0z" style="color: white;"></path><path fill="currentColor" d="M20.354 19.093h3.167a.2.2 0 00.19-.137l1.136-3.417a.2.2 0 00.002-.007l.998-3.434a.2.2 0 00-.016-.15l-.074-.14a.2.2 0 00-.177-.106h-4.024a.2.2 0 00-.198.168l-.588 3.663a.2.2 0 010 .005l-.613 3.318a.2.2 0 00.197.237zm-7.804 0h3.155a.2.2 0 00.19-.137l1.144-3.417a.2.2 0 00.002-.007l1.004-3.434a.2.2 0 00-.015-.15l-.076-.14a.2.2 0 00-.176-.106h-4.054a.2.2 0 00-.198.168l-.592 3.664v.003l-.58 3.321a.2.2 0 00.196.235zm-7.594 0h3.168a.2.2 0 00.19-.137l1.136-3.417a.2.2 0 00.002-.007l.998-3.434a.2.2 0 00-.016-.15l-.075-.14a.2.2 0 00-.176-.106H6.158a.2.2 0 00-.197.168l-.588 3.663a.2.2 0 010 .005l-.613 3.318a.2.2 0 00.196.237z" style="color: var(--logo-commas);"></path><path d="M47.384 18.37c0 2.589-1.979 4.338-5.164 4.338-1.66 0-3.253-.5-4.14-1.363l.978-1.885c.66.704 1.706 1.09 2.866 1.09 1.729 0 2.776-.886 2.776-2.18s-1.024-2.112-2.594-2.112c-.705 0-1.296.136-1.842.431l-.705-1.294 3.73-4.27h-4.617V8.99h7.984v1.613l-3.503 3.725c2.571.045 4.231 1.68 4.231 4.042zm.842-2.657c0-4.156 2.866-6.904 7.188-6.904 2.207 0 4.004.727 5.346 2.18l-1.638 1.635c-.774-.976-2.07-1.68-3.685-1.68-2.73 0-4.55 1.93-4.55 4.792 0 2.906 1.843 4.837 4.573 4.837 1.842 0 3.093-.818 3.958-2.135l1.751 1.544c-1.296 1.772-3.275 2.726-5.755 2.726-4.299 0-7.188-2.794-7.188-6.995zm13.193 1.885c0-3.066 2.116-5.11 5.301-5.11 3.162 0 5.277 2.044 5.277 5.11 0 3.066-2.115 5.132-5.277 5.132-3.162-.022-5.301-2.066-5.301-5.132zm7.985 0c0-1.794-1.092-2.975-2.684-2.975-1.638 0-2.707 1.181-2.707 2.975s1.091 2.975 2.707 2.975c1.615 0 2.684-1.181 2.684-2.975zm19.404-1.272v6.2h-2.502v-5.791c0-1.272-.796-2.112-2.025-2.112-1.205 0-2.024.84-2.024 2.112v5.791h-2.503v-5.791c0-1.272-.796-2.112-2.024-2.112-1.206 0-2.025.84-2.025 2.112v5.791h-2.502V12.67h2.411l.046 1.181c.705-.886 1.751-1.363 2.957-1.363 1.297 0 2.343.545 2.98 1.476.705-.976 1.865-1.476 3.185-1.476 2.411 0 4.026 1.544 4.026 3.838zm17.242 0v6.2h-2.5v-5.791c0-1.272-.8-2.112-2.03-2.112-1.2 0-2.021.84-2.021 2.112v5.791h-2.502v-5.791c0-1.272-.796-2.112-2.024-2.112-1.206 0-2.025.84-2.025 2.112v5.791h-2.502V12.67h2.411l.045 1.181c.706-.886 1.752-1.363 2.958-1.363 1.296 0 2.343.545 2.98 1.476.705-.976 1.86-1.476 3.18-1.476 2.44 0 4.03 1.544 4.03 3.838zm9.85 0v6.2h-2.39l-.04-1.408c-.66 1.022-1.8 1.59-3.01 1.59-2.04 0-3.43-1.227-3.43-3.066 0-1.908 1.68-3.157 4.21-3.157.68 0 1.43.068 2.18.227v-.182c0-1.317-.89-2.112-2.39-2.112-.93 0-1.68.273-2.29.795l-1.1-1.453c1.07-.863 2.3-1.272 4.03-1.272 2.53 0 4.23 1.522 4.23 3.838zm-2.5 2.09a9.19 9.19 0 00-1.87-.205c-1.18 0-1.93.545-1.93 1.385 0 .795.52 1.34 1.55 1.34 1.16 0 2.25-.908 2.25-2.52zm3.73 3.134l.93-1.499c.94.545 1.87.726 2.84.726.92 0 1.55-.386 1.55-.976 0-.591-.7-.931-1.68-1.181l-.82-.227c-1.66-.432-2.8-1.09-2.8-2.635 0-1.953 1.55-3.247 3.89-3.247 1.48 0 2.75.318 3.73.976l-1.04 1.635a5.218 5.218 0 00-2.51-.635c-.88 0-1.52.34-1.52.885 0 .591.61.863 1.48 1.09l.82.228c1.68.431 3.02 1.203 3.02 2.952 0 1.862-1.64 3.111-4.12 3.111-1.54-.045-2.86-.431-3.77-1.203z" fill="currentColor" style="color: var(--logo-text);"></path></g></svg></a>
     <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
       <a href="#features" class="hover:text-white transition">Features</a>
       <a href="#pricing"  class="hover:text-white transition">Pricing</a>
@@ -76,27 +120,24 @@ try {
     </svg>
   </div>
   <div class="relative max-w-5xl mx-auto px-4 sm:px-6 text-center">
-    <div class="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm px-4 py-1.5 rounded-full mb-6">
+    <!-- <div class="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm px-4 py-1.5 rounded-full mb-6">
       <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-      Live Trading Automation
-    </div>
-    <h1 class="text-5xl md:text-7xl font-extrabold leading-tight tracking-tight mb-6">
-      Automated<br>
-      <span class="text-emerald-400">Crypto Trading</span>
+      
+    </div> -->
+    <h1 class="text-3xl md:text-7xl font-extrabold leading-tight tracking-tight mb-2">
+      Crypto Trading Bots & <br>Automation Platform<br>
+      <!-- <span class="text-emerald-400">Crypto Trading</span> -->
     </h1>
-    <p class="text-xl md:text-2xl text-slate-400 max-w-3xl mx-auto mb-10">
-      Smart bots, portfolio tracking and risk management — all in one platform built for serious crypto traders.
+    <p class="text-lg md:text-2xl text-slate-400 max-w-3xl mx-auto mb-4">
+      Automate your trading experience to reduce stress and emotional mistakes.
     </p>
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
       <a href="../public/register.php" class="bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-8 py-4 rounded-xl text-lg transition shadow-lg shadow-emerald-500/25">
-        Get Started Free
-      </a>
-      <a href="#features" class="border border-slate-600 hover:border-slate-400 text-slate-300 hover:text-white font-bold px-8 py-4 rounded-xl text-lg transition">
-        ▶ Watch Demo
+        Start Free Trial
       </a>
     </div>
     <!-- Stats row -->
-    <div class="mt-16 grid grid-cols-3 gap-6 max-w-2xl mx-auto">
+    <!-- <div class="mt-16 grid grid-cols-3 gap-6 max-w-2xl mx-auto">
       <div>
         <div class="text-3xl font-extrabold text-emerald-400">$2.4B+</div>
         <div class="text-slate-400 text-sm">Trading Volume</div>
@@ -109,161 +150,77 @@ try {
         <div class="text-3xl font-extrabold text-emerald-400">99.9%</div>
         <div class="text-slate-400 text-sm">Uptime</div>
       </div>
-    </div>
+    </div> -->
   </div>
 </section>
 
-<!-- ============================================================
-     FEATURES
-     ============================================================ -->
-<section id="features" class="py-20 bg-slate-800/50">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="text-center mb-14">
-      <h2 class="text-4xl font-extrabold text-white mb-4">Everything you need to trade smarter</h2>
-      <p class="text-slate-400 text-lg max-w-2xl mx-auto">From automated bots to risk management, we've got you covered.</p>
-    </div>
-    <div class="grid md:grid-cols-3 gap-8">
-      <!-- Card 1 -->
-      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8 hover:border-emerald-500/50 transition group">
-        <div class="w-14 h-14 bg-emerald-500/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-emerald-500/20 transition">
-          <svg class="w-7 h-7 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2h-2"/>
-          </svg>
-        </div>
-        <h3 class="text-xl font-bold text-white mb-3">Smart Bots</h3>
-        <p class="text-slate-400">Deploy DCA, Grid, and Signal bots 24/7. Automate your strategy without watching charts all day.</p>
-      </div>
-      <!-- Card 2 -->
-      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8 hover:border-emerald-500/50 transition group">
-        <div class="w-14 h-14 bg-emerald-500/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-emerald-500/20 transition">
-          <svg class="w-7 h-7 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/>
-          </svg>
-        </div>
-        <h3 class="text-xl font-bold text-white mb-3">Portfolio Tracking</h3>
-        <p class="text-slate-400">Real-time portfolio overview across multiple exchanges. Track P&L, allocation, and performance.</p>
-      </div>
-      <!-- Card 3 -->
-      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8 hover:border-emerald-500/50 transition group">
-        <div class="w-14 h-14 bg-emerald-500/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-emerald-500/20 transition">
-          <svg class="w-7 h-7 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-          </svg>
-        </div>
-        <h3 class="text-xl font-bold text-white mb-3">Risk Management</h3>
-        <p class="text-slate-400">Set stop-loss, take-profit, and trailing stops. Protect your capital with advanced risk controls.</p>
-      </div>
-    </div>
-  </div>
-</section>
+<div class="w-[90%] max-w-md items-center justify-center p-2 mx-auto">
 
-<!-- ============================================================
-     PRICING / PLANS
-     ============================================================ -->
-<section id="pricing" class="py-20">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="text-center mb-14">
-      <h2 class="text-4xl font-extrabold text-white mb-4">Investment Plans</h2>
-      <p class="text-slate-400 text-lg max-w-2xl mx-auto">Choose the plan that matches your investment goals.</p>
-    </div>
-    <div class="grid md:grid-cols-3 gap-8">
-      <?php if (!empty($plans)): ?>
-        <?php
-          $highlights = [0 => false, 1 => true, 2 => false]; // highlight middle plan
-          foreach ($plans as $i => $plan):
-            $hl = $highlights[$i] ?? false;
-        ?>
-        <div class="relative <?= $hl ? 'bg-emerald-500/10 border-2 border-emerald-500' : 'bg-slate-800 border border-slate-700' ?> rounded-2xl p-8 flex flex-col">
-          <?php if ($hl): ?>
-            <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-xs font-bold px-4 py-1 rounded-full">MOST POPULAR</div>
-          <?php endif; ?>
-          <h3 class="text-2xl font-bold text-white mb-2"><?= sanitize($plan['name']) ?></h3>
-          <p class="text-slate-400 text-sm mb-6"><?= sanitize($plan['description']) ?></p>
-          <div class="text-4xl font-extrabold text-emerald-400 mb-1"><?= format_currency((float)$plan['roi_percent'], 2) ?>%</div>
-          <div class="text-slate-400 text-sm mb-6">ROI over <?= (int)$plan['duration_days'] ?> days</div>
-          <ul class="space-y-3 text-slate-300 text-sm mb-8 flex-1">
-            <li class="flex items-center gap-2">
-              <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-              Min: $<?= format_currency((float)$plan['min_deposit']) ?>
-            </li>
-            <li class="flex items-center gap-2">
-              <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-              Max: $<?= format_currency((float)$plan['max_deposit']) ?>
-            </li>
-            <li class="flex items-center gap-2">
-              <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-              Duration: <?= (int)$plan['duration_days'] ?> days
-            </li>
-          </ul>
-          <a href="/web/public/register.php" class="<?= $hl ? 'bg-emerald-500 hover:bg-emerald-400' : 'bg-slate-700 hover:bg-slate-600' ?> text-white font-bold px-6 py-3 rounded-xl text-center transition">
-            Get Started
-          </a>
+    <!-- Card -->
+    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8 shadow-xl">
+      <div class="text-left mb-10">
+      
+        <p class="text-4xl font-bold text-white mt-2">Sign In</p>
+        <span class="block mt-2">Access your trading account and continue on mobile or desktop</span>
+      </div>
+      <?php if ($error): ?>
+        <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg px-4 py-3 mb-6">
+          <?= sanitize($error) ?>
         </div>
-        <?php endforeach; ?>
-      <?php else: ?>
-        <!-- Placeholder cards if DB not connected -->
-        <?php
-          $placeholders = [
-            ['name'=>'Starter',    'roi'=>'5.00',  'days'=>30, 'min'=>'100',   'max'=>'999',    'desc'=>'Perfect for beginners.'],
-            ['name'=>'Growth',     'roi'=>'12.00', 'days'=>60, 'min'=>'1,000', 'max'=>'4,999',  'desc'=>'Balanced plan for growing your portfolio.', 'popular'=>true],
-            ['name'=>'Pro Trader', 'roi'=>'25.00', 'days'=>90, 'min'=>'5,000', 'max'=>'99,999', 'desc'=>'High-yield plan for serious investors.'],
-          ];
-          foreach ($placeholders as $p):
-        ?>
-        <div class="relative <?= isset($p['popular']) ? 'bg-emerald-500/10 border-2 border-emerald-500' : 'bg-slate-800 border border-slate-700' ?> rounded-2xl p-8 flex flex-col">
-          <?php if (isset($p['popular'])): ?>
-            <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-xs font-bold px-4 py-1 rounded-full">MOST POPULAR</div>
-          <?php endif; ?>
-          <h3 class="text-2xl font-bold text-white mb-2"><?= $p['name'] ?></h3>
-          <p class="text-slate-400 text-sm mb-6"><?= $p['desc'] ?></p>
-          <div class="text-4xl font-extrabold text-emerald-400 mb-1"><?= $p['roi'] ?>%</div>
-          <div class="text-slate-400 text-sm mb-6">ROI over <?= $p['days'] ?> days</div>
-          <ul class="space-y-3 text-slate-300 text-sm mb-8 flex-1">
-            <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg> Min: $<?= $p['min'] ?></li>
-            <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg> Max: $<?= $p['max'] ?></li>
-            <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg> Duration: <?= $p['days'] ?> days</li>
-          </ul>
-          <a href="/web/public/register.php" class="<?= isset($p['popular']) ? 'bg-emerald-500 hover:bg-emerald-400' : 'bg-slate-700 hover:bg-slate-600' ?> text-white font-bold px-6 py-3 rounded-xl text-center transition">Get Started</a>
-        </div>
-        <?php endforeach; ?>
       <?php endif; ?>
+
+      <form method="POST" action="" class="space-y-5">
+        <?= csrf_field() ?>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-300 mb-1.5" for="email">Email address</label>
+          <input id="email" type="email" name="email" required autocomplete="email"
+            class="w-full bg-slate-700 border border-slate-600 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent placeholder-slate-500"
+            placeholder="you@example.com">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-300 mb-1.5" for="password">Password</label>
+          <input id="password" type="password" name="password" required autocomplete="current-password"
+            class="w-full bg-slate-700 border border-slate-600 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent placeholder-slate-500"
+            placeholder="••••••••">
+        </div>
+
+        <div class="flex items-center justify-between text-sm">
+          <label class="flex items-center gap-2 text-slate-400 cursor-pointer">
+            <input type="checkbox" name="remember" class="w-4 h-4 accent-emerald-500">
+            Remember me
+          </label>
+          <a href="forgot_password.php" class="text-emerald-400 hover:text-emerald-300 transition">Forgot password?</a>
+        </div>
+
+        <button type="submit"
+          class="w-full bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-500/20 text-base">
+          Access Platform
+        </button>
+
+        <div class="block-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm px-4 py-1.5 rounded-full mb-6">
+          <span class="w-2 h-2 rounded-full animate-pulse">
+            Protected with 2-factor authentication and 256-bit encryption
+          </span>
+        </div>
+      </form>
+
+      <p class="text-center text-slate-400 text-sm mt-6">
+        New to 3Commas?
+        <a href="register.php" class="text-emerald-400 hover:text-emerald-300 transition font-medium">Create one free</a>
+      </p>
     </div>
   </div>
-</section>
-
 <!-- ============================================================
      FOOTER
      ============================================================ -->
 <footer class="border-t border-slate-800 py-12 mt-8">
+  <div class="p-4"><span>3D Trade Tech Ltd,. registration number 2164568, address Geneva Place, 2nd Floor, #333 Waterfront Drive, Road Town Tortola, British Virgin Islands</span></div>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid md:grid-cols-4 gap-8 mb-8">
-      <div class="md:col-span-2">
-        <a href="/web/public/index.php" class="text-2xl font-extrabold text-emerald-400 mb-3 block">3Commas</a>
-        <p class="text-slate-400 text-sm max-w-sm">Automated crypto trading platform trusted by over 120,000 traders worldwide.</p>
-      </div>
-      <div>
-        <h4 class="text-white font-semibold mb-4">Platform</h4>
-        <ul class="space-y-2 text-slate-400 text-sm">
-          <li><a href="#features" class="hover:text-white transition">Features</a></li>
-          <li><a href="#pricing" class="hover:text-white transition">Pricing</a></li>
-          <li><a href="/web/public/register.php" class="hover:text-white transition">Sign Up</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4 class="text-white font-semibold mb-4">Account</h4>
-        <ul class="space-y-2 text-slate-400 text-sm">
-          <li><a href="/web/public/login.php" class="hover:text-white transition">Login</a></li>
-          <li><a href="/web/public/forgot_password.php" class="hover:text-white transition">Reset Password</a></li>
-        </ul>
-      </div>
-    </div>
     <div class="border-t border-slate-800 pt-8 text-center text-slate-500 text-sm">
-      &copy; <?= date('Y') ?> 3Commas Platform. All rights reserved.
+      <div class="w-[20%]"><a href="../public/index.php" class="text-2xl font-extrabold text-emerald-400 tracking-tight"><svg aria-labelledby="logo" class="Logo_logo__5KyRR" width="150px" height="150px" viewBox="0 0 125 31" fill="none" xmlns="http://www.w3.org/2000/svg"><text id="logo" class="visually-hidden" font-size="0">3Commas logo, link to main page</text><g fill-rule="evenodd"><path fill="currentColor" d="M30.795 0v30.918H0V0z" style="color: white;"></path><path fill="currentColor" d="M20.354 19.093h3.167a.2.2 0 00.19-.137l1.136-3.417a.2.2 0 00.002-.007l.998-3.434a.2.2 0 00-.016-.15l-.074-.14a.2.2 0 00-.177-.106h-4.024a.2.2 0 00-.198.168l-.588 3.663a.2.2 0 010 .005l-.613 3.318a.2.2 0 00.197.237zm-7.804 0h3.155a.2.2 0 00.19-.137l1.144-3.417a.2.2 0 00.002-.007l1.004-3.434a.2.2 0 00-.015-.15l-.076-.14a.2.2 0 00-.176-.106h-4.054a.2.2 0 00-.198.168l-.592 3.664v.003l-.58 3.321a.2.2 0 00.196.235zm-7.594 0h3.168a.2.2 0 00.19-.137l1.136-3.417a.2.2 0 00.002-.007l.998-3.434a.2.2 0 00-.016-.15l-.075-.14a.2.2 0 00-.176-.106H6.158a.2.2 0 00-.197.168l-.588 3.663a.2.2 0 010 .005l-.613 3.318a.2.2 0 00.196.237z" style="color: var(--logo-commas);"></path><path d="M47.384 18.37c0 2.589-1.979 4.338-5.164 4.338-1.66 0-3.253-.5-4.14-1.363l.978-1.885c.66.704 1.706 1.09 2.866 1.09 1.729 0 2.776-.886 2.776-2.18s-1.024-2.112-2.594-2.112c-.705 0-1.296.136-1.842.431l-.705-1.294 3.73-4.27h-4.617V8.99h7.984v1.613l-3.503 3.725c2.571.045 4.231 1.68 4.231 4.042zm.842-2.657c0-4.156 2.866-6.904 7.188-6.904 2.207 0 4.004.727 5.346 2.18l-1.638 1.635c-.774-.976-2.07-1.68-3.685-1.68-2.73 0-4.55 1.93-4.55 4.792 0 2.906 1.843 4.837 4.573 4.837 1.842 0 3.093-.818 3.958-2.135l1.751 1.544c-1.296 1.772-3.275 2.726-5.755 2.726-4.299 0-7.188-2.794-7.188-6.995zm13.193 1.885c0-3.066 2.116-5.11 5.301-5.11 3.162 0 5.277 2.044 5.277 5.11 0 3.066-2.115 5.132-5.277 5.132-3.162-.022-5.301-2.066-5.301-5.132zm7.985 0c0-1.794-1.092-2.975-2.684-2.975-1.638 0-2.707 1.181-2.707 2.975s1.091 2.975 2.707 2.975c1.615 0 2.684-1.181 2.684-2.975zm19.404-1.272v6.2h-2.502v-5.791c0-1.272-.796-2.112-2.025-2.112-1.205 0-2.024.84-2.024 2.112v5.791h-2.503v-5.791c0-1.272-.796-2.112-2.024-2.112-1.206 0-2.025.84-2.025 2.112v5.791h-2.502V12.67h2.411l.046 1.181c.705-.886 1.751-1.363 2.957-1.363 1.297 0 2.343.545 2.98 1.476.705-.976 1.865-1.476 3.185-1.476 2.411 0 4.026 1.544 4.026 3.838zm17.242 0v6.2h-2.5v-5.791c0-1.272-.8-2.112-2.03-2.112-1.2 0-2.021.84-2.021 2.112v5.791h-2.502v-5.791c0-1.272-.796-2.112-2.024-2.112-1.206 0-2.025.84-2.025 2.112v5.791h-2.502V12.67h2.411l.045 1.181c.706-.886 1.752-1.363 2.958-1.363 1.296 0 2.343.545 2.98 1.476.705-.976 1.86-1.476 3.18-1.476 2.44 0 4.03 1.544 4.03 3.838zm9.85 0v6.2h-2.39l-.04-1.408c-.66 1.022-1.8 1.59-3.01 1.59-2.04 0-3.43-1.227-3.43-3.066 0-1.908 1.68-3.157 4.21-3.157.68 0 1.43.068 2.18.227v-.182c0-1.317-.89-2.112-2.39-2.112-.93 0-1.68.273-2.29.795l-1.1-1.453c1.07-.863 2.3-1.272 4.03-1.272 2.53 0 4.23 1.522 4.23 3.838zm-2.5 2.09a9.19 9.19 0 00-1.87-.205c-1.18 0-1.93.545-1.93 1.385 0 .795.52 1.34 1.55 1.34 1.16 0 2.25-.908 2.25-2.52zm3.73 3.134l.93-1.499c.94.545 1.87.726 2.84.726.92 0 1.55-.386 1.55-.976 0-.591-.7-.931-1.68-1.181l-.82-.227c-1.66-.432-2.8-1.09-2.8-2.635 0-1.953 1.55-3.247 3.89-3.247 1.48 0 2.75.318 3.73.976l-1.04 1.635a5.218 5.218 0 00-2.51-.635c-.88 0-1.52.34-1.52.885 0 .591.61.863 1.48 1.09l.82.228c1.68.431 3.02 1.203 3.02 2.952 0 1.862-1.64 3.111-4.12 3.111-1.54-.045-2.86-.431-3.77-1.203z" fill="currentColor" style="color: var(--logo-text);"></path></g></svg></a> </div>
+      <span>&copy; <?= date('Y') ?></span> 
     </div>
   </div>
 </footer>
