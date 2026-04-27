@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     } elseif ($fromCurrency === $toCurrency) {
         $swapMessage     = 'From and To currencies must be different.';
         $swapMessageType = 'error';
-    } elseif ($amount <= 0) {
+    } elseif ($amount < 0.00000001) {
         $swapMessage     = 'Please enter a valid amount greater than zero.';
         $swapMessageType = 'error';
     } else {
@@ -196,7 +196,7 @@ $pricesJson = json_encode([
                 <span class="w-2.5 h-2.5 bg-emerald-400 rounded-full animate-pulse flex-shrink-0"></span>
                 <div>
                     <p class="text-sm font-semibold text-emerald-300">Active Investment Plan</p>
-                    <p class="text-xs text-slate-400"><?= sanitize($activePlan['plan_name']) ?> &bull; <?= format_currency((float)$activePlan['roi_percent']) ?>% ROI</p>
+                    <p class="text-xs text-slate-400"><?= sanitize($activePlan['plan_name']) ?> &bull; <?= number_format((float)$activePlan['roi_percent'], 2) ?>% ROI</p>
                 </div>
             </div>
             <span class="bg-emerald-500/20 text-emerald-400 text-[11px] font-bold px-3 py-1 rounded-full tracking-wide">VERIFIED</span>
@@ -594,7 +594,7 @@ $pricesJson = json_encode([
     <script>
     (function () {
         const PRICES   = <?= $pricesJson ?>;
-        const DECIMALS = <?= json_encode(array_combine(array_keys($cryptoDecimals), array_values($cryptoDecimals)), JSON_THROW_ON_ERROR) ?>;
+        const DECIMALS = <?= json_encode($cryptoDecimals, JSON_THROW_ON_ERROR) ?>;
 
         const fromSel    = document.getElementById('swapFrom');
         const toSel      = document.getElementById('swapTo');
@@ -636,13 +636,13 @@ $pricesJson = json_encode([
         toSel.addEventListener('change', updateRate);
         amountInp.addEventListener('input', updateRate);
 
-        // Prevent same-currency swap
+        // Prevent same-currency swap by auto-switching "To" when "From" changes
         fromSel.addEventListener('change', function () {
             if (fromSel.value === toSel.value) {
                 const opts = Array.from(toSel.options).map(o => o.value);
                 toSel.value = opts.find(v => v !== fromSel.value) || '';
+                updateRate(); // Only needed here when "To" was auto-changed
             }
-            updateRate();
         });
 
         updateRate();
