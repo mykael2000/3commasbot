@@ -1,0 +1,45 @@
+name: Deploy to FTP
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: FTP Deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Prepare deployment directory
+        run: |
+          mkdir -p _deploy/public_html _deploy/src
+          # Web-accessible files go into public_html/
+          cp -r web/public/. _deploy/public_html/
+          # Private PHP includes go into src/ (sibling of public_html, not web-accessible)
+          cp -r web/src/. _deploy/src/
+          # Copy environment template and composer manifest to account root
+          cp web/.env.example _deploy/.env.example
+          cp web/composer.json _deploy/composer.json
+
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./_deploy/
+          server-dir: /
+          # Never wipe the entire server — only add/update files
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/.env
