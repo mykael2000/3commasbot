@@ -16,11 +16,10 @@ foreach ($symbols as $sym) {
 }
 $prices['USDTUSDT'] = 1.0;
 
-// Mock 24h change percentages (kept deterministic per session via user id seed)
-srand((int)$user['id'] + (int)date('Ymd'));
+// Mock 24h change percentages – demo data only, not representative of real markets
 $priceChanges = [
-    'BTCUSDT'  => (rand(-800, 1500) / 100),
-    'ETHUSDT'  => (rand(-600, 1200) / 100),
+    'BTCUSDT'  => (mt_rand(-800, 1500) / 100),
+    'ETHUSDT'  => (mt_rand(-600, 1200) / 100),
     'USDTUSDT' => 0.00,
 ];
 
@@ -38,7 +37,7 @@ $walletBalances = [
     'ETH'  => [
         'balance' => $ethBalance,
         'value'   => $ethBalance * $prices['ETHUSDT'],
-        'color'   => 'blue',
+        'color'   => 'indigo',
     ],
     'USDT' => [
         'balance' => $usdtBalance,
@@ -304,10 +303,11 @@ $pricesJson = json_encode([
                         'ETH'  => ['badge' => 'crypto-eth',  'icon' => 'text-indigo-400', 'bar' => 'from-indigo-500 to-blue-400',    'pct' => 'text-indigo-400'],
                         'USDT' => ['badge' => 'crypto-usdt', 'icon' => 'text-teal-400',   'bar' => 'from-teal-500 to-emerald-400',   'pct' => 'text-teal-400'],
                     ];
+                    $cryptoDecimals = ['BTC' => 6, 'ETH' => 6, 'USDT' => 2];
                     foreach ($walletBalances as $crypto => $data):
-                        $pct = $totalBalance > 0 ? ($data['value'] / $totalBalance) * 100 : 0;
-                        $col = $cryptoColors[$crypto] ?? $cryptoColors['USDT'];
-                        $decimals = $crypto === 'USDT' ? 2 : 6;
+                        $pct      = $totalBalance > 0 ? ($data['value'] / $totalBalance) * 100 : 0;
+                        $col      = $cryptoColors[$crypto] ?? $cryptoColors['USDT'];
+                        $decimals = $cryptoDecimals[$crypto] ?? 2;
                     ?>
                     <div class="<?= $col['badge'] ?> rounded-2xl p-4 hover-lift">
                         <div class="flex items-center justify-between mb-3">
@@ -508,10 +508,10 @@ $pricesJson = json_encode([
                     <div class="space-y-3">
                         <?php
                         $statuses = [
-                            ['label' => 'Email Verified',  'active' => true,  'pulse' => false],
-                            ['label' => '2FA Enabled',     'active' => true,  'pulse' => false],
-                            ['label' => 'Trading Active',  'active' => true,  'pulse' => true],
-                            ['label' => 'KYC Complete',    'active' => false, 'pulse' => false],
+                            ['label' => 'Email Verified',  'active' => true,                          'pulse' => false],
+                            ['label' => '2FA Enabled',     'active' => true,                          'pulse' => false],
+                            ['label' => 'Trading Active',  'active' => true,                          'pulse' => true],
+                            ['label' => 'KYC Complete',    'active' => !empty($user['kyc_verified']), 'pulse' => false],
                         ];
                         foreach ($statuses as $s):
                         ?>
@@ -593,7 +593,8 @@ $pricesJson = json_encode([
     ════════════════════════════════════════ -->
     <script>
     (function () {
-        const PRICES = <?= $pricesJson ?>;
+        const PRICES   = <?= $pricesJson ?>;
+        const DECIMALS = <?= json_encode(array_combine(array_keys($cryptoDecimals), array_values($cryptoDecimals)), JSON_THROW_ON_ERROR) ?>;
 
         const fromSel    = document.getElementById('swapFrom');
         const toSel      = document.getElementById('swapTo');
@@ -620,7 +621,7 @@ $pricesJson = json_encode([
             const toUSD   = PRICES[to]   || 1;
             const rate    = fromUSD / toUSD;
 
-            const dec = (to === 'USDT') ? 2 : (to === 'BTC' ? 8 : 6);
+            const dec = DECIMALS[to] || 2;
             rateDisp.textContent = `1 ${from} = ${fmt(rate, dec)} ${to}`;
 
             if (amount > 0) {
