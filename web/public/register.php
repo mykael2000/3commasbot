@@ -7,7 +7,7 @@ require_once __DIR__ . '/../src/helpers.php';
 require_once __DIR__ . '/../src/email.php';
 
 if (is_logged_in()) {
-    redirect('/web/public/app/index.php');
+    redirect('app/index.php');
 }
 
 $error   = get_flash('error');
@@ -24,22 +24,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validation
     if ($name === '' || $email === '' || $password === '') {
         flash('error', 'All fields are required.');
-        redirect('/web/public/register.php');
+        redirect('register.php');
     }
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         flash('error', 'Please enter a valid email address.');
-        redirect('/web/public/register.php');
+        redirect('register.php');
     }
 
     if (strlen($password) < 8) {
         flash('error', 'Password must be at least 8 characters long.');
-        redirect('/web/public/register.php');
+        redirect('register.php');
     }
 
     if ($password !== $confirm) {
         flash('error', 'Passwords do not match.');
-        redirect('/web/public/register.php');
+        redirect('register.php');
     }
 
     try {
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $check->execute([$email]);
         if ($check->fetch()) {
             flash('error', 'An account with that email already exists.');
-            redirect('/web/public/register.php');
+            redirect('register.php');
         }
 
         $hashed = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
@@ -72,10 +72,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             error_log('[register] Welcome email failed: ' . $emailErr->getMessage());
         }
 
-        redirect('/web/public/app/index.php');
+        redirect('app/index.php');
     } catch (Throwable $e) {
         flash('error', 'Registration failed. Please try again.');
-        redirect('/web/public/register.php');
+        redirect('register.php');
     }
 }
 ?>
@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <div class="w-full max-w-md">
     <div class="text-center mb-8">
-      <a href="/web/public/index.php" class="text-3xl font-extrabold text-emerald-400">3Commas</a>
+      <a href="index.php" class="text-3xl font-extrabold text-emerald-400">3Commas</a>
       <p class="text-slate-400 mt-2">Create your free account</p>
     </div>
 
@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
       <?php endif; ?>
 
-      <form method="POST" action="/web/public/register.php" class="space-y-5">
+      <form method="POST" action="register.php" class="space-y-5">
         <?= csrf_field() ?>
 
         <div>
@@ -142,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       <p class="text-center text-slate-400 text-sm mt-6">
         Already have an account?
-        <a href="/web/public/login.php" class="text-emerald-400 hover:text-emerald-300 transition font-medium">Sign in</a>
+        <a href="login.php" class="text-emerald-400 hover:text-emerald-300 transition font-medium">Sign in</a>
       </p>
     </div>
   </div>

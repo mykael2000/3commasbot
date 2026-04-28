@@ -1,8 +1,8 @@
 -- 3Commas Web Platform Schema
 -- MySQL 8.0+
 
-CREATE DATABASE IF NOT EXISTS commas_web CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE commas_web;
+-- CREATE DATABASE IF NOT EXISTS commas_web CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+-- USE commas_web;
 
 CREATE TABLE IF NOT EXISTS users (
     id            BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
