@@ -85,8 +85,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
       <a href="#features" class="hover:text-white transition">Features</a>
       <a href="#pricing"  class="hover:text-white transition">Pricing</a>
-      <a href="../public/login.php"    class="hover:text-white transition">Login</a>
-      <a href="../public/register.php" class="bg-emerald-500 hover:bg-emerald-400 text-white px-4 py-2 rounded-lg transition font-semibold">Get Started</a>
+      <a href="../login.php"    class="hover:text-white transition">Login</a>
+      <a href="../register.php" class="bg-emerald-500 hover:bg-emerald-400 text-white px-4 py-2 rounded-lg transition font-semibold">Get Started</a>
     </nav>
     <!-- Mobile hamburger -->
     <button id="mobileMenuBtn" class="md:hidden text-slate-300 hover:text-white focus:outline-none">
