@@ -80,9 +80,9 @@ function db(): PDO
 
     $host = env('DB_HOST', 'localhost');
     $port = env('DB_PORT', '3306');
-    $name = env('DB_NAME', '3commas');
-    $user = env('DB_USER', 'root');
-    $pass = env('DB_PASS', '');
+    $name = env('DB_NAME', 'dualxtra_3commas');
+    $user = env('DB_USER', 'dualxtra_3commas');
+    $pass = env('DB_PASS', 'HFDfsr@24253');
 
     $dsn = "mysql:host={$host};port={$port};dbname={$name};charset=utf8mb4";
     $pdo = new PDO($dsn, $user, $pass, [
