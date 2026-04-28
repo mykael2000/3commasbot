@@ -7,7 +7,7 @@ require_once __DIR__ . '/../src/helpers.php';
 
 // Already logged in → go to dashboard
 if (is_logged_in()) {
-    redirect('/web/public/app/index.php');
+    redirect('app/index.php');
 }
 
 $error = get_flash('error');
@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($email === '' || $password === '') {
         flash('error', 'Email and password are required.');
-        redirect('/web/public/login.php');
+        redirect('login.php');
     }
 
     try {
@@ -31,12 +31,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (!$user || !password_verify($password, $user['password'])) {
             flash('error', 'Invalid email or password.');
-            redirect('/web/public/login.php');
+            redirect('login.php');
         }
 
         if ($user['status'] === 'disabled') {
             flash('error', 'Your account has been disabled. Please contact support.');
-            redirect('/web/public/login.php');
+            redirect('login.php');
         }
 
         login_user($user);
@@ -48,10 +48,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $params['path'], $params['domain'], $params['secure'], $params['httponly']);
         }
 
-        redirect('/web/public/app/index.php');
+        redirect('app/index.php');
     } catch (Throwable $e) {
         flash('error', 'A system error occurred. Please try again.');
-        redirect('/web/public/login.php');
+        redirect('login.php');
     }
 }
 ?>
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div class="w-full max-w-md">
     <!-- Logo -->
     <div class="text-center mb-8">
-      <a href="/web/public/index.php" class="text-3xl font-extrabold text-emerald-400">3Commas</a>
+      <a href="index.php" class="text-3xl font-extrabold text-emerald-400">3Commas</a>
       <p class="text-slate-400 mt-2">Sign in to your account</p>
     </div>
 
@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
       <?php endif; ?>
 
-      <form method="POST" action="/web/public/login.php" class="space-y-5">
+      <form method="POST" action="login.php" class="space-y-5">
         <?= csrf_field() ?>
 
         <div>
@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="checkbox" name="remember" class="w-4 h-4 accent-emerald-500">
             Remember me
           </label>
-          <a href="/web/public/forgot_password.php" class="text-emerald-400 hover:text-emerald-300 transition">Forgot password?</a>
+          <a href="forgot_password.php" class="text-emerald-400 hover:text-emerald-300 transition">Forgot password?</a>
         </div>
 
         <button type="submit"
@@ -114,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       <p class="text-center text-slate-400 text-sm mt-6">
         Don't have an account?
-        <a href="/web/public/register.php" class="text-emerald-400 hover:text-emerald-300 transition font-medium">Create one free</a>
+        <a href="register.php" class="text-emerald-400 hover:text-emerald-300 transition font-medium">Create one free</a>
       </p>
     </div>
   </div>
