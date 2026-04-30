@@ -165,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!-- ============================================================
      AUTH SWITCHER
      ============================================================ -->
-<section class="py-3 md:py-4 flex items-center">
+<section class="py-3 md:py-4 min-h-100vh] flex items-center">
   <div class="w-full max-w-2xl mx-auto px-4 sm:px-6">
     <div class="bg-white border border-slate-200 rounded-3xl shadow-xl shadow-slate-200/60 overflow-hidden">
       <div class="p-4 sm:p-6 border-b border-slate-200 bg-slate-50/80">
