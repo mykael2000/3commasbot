@@ -33,7 +33,7 @@ foreach ($symbols as $sym) {
     <a href="../logout.php" class="text-slate-600 hover:text-red-500 transition text-xs">Logout</a>
   </header>
 
-  <main class="max-w-2xl mx-auto px-4 py-6 space-y-6">
+  <main class="max-w-2xl mx-auto py-6 space-y-6">
 
     <!-- Symbol Selector -->
     <div class="flex gap-2 flex-wrap">
