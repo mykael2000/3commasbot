@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'toggl
     } catch (Throwable) {
         flash('error', 'Failed to update user status.');
     }
-    redirect('/web/public/admin/users.php');
+    redirect('users.php');
 }
 
 // Toggle role
@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'toggl
     // Prevent self-demotion
     if ($id === (int)($_SESSION['user_id'] ?? 0)) {
         flash('error', 'You cannot change your own role.');
-        redirect('/web/public/admin/users.php');
+        redirect('users.php');
     }
     try {
         $pdo  = db();
@@ -52,25 +52,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'toggl
     } catch (Throwable) {
         flash('error', 'Failed to update user role.');
     }
-    redirect('/web/public/admin/users.php');
+    redirect('users.php');
 }
 
 // Update balance
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'update_balance') {
     csrf_verify();
-    $id      = (int)($_POST['id'] ?? 0);
-    $balance = (float)($_POST['balance'] ?? 0);
-    if ($id <= 0 || $balance < 0) {
+    $id         = (int)($_POST['id'] ?? 0);
+    $balance    = (float)($_POST['balance'] ?? 0);
+    $btcBalance = (float)($_POST['btc_balance'] ?? 0);
+    $ethBalance = (float)($_POST['eth_balance'] ?? 0);
+    if ($id <= 0 || $balance < 0 || $btcBalance < 0 || $ethBalance < 0) {
         flash('error', 'Invalid balance value.');
-        redirect('/web/public/admin/users.php');
+        redirect('users.php');
     }
     try {
-        db()->prepare('UPDATE users SET balance = ? WHERE id = ?')->execute([$balance, $id]);
-        flash('success', 'Balance updated.');
+        db()->prepare('UPDATE users SET balance = ?, btc_balance = ?, eth_balance = ? WHERE id = ?')
+            ->execute([$balance, $btcBalance, $ethBalance, $id]);
+        flash('success', 'Balances updated.');
     } catch (Throwable) {
-        flash('error', 'Failed to update balance.');
+        flash('error', 'Failed to update balances.');
     }
-    redirect('/web/public/admin/users.php');
+    redirect('users.php');
 }
 
 $users = [];
@@ -91,13 +94,13 @@ try {
   <aside class="w-64 bg-slate-900 min-h-screen p-4 flex-shrink-0">
     <div class="text-emerald-400 font-bold text-xl mb-8">3Commas Admin</div>
     <nav class="space-y-1">
-      <a href="/web/public/admin/index.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Dashboard</a>
-      <a href="/web/public/admin/plans.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Plans</a>
-      <a href="/web/public/admin/addresses.php"   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Addresses</a>
-      <a href="/web/public/admin/withdrawals.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Withdrawals</a>
-      <a href="/web/public/admin/users.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-slate-800 text-emerald-400">Users</a>
+      <a href="index.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Dashboard</a>
+      <a href="plans.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Plans</a>
+      <a href="addresses.php"   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Addresses</a>
+      <a href="withdrawals.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Withdrawals</a>
+      <a href="users.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-slate-800 text-emerald-400">Users</a>
       <hr class="border-slate-700 my-3">
-      <a href="/web/public/logout.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 transition">Logout</a>
+      <a href="../logout.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 transition">Logout</a>
     </nav>
   </aside>
 
@@ -119,7 +122,7 @@ try {
               <th class="text-left text-slate-400 font-medium px-4 py-3">User</th>
               <th class="text-center text-slate-400 font-medium px-4 py-3">Role</th>
               <th class="text-center text-slate-400 font-medium px-4 py-3">Status</th>
-              <th class="text-right text-slate-400 font-medium px-4 py-3">Balance</th>
+              <th class="text-right text-slate-400 font-medium px-4 py-3">Balances (USDT/BTC/ETH)</th>
               <th class="text-left text-slate-400 font-medium px-4 py-3">Joined</th>
               <th class="text-right text-slate-400 font-medium px-4 py-3">Actions</th>
             </tr>
@@ -145,14 +148,28 @@ try {
                 </span>
               </td>
               <td class="px-4 py-3 text-right">
-                <form method="POST" action="/web/public/admin/users.php" class="flex items-center justify-end gap-1">
+                <form method="POST" action="users.php" class="flex flex-col items-end gap-1">
                   <?= csrf_field() ?>
                   <input type="hidden" name="action" value="update_balance">
                   <input type="hidden" name="id" value="<?= (int)$u['id'] ?>">
-                  <input type="number" name="balance" step="0.01" min="0"
-                    value="<?= sanitize(number_format((float)$u['balance'], 8, '.', '')) ?>"
-                    class="w-24 bg-slate-600 border border-slate-500 text-white rounded px-2 py-1 text-xs text-right focus:outline-none focus:ring-1 focus:ring-emerald-500"
-                    step="0.00000001" min="0">
+                  <div class="flex items-center gap-1">
+                    <span class="text-[10px] text-slate-400 w-10 text-right">USDT</span>
+                    <input type="number" name="balance" step="0.00000001" min="0"
+                      value="<?= sanitize(number_format((float)$u['balance'], 2, '.', '')) ?>"
+                      class="w-24 bg-slate-600 border border-slate-500 text-white rounded px-2 py-1 text-xs text-right focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <span class="text-[10px] text-slate-400 w-10 text-right">BTC</span>
+                    <input type="number" name="btc_balance" step="0.00000001" min="0"
+                      value="<?= sanitize(number_format((float)($u['btc_balance'] ?? 0), 8, '.', '')) ?>"
+                      class="w-24 bg-slate-600 border border-slate-500 text-white rounded px-2 py-1 text-xs text-right focus:outline-none focus:ring-1 focus:ring-orange-500">
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <span class="text-[10px] text-slate-400 w-10 text-right">ETH</span>
+                    <input type="number" name="eth_balance" step="0.00000001" min="0"
+                      value="<?= sanitize(number_format((float)($u['eth_balance'] ?? 0), 8, '.', '')) ?>"
+                      class="w-24 bg-slate-600 border border-slate-500 text-white rounded px-2 py-1 text-xs text-right focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                  </div>
                   <button type="submit" class="text-emerald-400 hover:text-emerald-300 text-xs bg-emerald-500/10 px-2 py-1 rounded transition">Set</button>
                 </form>
               </td>
@@ -160,7 +177,7 @@ try {
               <td class="px-4 py-3">
                 <div class="flex gap-2 justify-end">
                   <!-- Toggle Status -->
-                  <form method="POST" action="/web/public/admin/users.php">
+                  <form method="POST" action="users.php">
                     <?= csrf_field() ?>
                     <input type="hidden" name="action" value="toggle_status">
                     <input type="hidden" name="id" value="<?= (int)$u['id'] ?>">
@@ -171,7 +188,7 @@ try {
                   </form>
                   <!-- Toggle Role -->
                   <?php if ((int)$u['id'] !== (int)($_SESSION['user_id'] ?? 0)): ?>
-                  <form method="POST" action="/web/public/admin/users.php">
+                  <form method="POST" action="users.php">
                     <?= csrf_field() ?>
                     <input type="hidden" name="action" value="toggle_role">
                     <input type="hidden" name="id" value="<?= (int)$u['id'] ?>">

@@ -32,34 +32,34 @@ try {
     <aside class="w-64 bg-slate-900 min-h-screen p-4 flex-shrink-0">
       <div class="text-white font-bold text-xl mb-8 text-emerald-400">3Commas Admin</div>
       <nav class="space-y-1">
-        <a href="/web/public/admin/index.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-slate-800 text-emerald-400">
+        <a href="index.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-slate-800 text-emerald-400">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
           Dashboard
         </a>
-        <a href="/web/public/admin/plans.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
+        <a href="plans.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
           Plans
         </a>
-        <a href="/web/public/admin/addresses.php"   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
+        <a href="addresses.php"   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
           Addresses
         </a>
-        <a href="/web/public/admin/withdrawals.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
+        <a href="withdrawals.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
           Withdrawals
           <?php if ($stats['pending_withdrawals'] > 0): ?>
           <span class="ml-auto bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"><?= $stats['pending_withdrawals'] ?></span>
           <?php endif; ?>
         </a>
-        <a href="/web/public/admin/users.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
+        <a href="users.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
           Users
         </a>
         <hr class="border-slate-700 my-3">
-        <a href="/web/public/app/index.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white transition">
+        <a href="../app/index.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white transition">
           ← User Dashboard
         </a>
-        <a href="/web/public/logout.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 transition">
+        <a href="../logout.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 transition">
           Logout
         </a>
       </nav>
@@ -94,19 +94,19 @@ try {
 
       <!-- Quick Links -->
       <div class="grid md:grid-cols-2 gap-4">
-        <a href="/web/public/admin/withdrawals.php" class="bg-slate-700 hover:bg-slate-600 rounded-2xl p-5 transition block">
+        <a href="withdrawals.php" class="bg-slate-700 hover:bg-slate-600 rounded-2xl p-5 transition block">
           <h3 class="font-bold text-white mb-1">Review Withdrawals</h3>
           <p class="text-slate-400 text-sm"><?= $stats['pending_withdrawals'] ?> pending requests</p>
         </a>
-        <a href="/web/public/admin/users.php" class="bg-slate-700 hover:bg-slate-600 rounded-2xl p-5 transition block">
+        <a href="users.php" class="bg-slate-700 hover:bg-slate-600 rounded-2xl p-5 transition block">
           <h3 class="font-bold text-white mb-1">Manage Users</h3>
           <p class="text-slate-400 text-sm"><?= $stats['users'] ?> total users</p>
         </a>
-        <a href="/web/public/admin/plans.php" class="bg-slate-700 hover:bg-slate-600 rounded-2xl p-5 transition block">
+        <a href="plans.php" class="bg-slate-700 hover:bg-slate-600 rounded-2xl p-5 transition block">
           <h3 class="font-bold text-white mb-1">Investment Plans</h3>
           <p class="text-slate-400 text-sm">Create and manage plans</p>
         </a>
-        <a href="/web/public/admin/addresses.php" class="bg-slate-700 hover:bg-slate-600 rounded-2xl p-5 transition block">
+        <a href="addresses.php" class="bg-slate-700 hover:bg-slate-600 rounded-2xl p-5 transition block">
           <h3 class="font-bold text-white mb-1">Deposit Addresses</h3>
           <p class="text-slate-400 text-sm">Manage receiving addresses</p>
         </a>

@@ -7,7 +7,7 @@ require_once __DIR__ . '/../src/helpers.php';
 require_once __DIR__ . '/../src/email.php';
 
 if (is_logged_in()) {
-    redirect('/web/public/app/index.php');
+    redirect('app/index.php');
 }
 
 $error   = get_flash('error');
@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         flash('error', 'Please enter a valid email address.');
-        redirect('/web/public/forgot_password.php');
+        redirect('forgot_password.php');
     }
 
     try {
@@ -44,10 +44,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         flash('success', 'If that email exists in our system, a reset link has been sent.');
-        redirect('/web/public/forgot_password.php');
+        redirect('forgot_password.php');
     } catch (Throwable) {
         flash('error', 'A system error occurred. Please try again.');
-        redirect('/web/public/forgot_password.php');
+        redirect('forgot_password.php');
     }
 }
 ?>
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <div class="w-full max-w-md">
     <div class="text-center mb-8">
-      <a href="/web/public/index.php" class="text-3xl font-extrabold text-emerald-400">3Commas</a>
+      <a href="index.php" class="text-3xl font-extrabold text-emerald-400">3Commas</a>
       <p class="text-slate-400 mt-2">Reset your password</p>
     </div>
 
@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
       <?php endif; ?>
 
-      <form method="POST" action="/web/public/forgot_password.php" class="space-y-5">
+      <form method="POST" action="forgot_password.php" class="space-y-5">
         <?= csrf_field() ?>
 
         <div>
@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </form>
 
       <p class="text-center text-slate-400 text-sm mt-6">
-        <a href="/web/public/login.php" class="text-emerald-400 hover:text-emerald-300 transition">&larr; Back to Login</a>
+        <a href="login.php" class="text-emerald-400 hover:text-emerald-300 transition">&larr; Back to Login</a>
       </p>
     </div>
   </div>

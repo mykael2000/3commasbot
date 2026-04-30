@@ -13,7 +13,7 @@ $reset   = null;
 
 if ($token === '') {
     flash('error', 'Invalid or missing reset token.');
-    redirect('/web/public/forgot_password.php');
+    redirect('forgot_password.php');
 }
 
 try {
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!$valid) {
         flash('error', 'This reset link is invalid or has expired.');
-        redirect('/web/public/forgot_password.php');
+        redirect('forgot_password.php');
     }
 
     $newPass = $_POST['password']         ?? '';
@@ -41,12 +41,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (strlen($newPass) < 8) {
         flash('error', 'Password must be at least 8 characters.');
-        redirect('/web/public/reset_password.php?token=' . urlencode($token));
+        redirect('reset_password.php?token=' . urlencode($token));
     }
 
     if ($newPass !== $confirm) {
         flash('error', 'Passwords do not match.');
-        redirect('/web/public/reset_password.php?token=' . urlencode($token));
+        redirect('reset_password.php?token=' . urlencode($token));
     }
 
     try {
@@ -60,10 +60,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $mark->execute([$token]);
 
         flash('success', 'Password updated successfully! Please log in.');
-        redirect('/web/public/login.php');
+        redirect('login.php');
     } catch (Throwable) {
         flash('error', 'A system error occurred. Please try again.');
-        redirect('/web/public/reset_password.php?token=' . urlencode($token));
+        redirect('reset_password.php?token=' . urlencode($token));
     }
 }
 ?>
@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <div class="w-full max-w-md">
     <div class="text-center mb-8">
-      <a href="/web/public/index.php" class="text-3xl font-extrabold text-emerald-400">3Commas</a>
+      <a href="index.php" class="text-3xl font-extrabold text-emerald-400">3Commas</a>
       <p class="text-slate-400 mt-2">Set a new password</p>
     </div>
 
@@ -94,10 +94,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <?php if (!$valid): ?>
         <div class="text-center">
           <p class="text-red-400 mb-4">This reset link is invalid or has expired.</p>
-          <a href="/web/public/forgot_password.php" class="text-emerald-400 hover:text-emerald-300 transition">Request a new link</a>
+          <a href="forgot_password.php" class="text-emerald-400 hover:text-emerald-300 transition">Request a new link</a>
         </div>
       <?php else: ?>
-        <form method="POST" action="/web/public/reset_password.php?token=<?= urlencode($token) ?>" class="space-y-5">
+        <form method="POST" action="reset_password.php?token=<?= urlencode($token) ?>" class="space-y-5">
           <?= csrf_field() ?>
 
           <div>
@@ -122,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <?php endif; ?>
 
       <p class="text-center text-slate-400 text-sm mt-6">
-        <a href="/web/public/login.php" class="text-emerald-400 hover:text-emerald-300 transition">&larr; Back to Login</a>
+        <a href="login.php" class="text-emerald-400 hover:text-emerald-300 transition">&larr; Back to Login</a>
       </p>
     </div>
   </div>
