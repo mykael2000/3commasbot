@@ -170,7 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
       <?php endif; ?>
 
-      <form method="POST" action="" class="space-y-5">
+      <form method="POST" action="" class="space-y-2">
         <?= csrf_field() ?>
 
         <div>
