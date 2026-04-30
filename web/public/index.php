@@ -156,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="bg-white border border-slate-200 rounded-2xl p-2 shadow-xl shadow-slate-200/60">
       <div class="text-left mb-3">
       
-        <p class="text-2xl font-bold text-slate-900">Sign In</p>
+        <p class="text-2xl font-bold text-slate-900">Welcome back</p>
         <span style="font-size: 12px;" class="block mt-2 text-slate-600">Sign in to manage your trading, portfolios, and automation.</span>
       </div>
       <?php if ($error): ?>
@@ -200,11 +200,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <span>Protected with 2-factor authentication and 256-bit encryption</span>
         </div>
       </form>
-
-      <p class="text-center text-slate-600 text-sm mt-2">
-        New to 3Commas?
-        <a href="register.php" class="text-emerald-600 hover:text-emerald-500 transition font-medium">Create one free</a>
-      </p>
     </div>
   </div>
 <!-- ============================================================
