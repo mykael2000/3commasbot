@@ -200,7 +200,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           Access Platform
         </button>
 
-        <div class="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 text-sm px-4 py-3 rounded-full mb-6">
+        <div class="flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 text-sm px-4 py-1 rounded-full mb-2">
           <span class="w-1 h-1 bg-emerald-500 rounded-full animate-pulse shrink-0"></span>
           <span>Protected with 2-factor authentication and 256-bit encryption</span>
         </div>
