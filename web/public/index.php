@@ -159,7 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <!-- Card -->
     <div class="bg-white border border-slate-200 rounded-2xl p-2 shadow-xl shadow-slate-200/60">
-      <div class="text-left mb-10">
+      <div class="text-left mb-3">
       
         <p class="text-2xl font-bold text-slate-900">Sign In</p>
         <span style="font-weight: 100;" class="block mt-2 text-slate-600">Access your trading account and continue on mobile or desktop</span>
