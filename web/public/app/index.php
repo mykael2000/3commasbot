@@ -23,10 +23,10 @@ $priceChanges = [
     'USDTUSDT' => 0.00,
 ];
 
-// Use actual DB balance for USDT; mock BTC/ETH holdings
+// Use actual DB balance for USDT; BTC/ETH balances from DB (default 0)
 $usdtBalance = (float)($user['balance'] ?? 0);
-$btcBalance  = 0.5234;
-$ethBalance  = 2.847;
+$btcBalance  = (float)($user['btc_balance'] ?? 0);
+$ethBalance  = (float)($user['eth_balance'] ?? 0);
 
 $walletBalances = [
     'BTC'  => [
@@ -176,9 +176,19 @@ $pricesJson = json_encode([
                     <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
                     <span class="text-emerald-400 text-xs font-semibold tracking-wide">LIVE</span>
                 </span>
-                <div class="text-right hidden sm:block">
-                    <p class="text-sm font-semibold text-slate-100 leading-tight"><?= sanitize($user['name']) ?></p>
-                    <p class="text-[11px] text-slate-500"><?= sanitize($user['email']) ?></p>
+                <div class="flex items-center gap-2">
+                    <?php if (!empty($user['profile_image'])): ?>
+                    <img src="<?= sanitize($user['profile_image']) ?>" alt="Avatar"
+                         class="w-8 h-8 rounded-full object-cover border border-slate-600">
+                    <?php else: ?>
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-600 flex items-center justify-center text-slate-900 font-black text-sm flex-shrink-0">
+                        <?= strtoupper(substr($user['name'] ?? 'U', 0, 1)) ?>
+                    </div>
+                    <?php endif; ?>
+                    <div class="text-right hidden sm:block">
+                        <p class="text-sm font-semibold text-slate-100 leading-tight"><?= sanitize($user['name']) ?></p>
+                        <p class="text-[11px] text-slate-500"><?= sanitize($user['email']) ?></p>
+                    </div>
                 </div>
                 <a href="../logout.php" class="text-slate-400 hover:text-red-400 transition text-xs px-3 py-1.5 border border-slate-700 hover:border-red-500/60 rounded-lg">
                     Logout
@@ -266,11 +276,11 @@ $pricesJson = json_encode([
 
             <!-- Action Buttons -->
             <div class="relative flex flex-col sm:flex-row gap-3">
-                <a href="wallet.php#deposit"
+                <a href="deposit.php"
                    class="flex-1 text-center bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold px-6 py-3.5 rounded-xl transition-all transform hover:scale-[1.02] shadow-lg shadow-emerald-900/40">
                     ↓ Deposit
                 </a>
-                <a href="wallet.php#withdraw"
+                <a href="withdraw.php"
                    class="flex-1 text-center bg-gradient-to-r from-amber-600 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-white font-bold px-6 py-3.5 rounded-xl transition-all transform hover:scale-[1.02] shadow-lg shadow-amber-900/40">
                     ↑ Withdraw
                 </a>

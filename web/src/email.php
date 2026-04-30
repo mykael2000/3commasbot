@@ -63,7 +63,7 @@ function send_email(string $to, string $subject, string $htmlBody): bool
 function send_password_reset_email(string $email, string $token, string $name): bool
 {
     $appUrl   = env('APP_URL', 'http://localhost:8000');
-    $resetUrl = $appUrl . '/web/public/reset_password.php?token=' . urlencode($token);
+    $resetUrl = $appUrl . '/reset_password.php?token=' . urlencode($token);
     $subject  = 'Reset Your Password – 3Commas';
     $html = <<<HTML
     <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#0f172a;color:#fff;padding:32px;border-radius:8px;">
@@ -84,7 +84,7 @@ function send_password_reset_email(string $email, string $token, string $name): 
 function send_welcome_email(string $email, string $name): bool
 {
     $appUrl  = env('APP_URL', 'http://localhost:8000');
-    $dashUrl = $appUrl . '/web/public/app/index.php';
+    $dashUrl = $appUrl . '/app/index.php';
     $subject = 'Welcome to 3Commas!';
     $html = <<<HTML
     <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#0f172a;color:#fff;padding:32px;border-radius:8px;">

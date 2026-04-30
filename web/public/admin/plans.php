@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add')
 
     if ($name === '' || $minD <= 0 || $maxD <= 0 || $days <= 0 || $roi <= 0) {
         flash('error', 'All fields are required and must be positive.');
-        redirect('/web/public/admin/plans.php');
+        redirect('/admin/plans.php');
     }
 
     try {
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add')
     } catch (Throwable) {
         flash('error', 'Failed to add plan.');
     }
-    redirect('/web/public/admin/plans.php');
+    redirect('/admin/plans.php');
 }
 
 // Handle Edit
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit'
 
     if ($id <= 0 || $name === '') {
         flash('error', 'Invalid form data.');
-        redirect('/web/public/admin/plans.php');
+        redirect('/admin/plans.php');
     }
 
     try {
@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit'
     } catch (Throwable) {
         flash('error', 'Failed to update plan.');
     }
-    redirect('/web/public/admin/plans.php');
+    redirect('/admin/plans.php');
 }
 
 // Handle Delete
@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delet
     } catch (Throwable) {
         flash('error', 'Failed to delete plan.');
     }
-    redirect('/web/public/admin/plans.php');
+    redirect('/admin/plans.php');
 }
 
 $plans = [];
@@ -110,13 +110,13 @@ if (isset($_GET['edit'])) {
   <aside class="w-64 bg-slate-900 min-h-screen p-4 flex-shrink-0">
     <div class="text-emerald-400 font-bold text-xl mb-8">3Commas Admin</div>
     <nav class="space-y-1">
-      <a href="/web/public/admin/index.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Dashboard</a>
-      <a href="/web/public/admin/plans.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-slate-800 text-emerald-400">Plans</a>
-      <a href="/web/public/admin/addresses.php"   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Addresses</a>
-      <a href="/web/public/admin/withdrawals.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Withdrawals</a>
-      <a href="/web/public/admin/users.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Users</a>
+      <a href="/admin/index.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Dashboard</a>
+      <a href="/admin/plans.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-slate-800 text-emerald-400">Plans</a>
+      <a href="/admin/addresses.php"   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Addresses</a>
+      <a href="/admin/withdrawals.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Withdrawals</a>
+      <a href="/admin/users.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Users</a>
       <hr class="border-slate-700 my-3">
-      <a href="/web/public/logout.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 transition">Logout</a>
+      <a href="/logout.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 transition">Logout</a>
     </nav>
   </aside>
 
@@ -136,7 +136,7 @@ if (isset($_GET['edit'])) {
       <!-- Add / Edit Form -->
       <div class="bg-slate-700 rounded-2xl p-5">
         <h2 class="font-bold text-white mb-4"><?= $editPlan ? 'Edit Plan' : 'Add New Plan' ?></h2>
-        <form method="POST" action="/web/public/admin/plans.php" class="space-y-3">
+        <form method="POST" action="/admin/plans.php" class="space-y-3">
           <?= csrf_field() ?>
           <input type="hidden" name="action" value="<?= $editPlan ? 'edit' : 'add' ?>">
           <?php if ($editPlan): ?>
@@ -191,7 +191,7 @@ if (isset($_GET['edit'])) {
             <?= $editPlan ? 'Update Plan' : 'Add Plan' ?>
           </button>
           <?php if ($editPlan): ?>
-            <a href="/web/public/admin/plans.php" class="block text-center text-slate-400 hover:text-white text-sm mt-1">Cancel</a>
+            <a href="/admin/plans.php" class="block text-center text-slate-400 hover:text-white text-sm mt-1">Cancel</a>
           <?php endif; ?>
         </form>
       </div>
@@ -230,8 +230,8 @@ if (isset($_GET['edit'])) {
                   </span>
                 </td>
                 <td class="px-4 py-3 text-right">
-                  <a href="/web/public/admin/plans.php?edit=<?= (int)$p['id'] ?>" class="text-emerald-400 hover:text-emerald-300 text-xs mr-3">Edit</a>
-                  <form method="POST" action="/web/public/admin/plans.php" class="inline" onsubmit="return confirm('Delete this plan?')">
+                  <a href="/admin/plans.php?edit=<?= (int)$p['id'] ?>" class="text-emerald-400 hover:text-emerald-300 text-xs mr-3">Edit</a>
+                  <form method="POST" action="/admin/plans.php" class="inline" onsubmit="return confirm('Delete this plan?')">
                     <?= csrf_field() ?>
                     <input type="hidden" name="action" value="delete">
                     <input type="hidden" name="id" value="<?= (int)$p['id'] ?>">
