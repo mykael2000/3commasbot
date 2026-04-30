@@ -168,7 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!-- ============================================================
      AUTH SWITCHER
      ============================================================ -->
-<section class="relative py-2 md:py-4">
+<section class="relative py-1 md:py-2">
   <div class="max-w-5xl mx-auto px-4 sm:px-6">
     <div class="bg-white border border-slate-200 rounded-3xl shadow-xl shadow-slate-200/60 overflow-hidden">
       <div class="p-4 sm:p-6 border-b border-slate-200 bg-slate-50/80">
@@ -178,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
       </div>
 
-      <div class="p-4 sm:p-6">
+      <div class="p-2 sm:p-4">
         <?php if ($error): ?>
           <div class="bg-red-500/10 border border-red-500/30 text-red-600 text-sm rounded-lg px-4 py-3 mb-5">
             <?= sanitize($error) ?>
@@ -193,7 +193,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <h2 class="mt-3 text-sm font-bold text-slate-900">Sign in to manage your trading, portfolios, and automation.</h2>
               </div>
 
-              <div class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-6">
+              <div class="bg-white border border-slate-200 rounded-2xl p-2 sm:p-4">
                 <form method="POST" action="" class="space-y-4">
                   <?= csrf_field() ?>
                   <input type="hidden" name="auth_mode" value="signin">
