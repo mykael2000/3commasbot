@@ -157,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="text-left mb-3">
       
         <p class="text-2xl font-bold text-slate-900">Sign In</p>
-        <span style="font-weight: 70;" class="block mt-2 text-slate-600">Sign in to manage your trading, portfolios, and automation.</span>
+        <span style="font-size: 12px;" class="block mt-2 text-slate-600">Sign in to manage your trading, portfolios, and automation.</span>
       </div>
       <?php if ($error): ?>
         <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg px-4 py-1 mb-2">
