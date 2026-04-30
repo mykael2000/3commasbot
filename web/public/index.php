@@ -157,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="text-left mb-3">
       
         <p class="text-2xl font-bold text-slate-900">Sign In</p>
-        <span style="font-weight: 100;" class="block mt-2 text-slate-600">Access your trading account and continue on mobile or desktop</span>
+        <!-- <span style="font-weight: 100;" class="block mt-2 text-slate-600">Access your trading account and continue on mobile or desktop</span> -->
       </div>
       <?php if ($error): ?>
         <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg px-4 py-1 mb-2">
