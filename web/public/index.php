@@ -108,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!-- ============================================================
      HERO
      ============================================================ -->
-<section class="relative overflow-hidden py-20 md:py-32 bg-gradient-to-b from-white via-emerald-50/40 to-white">
+<section class="relative overflow-hidden bg-gradient-to-b from-white via-emerald-50/40 to-white">
   <!-- Background grid decoration -->
   <div class="absolute inset-0 opacity-20">
     <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
@@ -120,12 +120,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <rect width="100%" height="100%" fill="url(#grid)"/>
     </svg>
   </div>
-  <div class="relative max-w-5xl mx-auto px-4 sm:px-6 text-center">
+  <div class="relative mx-auto px-4 sm:px-6 text-center">
     <!-- <div class="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm px-4 py-1.5 rounded-full mb-6">
       <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
       
     </div> -->
-    <h1 class="text-3xl md:text-7xl font-extrabold leading-tight tracking-tight mb-2 text-slate-900">
+    <h1 class="text-3xl md:text-7xl font-bold leading-tight tracking-tight mb-2 text-slate-900">
       Crypto Trading Bots & <br>Automation Platform<br>
       <!-- <span class="text-emerald-400">Crypto Trading</span> -->
     </h1>
@@ -158,14 +158,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="w-[90%] max-w-md items-center justify-center p-2 mx-auto">
 
     <!-- Card -->
-    <div class="bg-white border border-slate-200 rounded-2xl p-8 shadow-xl shadow-slate-200/60">
+    <div class="bg-white border border-slate-200 rounded-2xl p-2 shadow-xl shadow-slate-200/60">
       <div class="text-left mb-10">
       
-        <p class="text-4xl font-bold text-slate-900 mt-2">Sign In</p>
+        <p class="text-4xl font-bold text-slate-900">Sign In</p>
         <span class="block mt-2 text-slate-600">Access your trading account and continue on mobile or desktop</span>
       </div>
       <?php if ($error): ?>
-        <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg px-4 py-3 mb-6">
+        <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg px-4 py-1 mb-2">
           <?= sanitize($error) ?>
         </div>
       <?php endif; ?>
@@ -174,16 +174,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?= csrf_field() ?>
 
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1.5" for="email">Email address</label>
+          <label class="block text-sm font-medium text-slate-700 mb-0.5" for="email">Email address</label>
           <input id="email" type="email" name="email" required autocomplete="email"
-            class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent placeholder-slate-400"
+            class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-1 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent placeholder-slate-400"
             placeholder="you@example.com">
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1.5" for="password">Password</label>
+          <label class="block text-sm font-medium text-slate-700 mb-0.5" for="password">Password</label>
           <input id="password" type="password" name="password" required autocomplete="current-password"
-            class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent placeholder-slate-400"
+            class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-1 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent placeholder-slate-400"
             placeholder="••••••••">
         </div>
 
@@ -201,12 +201,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </button>
 
         <div class="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 text-sm px-4 py-3 rounded-full mb-6">
-          <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shrink-0"></span>
+          <span class="w-1 h-1 bg-emerald-500 rounded-full animate-pulse shrink-0"></span>
           <span>Protected with 2-factor authentication and 256-bit encryption</span>
         </div>
       </form>
 
-      <p class="text-center text-slate-600 text-sm mt-6">
+      <p class="text-center text-slate-600 text-sm mt-2">
         New to 3Commas?
         <a href="register.php" class="text-emerald-600 hover:text-emerald-500 transition font-medium">Create one free</a>
       </p>
@@ -215,7 +215,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!-- ============================================================
      FOOTER
      ============================================================ -->
-<footer class="border-t border-slate-200 bg-slate-50 py-10 mt-8">
+<footer class="border-t border-slate-200 bg-slate-50">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div class="flex items-center gap-3">
