@@ -168,7 +168,7 @@ $pricesJson = json_encode([
                 </a>
                 <div>
                     
-                    <p class="text-[10px] text-slate-500 leading-none">Pro Trading Dashboard</p>
+                    <!-- <p class="text-[10px] text-slate-500 leading-none">Pro Trading Dashboard</p> -->
                 </div>
             </div>
 
