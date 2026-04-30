@@ -11,17 +11,77 @@ if (is_logged_in()) {
 }
 
 $error = get_flash('error');
+$activeAuthTab = $_GET['tab'] ?? 'signin';
+
+if (!in_array($activeAuthTab, ['signin', 'signup'], true)) {
+  $activeAuthTab = 'signin';
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_verify();
 
-    $email    = trim($_POST['email']    ?? '');
-    $password = trim($_POST['password'] ?? '');
-    $remember = !empty($_POST['remember']);
+  $authMode = $_POST['auth_mode'] ?? 'signin';
+
+  if ($authMode === 'signup') {
+    $name     = trim($_POST['name'] ?? '');
+    $email    = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+    $confirm  = $_POST['password_confirm'] ?? '';
+
+    if ($name === '' || $email === '' || $password === '') {
+      flash('error', 'All fields are required.');
+      redirect('index.php?tab=signup');
+    }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+      flash('error', 'Please enter a valid email address.');
+      redirect('index.php?tab=signup');
+    }
+
+    if (strlen($password) < 8) {
+      flash('error', 'Password must be at least 8 characters long.');
+      redirect('index.php?tab=signup');
+    }
+
+    if ($password !== $confirm) {
+      flash('error', 'Passwords do not match.');
+      redirect('index.php?tab=signup');
+    }
+
+    try {
+      $pdo = db();
+
+      $check = $pdo->prepare('SELECT id FROM users WHERE email = ? LIMIT 1');
+      $check->execute([$email]);
+
+      if ($check->fetch()) {
+        flash('error', 'An account with that email already exists.');
+        redirect('index.php?tab=signup');
+      }
+
+      $hashed = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
+      $stmt = $pdo->prepare('INSERT INTO users (name, email, password, role, status, balance) VALUES (?, ?, ?, ?, ?, ?)');
+      $stmt->execute([$name, $email, $hashed, 'user', 'active', 0.0]);
+      $userId = (int) $pdo->lastInsertId();
+
+      $user = $pdo->prepare('SELECT * FROM users WHERE id = ? LIMIT 1');
+      $user->execute([$userId]);
+      login_user($user->fetch());
+
+      redirect('app/index.php');
+    } catch (Throwable $e) {
+      flash('error', 'Registration failed. Please try again.');
+      redirect('index.php?tab=signup');
+    }
+  }
+
+  $email    = trim($_POST['email'] ?? '');
+  $password = trim($_POST['password'] ?? '');
+  $remember = !empty($_POST['remember']);
 
     if ($email === '' || $password === '') {
         flash('error', 'Email and password are required.');
-        redirect('index.php');
+    redirect('index.php?tab=signin');
     }
 
     try {
@@ -31,12 +91,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (!$user || !password_verify($password, $user['password'])) {
             flash('error', 'Invalid email or password.');
-            redirect('index.php');
+      redirect('index.php?tab=signin');
         }
 
         if ($user['status'] === 'disabled') {
             flash('error', 'Your account has been disabled. Please contact support.');
-            redirect('index.php');
+      redirect('index.php?tab=signin');
         }
 
         login_user($user);
@@ -51,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         redirect('app/index.php');
     } catch (Throwable $e) {
         flash('error', 'A system error occurred. Please try again.');
-        redirect('index.php');
+        redirect('index.php?tab=signin');
     }
 }
 ?>
@@ -106,6 +166,122 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </header>
 
 <!-- ============================================================
+     AUTH SWITCHER
+     ============================================================ -->
+<section class="relative py-10 md:py-14">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6">
+    <div class="bg-white border border-slate-200 rounded-3xl shadow-xl shadow-slate-200/60 overflow-hidden">
+      <div class="p-4 sm:p-6 border-b border-slate-200 bg-slate-50/80">
+        <div class="grid grid-cols-2 gap-2 rounded-2xl bg-slate-100 p-1">
+          <button type="button" class="auth-tab-btn rounded-xl px-4 py-3 text-sm font-semibold transition" data-auth-tab="signin">Sign in</button>
+          <button type="button" class="auth-tab-btn rounded-xl px-4 py-3 text-sm font-semibold transition" data-auth-tab="signup">Sign up</button>
+        </div>
+      </div>
+
+      <div class="p-4 sm:p-6">
+        <?php if ($error): ?>
+          <div class="bg-red-500/10 border border-red-500/30 text-red-600 text-sm rounded-lg px-4 py-3 mb-5">
+            <?= sanitize($error) ?>
+          </div>
+        <?php endif; ?>
+
+        <div id="authPanels">
+          <div class="auth-panel" data-auth-panel="signin">
+            <div class="grid lg:grid-cols-2 gap-6 items-stretch">
+              <div class="rounded-2xl bg-gradient-to-br from-emerald-50 to-white border border-slate-200 p-6 lg:p-8">
+                <p class="text-xs font-semibold uppercase tracking-[0.24em] text-emerald-700">Welcome back</p>
+                <h2 class="mt-3 text-sm font-bold text-slate-900">Sign in to manage your trading, portfolios, and automation.</h2>
+              </div>
+
+              <div class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-6">
+                <form method="POST" action="" class="space-y-4">
+                  <?= csrf_field() ?>
+                  <input type="hidden" name="auth_mode" value="signin">
+
+                  <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5" for="signin_email">Email address</label>
+                    <input id="signin_email" type="email" name="email" required autocomplete="email"
+                      class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent placeholder-slate-400"
+                      placeholder="you@example.com">
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5" for="signin_password">Password</label>
+                    <input id="signin_password" type="password" name="password" required autocomplete="current-password"
+                      class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent placeholder-slate-400"
+                      placeholder="••••••••">
+                  </div>
+
+                  <div class="flex items-center justify-between text-sm">
+                    <label class="flex items-center gap-2 text-slate-600 cursor-pointer">
+                      <input type="checkbox" name="remember" class="w-4 h-4 accent-emerald-500">
+                      Remember me
+                    </label>
+                    <a href="forgot_password.php" class="text-emerald-600 hover:text-emerald-500 transition">Forgot password?</a>
+                  </div>
+
+                  <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-500/20 text-base">
+                    Access Platform
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="auth-panel hidden" data-auth-panel="signup">
+            <div class="grid lg:grid-cols-2 gap-6 items-stretch">
+              <div class="rounded-2xl bg-gradient-to-br from-sky-50 to-white border border-slate-200 p-6 lg:p-8">
+                <p class="text-xs font-semibold uppercase tracking-[0.24em] text-sky-700">Get started</p>
+                <h2 class="mt-3 text-sm font-bold text-slate-900">Create your free account and begin trading with automation.</h2>
+              </div>
+
+              <div class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-6">
+                <form method="POST" action="" class="space-y-4">
+                  <?= csrf_field() ?>
+                  <input type="hidden" name="auth_mode" value="signup">
+
+                  <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5" for="signup_name">Full name</label>
+                    <input id="signup_name" type="text" name="name" required autocomplete="name"
+                      class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent placeholder-slate-400"
+                      placeholder="John Doe">
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5" for="signup_email">Email address</label>
+                    <input id="signup_email" type="email" name="email" required autocomplete="email"
+                      class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent placeholder-slate-400"
+                      placeholder="you@example.com">
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5" for="signup_password">Password</label>
+                    <input id="signup_password" type="password" name="password" required autocomplete="new-password"
+                      class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent placeholder-slate-400"
+                      placeholder="Min. 8 characters">
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5" for="signup_password_confirm">Confirm password</label>
+                    <input id="signup_password_confirm" type="password" name="password_confirm" required autocomplete="new-password"
+                      class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent placeholder-slate-400"
+                      placeholder="Repeat password">
+                  </div>
+
+                  <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-500/20 text-base">
+                    Create Account
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
      HERO
      ============================================================ -->
 <section class="relative overflow-hidden bg-gradient-to-b from-white via-emerald-50/40 to-white">
@@ -125,13 +301,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
       
     </div> -->
-    <h1 class="text-3xl md:text-7xl font-bold leading-tight tracking-tight mb-2 text-slate-900">
-      Crypto Trading Bots & <br>Automation Platform<br>
-      <!-- <span class="text-emerald-400">Crypto Trading</span> -->
-    </h1>
-    <p class="text-sm md:text-sm text-slate-600 max-w-3xl mx-auto mb-2">
-      Automate your trading experience to reduce stress and emotional mistakes.
-    </p>
     <!-- Stats row -->
     <!-- <div class="mt-16 grid grid-cols-3 gap-6 max-w-2xl mx-auto">
       <div>
@@ -150,58 +319,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </div>
 </section>
 
-<div class="w-[90%] max-w-md items-center justify-center p-2 mx-auto">
-
-    <!-- Card -->
-    <div class="bg-white border border-slate-200 rounded-2xl p-2 shadow-xl shadow-slate-200/60">
-      <div class="text-left mb-3">
-      
-        <p class="text-2xl font-bold text-slate-900">Welcome back</p>
-        <span style="font-size: 12px;" class="block mt-2 text-slate-600">Sign in to manage your trading, portfolios, and automation.</span>
-      </div>
-      <?php if ($error): ?>
-        <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg px-4 py-1 mb-2">
-          <?= sanitize($error) ?>
-        </div>
-      <?php endif; ?>
-
-      <form method="POST" action="" class="space-y-2">
-        <?= csrf_field() ?>
-
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-0.5" for="email">Email address</label>
-          <input id="email" type="email" name="email" required autocomplete="email"
-            class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-1 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent placeholder-slate-400"
-            placeholder="you@example.com">
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-0.5" for="password">Password</label>
-          <input id="password" type="password" name="password" required autocomplete="current-password"
-            class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-1 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent placeholder-slate-400"
-            placeholder="••••••••">
-        </div>
-
-        <div class="flex items-center justify-between text-sm">
-          <label class="flex items-center gap-2 text-slate-600 cursor-pointer">
-            <input type="checkbox" name="remember" class="w-4 h-4 accent-emerald-500">
-            Remember me
-          </label>
-          <a href="forgot_password.php" class="text-emerald-600 hover:text-emerald-500 transition">Forgot password?</a>
-        </div>
-
-        <button type="submit"
-          class="w-full bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-500/20 text-base">
-          Access Platform
-        </button>
-
-        <div class="flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 text-sm px-4 py-1 rounded-full mb-2">
-          <span class="w-1 h-1 bg-emerald-500 rounded-full animate-pulse shrink-0"></span>
-          <span>Protected with 2-factor authentication and 256-bit encryption</span>
-        </div>
-      </form>
-    </div>
-  </div>
 <!-- ============================================================
      FOOTER
      ============================================================ -->
@@ -222,6 +339,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </footer>
 
 <script>
+  const initialAuthTab = <?= json_encode($activeAuthTab) ?>;
+
+  function setAuthTab(tab) {
+    document.querySelectorAll('[data-auth-panel]').forEach((panel) => {
+      panel.classList.toggle('hidden', panel.dataset.authPanel !== tab);
+    });
+
+    document.querySelectorAll('.auth-tab-btn').forEach((button) => {
+      const isActive = button.dataset.authTab === tab;
+      button.classList.toggle('bg-white', isActive);
+      button.classList.toggle('text-slate-900', isActive);
+      button.classList.toggle('shadow-sm', isActive);
+      button.classList.toggle('text-slate-500', !isActive);
+    });
+  }
+
+  document.querySelectorAll('.auth-tab-btn').forEach((button) => {
+    button.addEventListener('click', () => setAuthTab(button.dataset.authTab));
+  });
+
+  setAuthTab(initialAuthTab);
+
   document.getElementById('mobileMenuBtn').addEventListener('click', () => {
     document.getElementById('mobileMenu').classList.toggle('hidden');
   });
