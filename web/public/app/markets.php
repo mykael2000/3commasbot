@@ -36,7 +36,7 @@ foreach ($symbols as $sym) {
   <main class="max-w-2xl mx-auto py-6 space-y-6">
 
     <!-- Symbol Selector -->
-    <div class="flex gap-2 flex-wrap">
+    <div class="flex gap-2 flex-wrap px-4">
       <?php foreach ($symbols as $sym): ?>
       <a href="markets.php?symbol=<?= urlencode($sym) ?>"
          class="px-3 py-1.5 rounded-lg text-sm font-medium transition
