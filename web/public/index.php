@@ -168,7 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!-- ============================================================
      AUTH SWITCHER
      ============================================================ -->
-<section class="relative py-10 md:py-14">
+<section class="relative py-2 md:py-4">
   <div class="max-w-5xl mx-auto px-4 sm:px-6">
     <div class="bg-white border border-slate-200 rounded-3xl shadow-xl shadow-slate-200/60 overflow-hidden">
       <div class="p-4 sm:p-6 border-b border-slate-200 bg-slate-50/80">
