@@ -119,26 +119,26 @@ $pricesJson = json_encode([
     <style>
         /* ── Premium page background ── */
         body {
-            background: linear-gradient(160deg, #060d1f 0%, #0d1e3b 40%, #0f1e35 100%);
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 55%, #ffffff 100%);
         }
 
         /* ── Balance hero glow ── */
         .card-glow {
-            box-shadow: 0 0 60px rgba(16, 185, 129, 0.15), 0 0 120px rgba(16, 185, 129, 0.05);
+            box-shadow: 0 20px 55px rgba(15, 23, 42, 0.08);
         }
 
         /* ── Glassmorphic stat cards ── */
         .glass-card {
-            background: rgba(15, 23, 42, 0.75);
-            border: 1px solid rgba(255, 255, 255, 0.07);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+            -webkit-box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
         }
 
         /* ── Crypto badge colour variants ── */
-        .crypto-btc  { background: rgba(249,115,22,.12); border: 1px solid rgba(249,115,22,.35); }
-        .crypto-eth  { background: rgba(99,102,241,.12); border: 1px solid rgba(99,102,241,.35); }
-        .crypto-usdt { background: rgba(20,184,166,.12); border: 1px solid rgba(20,184,166,.35); }
+        .crypto-btc  { background: rgba(249,115,22,.08); border: 1px solid rgba(249,115,22,.25); }
+        .crypto-eth  { background: rgba(99,102,241,.08); border: 1px solid rgba(99,102,241,.25); }
+        .crypto-usdt { background: rgba(20,184,166,.08); border: 1px solid rgba(20,184,166,.25); }
 
         /* ── P&L colour helpers ── */
         .pnl-pos { color: #10b981; }
@@ -146,21 +146,21 @@ $pricesJson = json_encode([
 
         /* ── Swap card gradient ── */
         .swap-gradient {
-            background: linear-gradient(145deg, rgba(37,99,235,.18) 0%, rgba(14,165,233,.10) 100%);
-            border: 1px solid rgba(99,162,255,.25);
+            background: linear-gradient(145deg, rgba(239,246,255,1) 0%, rgba(255,255,255,1) 100%);
+            border: 1px solid #e2e8f0;
         }
 
         /* ── Subtle hover lift ── */
         .hover-lift { transition: transform .2s, box-shadow .2s; }
-        .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,.35); }
+        .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 14px 24px rgba(15,23,42,.10); }
     </style>
 </head>
-<body class="text-white min-h-screen pb-28 antialiased">
+<body class="bg-white text-slate-900 min-h-screen pb-28 antialiased">
 
     <!-- ════════════════════════════════════════
          TOP HEADER
     ════════════════════════════════════════ -->
-    <header class="sticky top-0 z-40 bg-slate-950/90 backdrop-blur border-b border-white/5 px-4 py-3">
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 px-4 py-3">
         <div class="flex items-center justify-between max-w-7xl mx-auto">
             <div class="flex items-center gap-3">
                 <a href="index.php" class="flex items-center">
@@ -181,18 +181,18 @@ $pricesJson = json_encode([
                 <div class="flex items-center gap-2">
                     <?php if (!empty($user['profile_image'])): ?>
                     <img src="<?= sanitize($user['profile_image']) ?>" alt="Avatar"
-                         class="w-8 h-8 rounded-full object-cover border border-slate-600">
+                         class="w-8 h-8 rounded-full object-cover border border-slate-300">
                     <?php else: ?>
                     <div class="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-600 flex items-center justify-center text-slate-900 font-black text-sm flex-shrink-0">
                         <?= strtoupper(substr($user['name'] ?? 'U', 0, 1)) ?>
                     </div>
                     <?php endif; ?>
                     <div class="text-right hidden sm:block">
-                        <p class="text-sm font-semibold text-slate-100 leading-tight"><?= sanitize($user['name']) ?></p>
+                        <p class="text-sm font-semibold text-slate-800 leading-tight"><?= sanitize($user['name']) ?></p>
                         <p class="text-[11px] text-slate-500"><?= sanitize($user['email']) ?></p>
                     </div>
                 </div>
-                <a href="../logout.php" class="text-slate-400 hover:text-red-400 transition text-xs px-3 py-1.5 border border-slate-700 hover:border-red-500/60 rounded-lg">
+                <a href="../logout.php" class="text-slate-600 hover:text-red-500 transition text-xs px-3 py-1.5 border border-slate-300 hover:border-red-500/60 rounded-lg">
                     Logout
                 </a>
             </div>
@@ -207,35 +207,35 @@ $pricesJson = json_encode([
             <div class="flex items-center gap-3">
                 <span class="w-2.5 h-2.5 bg-emerald-400 rounded-full animate-pulse flex-shrink-0"></span>
                 <div>
-                    <p class="text-sm font-semibold text-emerald-300">Active Investment Plan</p>
-                    <p class="text-xs text-slate-400"><?= sanitize($activePlan['plan_name']) ?> &bull; <?= number_format((float)$activePlan['roi_percent'], 2) ?>% ROI</p>
+                    <p class="text-sm font-semibold text-emerald-700">Active Investment Plan</p>
+                    <p class="text-xs text-slate-600"><?= sanitize($activePlan['plan_name']) ?> &bull; <?= number_format((float)$activePlan['roi_percent'], 2) ?>% ROI</p>
                 </div>
             </div>
-            <span class="bg-emerald-500/20 text-emerald-400 text-[11px] font-bold px-3 py-1 rounded-full tracking-wide">VERIFIED</span>
+            <span class="bg-emerald-500/10 text-emerald-700 text-[11px] font-bold px-3 py-1 rounded-full tracking-wide">VERIFIED</span>
         </div>
         <?php endif; ?>
 
         <!-- ════════════════════════════════════════
              MAIN BALANCE HERO CARD
         ════════════════════════════════════════ -->
-        <div class="relative overflow-hidden bg-gradient-to-br from-emerald-950/60 via-slate-900/70 to-slate-950/80 border border-emerald-500/25 rounded-3xl p-3 sm:p-4 card-glow">
+        <div class="relative overflow-hidden bg-gradient-to-br from-white via-emerald-50/60 to-sky-50/70 border border-slate-200 rounded-3xl p-3 sm:p-4 card-glow">
             <!-- decorative glow orbs -->
             <div class="absolute -top-16 -right-16 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
             <div class="absolute -bottom-20 -left-20 w-72 h-72 bg-cyan-500/8 rounded-full blur-3xl pointer-events-none"></div>
 
             <div class="relative flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
                 <div>
-                    <p class="text-emerald-300/80 text-xs font-semibold uppercase tracking-widest mb-2">Total Portfolio Balance</p>
-                    <h2 class="text-5xl sm:text-6xl font-black text-white tabular-nums mb-1 leading-none">
+                    <p class="text-emerald-700 text-xs font-semibold uppercase tracking-widest mb-2">Total Portfolio Balance</p>
+                    <h2 class="text-5xl sm:text-6xl font-black text-slate-900 tabular-nums mb-1 leading-none">
                         $<?= number_format($totalBalance, 2) ?>
                     </h2>
-                    <p class="text-emerald-400/70 text-base font-medium">≈ <?= number_format($totalBalance, 2) ?> USDT</p>
+                    <p class="text-emerald-600 text-base font-medium">≈ <?= number_format($totalBalance, 2) ?> USDT</p>
                 </div>
 
                 <div class="flex flex-row sm:flex-col gap-2 sm:items-end">
                     <span class="flex items-center gap-1.5 bg-emerald-500/15 border border-emerald-500/30 px-3 py-1.5 rounded-full">
                         <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
-                        <span class="text-emerald-400 text-xs font-bold tracking-wide">LIVE</span>
+                        <span class="text-emerald-600 text-xs font-bold tracking-wide">LIVE</span>
                     </span>
                     <span class="text-xs text-slate-500">Updated just now</span>
                 </div>
@@ -245,7 +245,7 @@ $pricesJson = json_encode([
             <div class="relative grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2">
                 <!-- Today's P&L -->
                 <div class="glass-card rounded-2xl p-2 hover-lift">
-                    <p class="text-slate-400 text-[11px] font-semibold uppercase tracking-wider mb-2">Today's P&amp;L</p>
+                    <p class="text-slate-500 text-[11px] font-semibold uppercase tracking-wider mb-2">Today's P&amp;L</p>
                     <p class="text-xl sm:text-2xl font-black tabular-nums <?= $todayPnl >= 0 ? 'pnl-pos' : 'pnl-neg' ?>">
                         <?= $todayPnl >= 0 ? '+' : '' ?>$<?= number_format(abs($todayPnl), 2) ?>
                     </p>
@@ -256,21 +256,21 @@ $pricesJson = json_encode([
 
                 <!-- Equity -->
                 <div class="glass-card rounded-2xl p-2 hover-lift">
-                    <p class="text-slate-400 text-[11px] font-semibold uppercase tracking-wider mb-2">Equity</p>
+                    <p class="text-slate-500 text-[11px] font-semibold uppercase tracking-wider mb-2">Equity</p>
                     <p class="text-xl sm:text-2xl font-black tabular-nums text-emerald-400">$<?= number_format($equity, 2) ?></p>
                     <p class="text-xs text-slate-500 mt-1">Account value</p>
                 </div>
 
                 <!-- Margin -->
                 <div class="glass-card rounded-2xl p-2 hover-lift">
-                    <p class="text-slate-400 text-[11px] font-semibold uppercase tracking-wider mb-2">Margin</p>
+                    <p class="text-slate-500 text-[11px] font-semibold uppercase tracking-wider mb-2">Margin</p>
                     <p class="text-xl sm:text-2xl font-black tabular-nums text-blue-400">$<?= number_format($margin, 2) ?></p>
                     <p class="text-xs text-slate-500 mt-1">Available</p>
                 </div>
 
                 <!-- Free Margin -->
                 <div class="glass-card rounded-2xl p-2 hover-lift">
-                    <p class="text-slate-400 text-[11px] font-semibold uppercase tracking-wider mb-2">Free Margin</p>
+                    <p class="text-slate-500 text-[11px] font-semibold uppercase tracking-wider mb-2">Free Margin</p>
                     <p class="text-xl sm:text-2xl font-black tabular-nums text-cyan-400">$<?= number_format($freeMargin, 2) ?></p>
                     <p class="text-xs text-slate-500 mt-1">Usable</p>
                 </div>
@@ -301,7 +301,7 @@ $pricesJson = json_encode([
             <!-- ── Crypto Holdings ── -->
             <div class="lg:col-span-2 glass-card rounded-3xl p-3">
                 <div class="flex items-center justify-between mb-2">
-                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                         <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         Crypto Holdings
                     </h3>
@@ -328,16 +328,16 @@ $pricesJson = json_encode([
                                     <?= $crypto ?>
                                 </div>
                                 <div>
-                                    <p class="font-bold text-white leading-tight"><?= $crypto ?></p>
+                                    <p class="font-bold text-slate-900 leading-tight"><?= $crypto ?></p>
                                     <p class="text-xs text-slate-400"><?= number_format($data['balance'], $decimals) ?> <?= $crypto ?></p>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <p class="font-bold text-white tabular-nums">$<?= number_format($data['value'], 2) ?></p>
+                                <p class="font-bold text-slate-900 tabular-nums">$<?= number_format($data['value'], 2) ?></p>
                                 <p class="text-xs <?= $col['pct'] ?> font-semibold"><?= number_format($pct, 1) ?>%</p>
                             </div>
                         </div>
-                        <div class="w-full bg-slate-800 rounded-full h-1.5">
+                        <div class="w-full bg-slate-200 rounded-full h-1.5">
                             <div class="bg-gradient-to-r <?= $col['bar'] ?> h-1.5 rounded-full transition-all duration-500"
                                  style="width: <?= min(100, $pct) ?>%"></div>
                         </div>
@@ -348,7 +348,7 @@ $pricesJson = json_encode([
 
             <!-- ── Quick Swap ── -->
             <div class="swap-gradient rounded-3xl p-3 flex flex-col">
-                <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
                     <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m10 4v12m0 0l-4-4m4 4l4-4"/></svg>
                     Quick Swap
                 </h3>
@@ -358,9 +358,9 @@ $pricesJson = json_encode([
                     <input type="hidden" name="action" value="swap">
 
                     <div>
-                        <label class="block text-[11px] text-slate-400 font-semibold uppercase tracking-wider mb-1">From</label>
+                        <label class="block text-[11px] text-slate-600 font-semibold uppercase tracking-wider mb-1">From</label>
                         <select name="from_currency" id="swapFrom" required
-                                class="w-full bg-slate-800/70 border border-slate-600/60 text-white rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500/60 text-sm appearance-none cursor-pointer">
+                                class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/60 text-sm appearance-none cursor-pointer">
                             <option value="BTC">₿ BTC – Bitcoin</option>
                             <option value="ETH">Ξ ETH – Ethereum</option>
                             <option value="USDT" selected>$ USDT – Tether</option>
@@ -368,16 +368,16 @@ $pricesJson = json_encode([
                     </div>
 
                     <div>
-                        <label class="block text-[11px] text-slate-400 font-semibold uppercase tracking-wider mb-1">Amount</label>
+                        <label class="block text-[11px] text-slate-600 font-semibold uppercase tracking-wider mb-1">Amount</label>
                         <input type="number" name="amount" id="swapAmount" step="0.00000001" min="0.00000001" required
-                               class="w-full bg-slate-800/70 border border-slate-600/60 text-white rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500/60 text-sm tabular-nums"
+                               class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/60 text-sm tabular-nums"
                                placeholder="0.00">
                     </div>
 
                     <div>
-                        <label class="block text-[11px] text-slate-400 font-semibold uppercase tracking-wider mb-1">To</label>
+                        <label class="block text-[11px] text-slate-600 font-semibold uppercase tracking-wider mb-1">To</label>
                         <select name="to_currency" id="swapTo" required
-                                class="w-full bg-slate-800/70 border border-slate-600/60 text-white rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500/60 text-sm appearance-none cursor-pointer">
+                                class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/60 text-sm appearance-none cursor-pointer">
                             <option value="BTC">₿ BTC – Bitcoin</option>
                             <option value="ETH" selected>Ξ ETH – Ethereum</option>
                             <option value="USDT">$ USDT – Tether</option>
@@ -385,8 +385,8 @@ $pricesJson = json_encode([
                     </div>
 
                     <!-- Live Rate Display -->
-                    <div class="bg-slate-900/60 border border-slate-700/50 rounded-xl p-2 space-y-1" id="rateBox">
-                        <p class="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">Live Exchange Rate</p>
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-2 space-y-1" id="rateBox">
+                        <p class="text-[11px] text-slate-600 font-semibold uppercase tracking-wider">Live Exchange Rate</p>
                         <p class="text-sm font-bold text-blue-300 tabular-nums" id="rateDisplay">— loading —</p>
                         <p class="text-[11px] text-slate-500" id="receiveDisplay"></p>
                     </div>
@@ -398,7 +398,7 @@ $pricesJson = json_encode([
                 </form>
 
                 <?php if ($swapMessage): ?>
-                <div class="mt-2 <?= $swapMessageType === 'success' ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400' : 'bg-red-500/15 border-red-500/40 text-red-400' ?> border rounded-xl px-3 py-2 text-sm flex items-start gap-2">
+                <div class="mt-2 <?= $swapMessageType === 'success' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700' : 'bg-red-500/10 border-red-500/30 text-red-600' ?> border rounded-xl px-3 py-2 text-sm flex items-start gap-2">
                     <span><?= $swapMessageType === 'success' ? '✓' : '✕' ?></span>
                     <span><?= sanitize($swapMessage) ?></span>
                 </div>
@@ -411,11 +411,11 @@ $pricesJson = json_encode([
         ════════════════════════════════════════ -->
         <div class="glass-card rounded-3xl p-3">
             <div class="flex items-center justify-between mb-2">
-                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                     <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                     Live Markets
                 </h3>
-                <a href="markets.php" class="text-emerald-400 text-xs hover:text-emerald-300 transition font-semibold">View All →</a>
+                <a href="markets.php" class="text-emerald-600 text-xs hover:text-emerald-500 transition font-semibold">View All →</a>
             </div>
 
             <div class="grid sm:grid-cols-3 gap-2">
@@ -437,11 +437,11 @@ $pricesJson = json_encode([
                                 <?= $base ?>
                             </div>
                             <div>
-                                <p class="font-bold text-white text-sm leading-tight"><?= $base ?>/USDT</p>
+                                <p class="font-bold text-slate-900 text-sm leading-tight"><?= $base ?>/USDT</p>
                                 <p class="text-[11px] text-slate-500"><?= $m['label'] ?></p>
                             </div>
                         </div>
-                        <span class="flex items-center gap-1 text-[10px] bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 px-2 py-1 rounded-full font-bold">
+                        <span class="flex items-center gap-1 text-[10px] bg-emerald-500/10 text-emerald-700 border border-emerald-500/25 px-2 py-1 rounded-full font-bold">
                             <span class="w-1 h-1 bg-emerald-400 rounded-full animate-pulse"></span>LIVE
                         </span>
                     </div>
@@ -466,11 +466,11 @@ $pricesJson = json_encode([
             <!-- Open Positions -->
             <div class="glass-card rounded-3xl p-3">
                 <div class="flex items-center justify-between mb-2">
-                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                         <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
                         Open Positions
                     </h3>
-                    <a href="trading.php" class="text-emerald-400 text-xs hover:text-emerald-300 transition font-semibold">View All →</a>
+                    <a href="trading.php" class="text-emerald-600 text-xs hover:text-emerald-500 transition font-semibold">View All →</a>
                 </div>
                 <div class="space-y-1">
                     <?php foreach (array_slice($openTrades, 0, 3) as $trade):
@@ -486,7 +486,7 @@ $pricesJson = json_encode([
                         <div class="flex items-center justify-between">
                             <div>
                                 <div class="flex items-center gap-2 mb-1">
-                                    <p class="font-bold text-white text-sm"><?= sanitize($trade['symbol']) ?></p>
+                                    <p class="font-bold text-slate-900 text-sm"><?= sanitize($trade['symbol']) ?></p>
                                     <span class="text-[11px] px-2 py-0.5 rounded-full font-bold <?= $trade['side']==='buy' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400' ?>">
                                         <?= strtoupper($trade['side']) ?>
                                     </span>
@@ -512,8 +512,8 @@ $pricesJson = json_encode([
             <div class="space-y-2 <?= empty($openTrades) ? 'lg:col-span-2 grid lg:grid-cols-2 gap-2 !space-y-0' : '' ?>">
 
                 <!-- Account Status -->
-                <div class="bg-gradient-to-br from-emerald-950/50 via-slate-900/60 to-slate-950/70 border border-emerald-500/20 rounded-3xl p-3">
-                    <h3 class="text-base font-bold text-white mb-2 flex items-center gap-2">
+                <div class="bg-gradient-to-br from-emerald-50 via-white to-slate-50 border border-slate-200 rounded-3xl p-3">
+                    <h3 class="text-base font-bold text-slate-900 mb-2 flex items-center gap-2">
                         <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                         Account Status
                     </h3>
@@ -528,10 +528,10 @@ $pricesJson = json_encode([
                         foreach ($statuses as $s):
                         ?>
                         <div class="flex items-center justify-between py-1">
-                            <span class="text-slate-400 text-sm"><?= $s['label'] ?></span>
+                            <span class="text-slate-600 text-sm"><?= $s['label'] ?></span>
                             <div class="flex items-center gap-1.5">
-                                <span class="w-2 h-2 <?= $s['active'] ? 'bg-emerald-400' : 'bg-slate-600' ?> rounded-full <?= ($s['active'] && $s['pulse']) ? 'animate-pulse' : '' ?>"></span>
-                                <span class="text-xs <?= $s['active'] ? 'text-emerald-400' : 'text-slate-600' ?> font-semibold"><?= $s['active'] ? 'Active' : 'Pending' ?></span>
+                                <span class="w-2 h-2 <?= $s['active'] ? 'bg-emerald-500' : 'bg-slate-400' ?> rounded-full <?= ($s['active'] && $s['pulse']) ? 'animate-pulse' : '' ?>"></span>
+                                <span class="text-xs <?= $s['active'] ? 'text-emerald-600' : 'text-slate-500' ?> font-semibold"><?= $s['active'] ? 'Active' : 'Pending' ?></span>
                             </div>
                         </div>
                         <?php endforeach; ?>
@@ -541,32 +541,32 @@ $pricesJson = json_encode([
                 <!-- Quick Links -->
                 <div class="grid grid-cols-2 gap-2">
                     <a href="profile.php"
-                       class="glass-card hover:border-emerald-500/40 rounded-2xl p-2 text-center transition hover-lift group border border-white/5">
+                       class="glass-card hover:border-emerald-500/40 rounded-2xl p-2 text-center transition hover-lift group border border-slate-200">
                         <div class="w-10 h-10 bg-emerald-500/15 rounded-xl flex items-center justify-center mx-auto mb-1 group-hover:bg-emerald-500/25 transition">
                             <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                         </div>
-                        <p class="text-xs font-bold text-slate-300 group-hover:text-white transition">Profile</p>
+                        <p class="text-xs font-bold text-slate-600 group-hover:text-slate-900 transition">Profile</p>
                     </a>
                     <a href="wallet.php"
-                       class="glass-card hover:border-emerald-500/40 rounded-2xl p-2 text-center transition hover-lift group border border-white/5">
+                       class="glass-card hover:border-emerald-500/40 rounded-2xl p-2 text-center transition hover-lift group border border-slate-200">
                         <div class="w-10 h-10 bg-blue-500/15 rounded-xl flex items-center justify-center mx-auto mb-1 group-hover:bg-blue-500/25 transition">
                             <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
                         </div>
-                        <p class="text-xs font-bold text-slate-300 group-hover:text-white transition">Wallet</p>
+                        <p class="text-xs font-bold text-slate-600 group-hover:text-slate-900 transition">Wallet</p>
                     </a>
                     <a href="trading.php"
-                       class="glass-card hover:border-emerald-500/40 rounded-2xl p-2 text-center transition hover-lift group border border-white/5">
+                       class="glass-card hover:border-emerald-500/40 rounded-2xl p-2 text-center transition hover-lift group border border-slate-200">
                         <div class="w-10 h-10 bg-purple-500/15 rounded-xl flex items-center justify-center mx-auto mb-1 group-hover:bg-purple-500/25 transition">
                             <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
                         </div>
-                        <p class="text-xs font-bold text-slate-300 group-hover:text-white transition">Trade</p>
+                        <p class="text-xs font-bold text-slate-600 group-hover:text-slate-900 transition">Trade</p>
                     </a>
                     <a href="markets.php"
-                       class="glass-card hover:border-emerald-500/40 rounded-2xl p-2 text-center transition hover-lift group border border-white/5">
+                       class="glass-card hover:border-emerald-500/40 rounded-2xl p-2 text-center transition hover-lift group border border-slate-200">
                         <div class="w-10 h-10 bg-amber-500/15 rounded-xl flex items-center justify-center mx-auto mb-1 group-hover:bg-amber-500/25 transition">
                             <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                         </div>
-                        <p class="text-xs font-bold text-slate-300 group-hover:text-white transition">Markets</p>
+                        <p class="text-xs font-bold text-slate-600 group-hover:text-slate-900 transition">Markets</p>
                     </a>
                 </div>
             </div>
@@ -577,7 +577,7 @@ $pricesJson = json_encode([
     <!-- ════════════════════════════════════════
          BOTTOM NAVIGATION (Mobile)
     ════════════════════════════════════════ -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-slate-950/95 backdrop-blur border-t border-white/5 flex justify-around py-1.5 z-50 md:hidden">
+    <nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t border-slate-200 flex justify-around py-1.5 z-50 md:hidden">
         <a href="index.php" class="flex flex-col items-center text-emerald-400 gap-0.5 py-2 px-3">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h-6z"/></svg>
             <span class="text-[10px] font-semibold">Home</span>
@@ -663,3 +663,5 @@ $pricesJson = json_encode([
 
 </body>
 </html>
+
+

@@ -51,78 +51,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <title>Profile – 3Commas</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-900 text-white min-h-screen pb-20">
+<body class="bg-white text-slate-900 min-h-screen pb-20">
 
-  <header class="sticky top-0 z-40 bg-slate-900/95 backdrop-blur border-b border-slate-800 px-4 py-3 flex items-center justify-between">
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 px-4 py-3 flex items-center justify-between">
     <span class="text-xl font-extrabold text-emerald-400">Profile</span>
-    <a href="../logout.php" class="text-red-400 hover:text-red-300 transition text-sm">Logout</a>
+    <a href="../logout.php" class="text-red-500 hover:text-red-600 transition text-sm">Logout</a>
   </header>
 
   <main class="max-w-lg mx-auto px-4 py-6 space-y-6">
 
     <?php if ($error): ?>
-      <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg px-4 py-3"><?= sanitize($error) ?></div>
+      <div class="bg-red-500/10 border border-red-500/30 text-red-600 text-sm rounded-lg px-4 py-3"><?= sanitize($error) ?></div>
     <?php endif; ?>
     <?php if ($success): ?>
-      <div class="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm rounded-lg px-4 py-3"><?= sanitize($success) ?></div>
+      <div class="bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 text-sm rounded-lg px-4 py-3"><?= sanitize($success) ?></div>
     <?php endif; ?>
 
     <!-- User Info -->
-    <div class="bg-slate-800 rounded-2xl p-6">
+    <div class="bg-white border border-slate-200 rounded-2xl p-6">
       <div class="flex items-center gap-4 mb-6">
         <div class="w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center text-2xl font-extrabold text-emerald-400">
           <?= strtoupper(mb_substr($user['name'], 0, 1)) ?>
         </div>
         <div>
-          <h2 class="text-xl font-bold text-white"><?= sanitize($user['name']) ?></h2>
-          <p class="text-slate-400 text-sm"><?= sanitize($user['email']) ?></p>
+          <h2 class="text-xl font-bold text-slate-900"><?= sanitize($user['name']) ?></h2>
+          <p class="text-slate-600 text-sm"><?= sanitize($user['email']) ?></p>
         </div>
       </div>
       <div class="grid grid-cols-2 gap-4 text-sm">
-        <div class="bg-slate-700 rounded-xl p-3">
-          <p class="text-slate-400">Role</p>
-          <p class="font-semibold text-white capitalize mt-0.5"><?= sanitize($user['role']) ?></p>
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3">
+          <p class="text-slate-600">Role</p>
+          <p class="font-semibold text-slate-900 capitalize mt-0.5"><?= sanitize($user['role']) ?></p>
         </div>
-        <div class="bg-slate-700 rounded-xl p-3">
-          <p class="text-slate-400">Status</p>
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3">
+          <p class="text-slate-600">Status</p>
           <p class="font-semibold capitalize mt-0.5 <?= $user['status']==='active' ? 'text-emerald-400' : 'text-red-400' ?>">
             <?= sanitize($user['status']) ?>
           </p>
         </div>
-        <div class="bg-slate-700 rounded-xl p-3">
-          <p class="text-slate-400">Balance</p>
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3">
+          <p class="text-slate-600">Balance</p>
           <p class="font-semibold text-emerald-400 mt-0.5">$<?= number_format((float)$user['balance'], 2) ?></p>
         </div>
-        <div class="bg-slate-700 rounded-xl p-3">
-          <p class="text-slate-400">Member Since</p>
-          <p class="font-semibold text-white mt-0.5"><?= date('M j, Y', strtotime($user['created_at'])) ?></p>
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3">
+          <p class="text-slate-600">Member Since</p>
+          <p class="font-semibold text-slate-900 mt-0.5"><?= date('M j, Y', strtotime($user['created_at'])) ?></p>
         </div>
       </div>
     </div>
 
     <!-- Change Password -->
-    <div class="bg-slate-800 rounded-2xl p-6">
-      <h3 class="font-bold text-white text-lg mb-5">Change Password</h3>
+    <div class="bg-white border border-slate-200 rounded-2xl p-6">
+      <h3 class="font-bold text-slate-900 text-lg mb-5">Change Password</h3>
 
       <form method="POST" action="profile.php" class="space-y-4">
         <?= csrf_field() ?>
 
         <div>
-          <label class="block text-sm text-slate-400 mb-1.5">Current Password</label>
+          <label class="block text-sm text-slate-600 mb-1.5">Current Password</label>
           <input type="password" name="current_password" required autocomplete="current-password"
-            class="w-full bg-slate-700 border border-slate-600 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-slate-500"
+            class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-slate-500"
             placeholder="••••••••">
         </div>
         <div>
-          <label class="block text-sm text-slate-400 mb-1.5">New Password</label>
+          <label class="block text-sm text-slate-600 mb-1.5">New Password</label>
           <input type="password" name="new_password" required autocomplete="new-password"
-            class="w-full bg-slate-700 border border-slate-600 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-slate-500"
+            class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-slate-500"
             placeholder="Min. 8 characters">
         </div>
         <div>
-          <label class="block text-sm text-slate-400 mb-1.5">Confirm New Password</label>
+          <label class="block text-sm text-slate-600 mb-1.5">Confirm New Password</label>
           <input type="password" name="confirm_password" required autocomplete="new-password"
-            class="w-full bg-slate-700 border border-slate-600 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-slate-500"
+            class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-slate-500"
             placeholder="Repeat new password">
         </div>
 
@@ -148,20 +148,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </main>
 
   <!-- Bottom Navigation -->
-  <nav class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-700 flex justify-around py-2 z-50">
-    <a href="index.php" class="flex flex-col items-center text-xs text-slate-400 hover:text-emerald-400 transition gap-1">
+  <nav class="fixed bottom-0 left-0 right-0 bg-white/95 border-t border-slate-200 flex justify-around py-2 z-50">
+    <a href="index.php" class="flex flex-col items-center text-xs text-slate-600 hover:text-emerald-600 transition gap-1">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
       Home
     </a>
-    <a href="markets.php" class="flex flex-col items-center text-xs text-slate-400 hover:text-emerald-400 transition gap-1">
+    <a href="markets.php" class="flex flex-col items-center text-xs text-slate-600 hover:text-emerald-600 transition gap-1">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
       Markets
     </a>
-    <a href="trading.php" class="flex flex-col items-center text-xs text-slate-400 hover:text-emerald-400 transition gap-1">
+    <a href="trading.php" class="flex flex-col items-center text-xs text-slate-600 hover:text-emerald-600 transition gap-1">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
       Trade
     </a>
-    <a href="wallet.php" class="flex flex-col items-center text-xs text-slate-400 hover:text-emerald-400 transition gap-1">
+    <a href="wallet.php" class="flex flex-col items-center text-xs text-slate-600 hover:text-emerald-600 transition gap-1">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
       Wallet
     </a>
@@ -173,3 +173,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 </body>
 </html>
+

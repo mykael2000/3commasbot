@@ -98,9 +98,9 @@ try {
   <title>Demo Trading – 3Commas</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-900 text-white min-h-screen pb-20">
+<body class="bg-white text-slate-900 min-h-screen pb-20">
 
-  <header class="sticky top-0 z-40 bg-slate-900/95 backdrop-blur border-b border-slate-800 px-4 py-3 flex items-center justify-between">
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 px-4 py-3 flex items-center justify-between">
     <span class="text-xl font-extrabold text-emerald-400">Trading</span>
     <span class="bg-yellow-500/20 text-yellow-400 text-xs font-bold px-3 py-1 rounded-full">DEMO – Simulated</span>
   </header>
@@ -108,15 +108,15 @@ try {
   <main class="max-w-lg mx-auto px-4 py-6 space-y-6">
 
     <?php if ($error): ?>
-      <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg px-4 py-3"><?= sanitize($error) ?></div>
+      <div class="bg-red-500/10 border border-red-500/30 text-red-600 text-sm rounded-lg px-4 py-3"><?= sanitize($error) ?></div>
     <?php endif; ?>
     <?php if ($success): ?>
-      <div class="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm rounded-lg px-4 py-3"><?= sanitize($success) ?></div>
+      <div class="bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 text-sm rounded-lg px-4 py-3"><?= sanitize($success) ?></div>
     <?php endif; ?>
 
     <!-- Order Form -->
-    <div class="bg-slate-800 rounded-2xl p-5">
-      <h2 class="font-bold text-white mb-4">Place Demo Order</h2>
+    <div class="bg-white border border-slate-200 rounded-2xl p-5">
+      <h2 class="font-bold text-slate-900 mb-4">Place Demo Order</h2>
 
       <form method="POST" action="trading.php" id="tradeForm" class="space-y-4">
         <?= csrf_field() ?>
@@ -124,9 +124,9 @@ try {
 
         <!-- Symbol -->
         <div>
-          <label class="block text-sm text-slate-400 mb-1.5">Symbol</label>
+          <label class="block text-sm text-slate-600 mb-1.5">Symbol</label>
           <select name="symbol" id="symbolSelect"
-            class="w-full bg-slate-700 border border-slate-600 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
             <?php foreach ($symbols as $sym): ?>
             <option value="<?= $sym ?>" <?= $sym === $selectedSymbol ? 'selected' : '' ?>><?= $sym ?></option>
             <?php endforeach; ?>
@@ -134,8 +134,8 @@ try {
         </div>
 
         <!-- Current Price -->
-        <div class="bg-slate-700 rounded-lg px-4 py-3 flex items-center justify-between">
-          <span class="text-slate-400 text-sm">Current Price</span>
+        <div class="bg-white rounded-lg px-4 py-3 flex items-center justify-between">
+          <span class="text-slate-600 text-sm">Current Price</span>
           <span class="text-emerald-400 font-bold text-lg" id="priceDisplay">
             $<?= number_format($currentPrice, 2) ?>
           </span>
@@ -143,17 +143,17 @@ try {
 
         <!-- Side toggle -->
         <div>
-          <label class="block text-sm text-slate-400 mb-1.5">Side</label>
+          <label class="block text-sm text-slate-600 mb-1.5">Side</label>
           <div class="grid grid-cols-2 gap-2">
             <label class="cursor-pointer">
               <input type="radio" name="side" value="buy" class="sr-only peer" checked>
-              <div class="peer-checked:bg-emerald-500 peer-checked:border-emerald-500 bg-slate-700 border border-slate-600 text-center py-3 rounded-lg font-semibold text-sm transition">
+              <div class="peer-checked:bg-emerald-500 peer-checked:border-emerald-500 bg-white border border-slate-300 text-center py-3 rounded-lg font-semibold text-sm transition">
                 Buy / Long
               </div>
             </label>
             <label class="cursor-pointer">
               <input type="radio" name="side" value="sell" class="sr-only peer">
-              <div class="peer-checked:bg-red-500 peer-checked:border-red-500 bg-slate-700 border border-slate-600 text-center py-3 rounded-lg font-semibold text-sm transition">
+              <div class="peer-checked:bg-red-500 peer-checked:border-red-500 bg-white border border-slate-300 text-center py-3 rounded-lg font-semibold text-sm transition">
                 Sell / Short
               </div>
             </label>
@@ -162,9 +162,9 @@ try {
 
         <!-- Quantity -->
         <div>
-          <label class="block text-sm text-slate-400 mb-1.5">Quantity</label>
+          <label class="block text-sm text-slate-600 mb-1.5">Quantity</label>
           <input type="number" name="qty" min="0.00001" step="0.00001" value="0.001" required
-            class="w-full bg-slate-700 border border-slate-600 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
         </div>
 
         <button type="submit"
@@ -176,9 +176,9 @@ try {
 
     <!-- Open Positions -->
     <?php if (!empty($openTrades)): ?>
-    <div class="bg-slate-800 rounded-2xl overflow-hidden">
-      <div class="px-5 py-4 border-b border-slate-700">
-        <h2 class="font-bold text-white">Open Positions</h2>
+    <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-200">
+        <h2 class="font-bold text-slate-900">Open Positions</h2>
       </div>
       <?php foreach ($openTrades as $trade): ?>
       <?php
@@ -188,14 +188,14 @@ try {
             : ((float)$trade['price_open'] - $cp) * (float)$trade['qty'];
         $pnlClass = $pnl >= 0 ? 'text-emerald-400' : 'text-red-400';
       ?>
-      <div class="px-5 py-4 border-b border-slate-700 last:border-0">
+      <div class="px-5 py-4 border-b border-slate-200 last:border-0">
         <div class="flex items-start justify-between">
           <div>
-            <span class="font-semibold text-white"><?= sanitize($trade['symbol']) ?></span>
-            <span class="ml-2 text-xs px-2 py-0.5 rounded <?= $trade['side']==='buy' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400' ?>">
+            <span class="font-semibold text-slate-900"><?= sanitize($trade['symbol']) ?></span>
+            <span class="ml-2 text-xs px-2 py-0.5 rounded <?= $trade['side']==='buy' ? 'bg-emerald-500/10 text-emerald-700' : 'bg-red-500/20 text-red-400' ?>">
               <?= strtoupper($trade['side']) ?>
             </span>
-            <div class="text-slate-400 text-xs mt-1">
+            <div class="text-slate-600 text-xs mt-1">
               Open: $<?= number_format((float)$trade['price_open'], 2) ?> &middot;
               Qty: <?= (float)$trade['qty'] ?> &middot;
               Now: $<?= number_format($cp, 2) ?>
@@ -220,20 +220,20 @@ try {
       <?php endforeach; ?>
     </div>
     <?php else: ?>
-    <div class="bg-slate-800 rounded-2xl p-8 text-center">
-      <p class="text-slate-400">No open positions. Place a demo order above!</p>
+    <div class="bg-white border border-slate-200 rounded-2xl p-8 text-center">
+      <p class="text-slate-600">No open positions. Place a demo order above!</p>
     </div>
     <?php endif; ?>
 
   </main>
 
   <!-- Bottom Navigation -->
-  <nav class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-700 flex justify-around py-2 z-50">
-    <a href="index.php" class="flex flex-col items-center text-xs text-slate-400 hover:text-emerald-400 transition gap-1">
+  <nav class="fixed bottom-0 left-0 right-0 bg-white/95 border-t border-slate-200 flex justify-around py-2 z-50">
+    <a href="index.php" class="flex flex-col items-center text-xs text-slate-600 hover:text-emerald-600 transition gap-1">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
       Home
     </a>
-    <a href="markets.php" class="flex flex-col items-center text-xs text-slate-400 hover:text-emerald-400 transition gap-1">
+    <a href="markets.php" class="flex flex-col items-center text-xs text-slate-600 hover:text-emerald-600 transition gap-1">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
       Markets
     </a>
@@ -241,11 +241,11 @@ try {
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
       Trade
     </a>
-    <a href="wallet.php" class="flex flex-col items-center text-xs text-slate-400 hover:text-emerald-400 transition gap-1">
+    <a href="wallet.php" class="flex flex-col items-center text-xs text-slate-600 hover:text-emerald-600 transition gap-1">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
       Wallet
     </a>
-    <a href="profile.php" class="flex flex-col items-center text-xs text-slate-400 hover:text-emerald-400 transition gap-1">
+    <a href="profile.php" class="flex flex-col items-center text-xs text-slate-600 hover:text-emerald-600 transition gap-1">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
       Profile
     </a>
@@ -271,3 +271,4 @@ try {
 
 </body>
 </html>
+
