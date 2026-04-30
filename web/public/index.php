@@ -229,13 +229,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
 
           <div class="auth-panel hidden" data-auth-panel="signup">
-            <div class="grid lg:grid-cols-2 gap-6 items-stretch">
-              <div class="rounded-2xl bg-gradient-to-br from-sky-50 to-white border border-slate-200 p-6 lg:p-8">
+            <div class="grid lg:grid-cols-2 gap-2 items-stretch">
+              <div class="rounded-2xl bg-gradient-to-br from-sky-50 to-white border border-slate-200 p-2 lg:p-4">
                 <p class="text-xs font-semibold uppercase tracking-[0.24em] text-sky-700">Get started</p>
                 <h2 class="mt-3 text-sm font-bold text-slate-900">Create your free account and begin trading with automation.</h2>
               </div>
 
-              <div class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-6">
+              <div class="bg-white border border-slate-200 rounded-2xl p-2 sm:p-4">
                 <form method="POST" action="" class="space-y-4">
                   <?= csrf_field() ?>
                   <input type="hidden" name="auth_mode" value="signup">
