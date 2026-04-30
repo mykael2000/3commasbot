@@ -129,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       Crypto Trading Bots & <br>Automation Platform<br>
       <!-- <span class="text-emerald-400">Crypto Trading</span> -->
     </h1>
-    <p class="text-lg md:text-2xl text-slate-600 max-w-3xl mx-auto mb-4">
+    <p class="text-sm md:text-sm text-slate-600 max-w-3xl mx-auto mb-2">
       Automate your trading experience to reduce stress and emotional mistakes.
     </p>
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
@@ -162,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="text-left mb-10">
       
         <p class="text-2xl font-bold text-slate-900">Sign In</p>
-        <span class="block mt-2 text-slate-600">Access your trading account and continue on mobile or desktop</span>
+        <span style="font-weight: 100;" class="block mt-2 text-slate-600">Access your trading account and continue on mobile or desktop</span>
       </div>
       <?php if ($error): ?>
         <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg px-4 py-1 mb-2">
