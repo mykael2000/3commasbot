@@ -187,8 +187,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div id="authPanels">
           <div class="auth-panel" data-auth-panel="signin">
-            <div class="grid lg:grid-cols-2 gap-6 items-stretch">
-              <div class="rounded-2xl bg-gradient-to-br from-emerald-50 to-white border border-slate-200 p-6 lg:p-8">
+            <div class="grid lg:grid-cols-2 gap-2 items-stretch">
+              <div class="rounded-2xl bg-gradient-to-br from-emerald-50 to-white border border-slate-200 p-2 lg:p-4">
                 <p class="text-xs font-semibold uppercase tracking-[0.24em] text-emerald-700">Welcome back</p>
                 <h2 class="mt-3 text-sm font-bold text-slate-900">Sign in to manage your trading, portfolios, and automation.</h2>
               </div>
