@@ -134,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
   </script>
 </head>
-<body class="bg-white text-slate-900 antialiased">
+<body class="bg-white text-slate-900 antialiased min-h-screen flex flex-col">
 
 <!-- ============================================================
      NAVBAR
@@ -165,17 +165,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!-- ============================================================
      AUTH SWITCHER
      ============================================================ -->
-<section class="py-3 md:py-4 min-h-100vh] flex items-center">
-  <div class="w-full max-w-2xl mx-auto px-4 sm:px-6">
+<section class="py-3 md:py-4 lg:py-5 min-h-[calc(100vh-8.5rem)] flex items-center">
+  <div class="w-full max-w-6xl mx-auto px-4 sm:px-6">
     <div class="bg-white border border-slate-200 rounded-3xl shadow-xl shadow-slate-200/60 overflow-hidden">
-      <div class="p-4 sm:p-6 border-b border-slate-200 bg-slate-50/80">
+      <div class="p-4 sm:p-6 lg:p-7 border-b border-slate-200 bg-slate-50/80">
         <div class="grid grid-cols-2 gap-2 rounded-2xl bg-slate-100 p-1">
-          <button type="button" class="auth-tab-btn rounded-xl px-4 py-3 text-sm font-semibold transition" data-auth-tab="signin">Sign in</button>
-          <button type="button" class="auth-tab-btn rounded-xl px-4 py-3 text-sm font-semibold transition" data-auth-tab="signup">Sign up</button>
+          <button type="button" class="auth-tab-btn rounded-xl px-4 py-3 lg:py-3.5 text-sm lg:text-base font-semibold transition" data-auth-tab="signin">Sign in</button>
+          <button type="button" class="auth-tab-btn rounded-xl px-4 py-3 lg:py-3.5 text-sm lg:text-base font-semibold transition" data-auth-tab="signup">Sign up</button>
         </div>
       </div>
 
-      <div class="p-2 sm:p-4">
+      <div class="p-2 sm:p-4 lg:p-6">
         <?php if ($error): ?>
           <div class="bg-red-500/10 border border-red-500/30 text-red-600 text-sm rounded-lg px-4 py-3 mb-5">
             <?= sanitize($error) ?>
@@ -185,12 +185,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div id="authPanels">
           <div class="auth-panel" data-auth-panel="signin">
             <div class="grid lg:grid-cols-2 gap-2 items-stretch">
-              <div class="rounded-2xl bg-gradient-to-br from-emerald-50 to-white border border-slate-200 p-2 lg:p-4">
+              <div class="rounded-2xl bg-gradient-to-br from-emerald-50 to-white border border-slate-200 p-2 lg:p-6">
                 <p class="text-xs font-semibold uppercase tracking-[0.24em] text-emerald-700">Welcome back</p>
-                <h2 class="mt-3 text-sm font-bold text-slate-900">Sign in to manage your trading, portfolios, and automation.</h2>
+                <h2 class="mt-3 text-sm lg:text-base font-bold text-slate-900">Sign in to manage your trading, portfolios, and automation.</h2>
               </div>
 
-              <div class="bg-white border border-slate-200 rounded-2xl p-2 sm:p-4">
+              <div class="bg-white border border-slate-200 rounded-2xl p-2 sm:p-4 lg:p-6">
                 <form method="POST" action="" class="space-y-4">
                   <?= csrf_field() ?>
                   <input type="hidden" name="auth_mode" value="signin">
@@ -227,12 +227,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
           <div class="auth-panel hidden" data-auth-panel="signup">
             <div class="grid lg:grid-cols-2 gap-2 items-stretch">
-              <div class="rounded-2xl bg-gradient-to-br from-sky-50 to-white border border-slate-200 p-2 lg:p-4">
+              <div class="rounded-2xl bg-gradient-to-br from-sky-50 to-white border border-slate-200 p-2 lg:p-6">
                 <p class="text-xs font-semibold uppercase tracking-[0.24em] text-sky-700">Get started</p>
-                <h2 class="mt-3 text-sm font-bold text-slate-900">Create your free account and begin trading with automation.</h2>
+                <h2 class="mt-3 text-sm lg:text-base font-bold text-slate-900">Create your free account and begin trading with automation.</h2>
               </div>
 
-              <div class="bg-white border border-slate-200 rounded-2xl p-2 sm:p-4">
+              <div class="bg-white border border-slate-200 rounded-2xl p-2 sm:p-4 lg:p-6">
                 <form method="POST" action="" class="space-y-4">
                   <?= csrf_field() ?>
                   <input type="hidden" name="auth_mode" value="signup">
