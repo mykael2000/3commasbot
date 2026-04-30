@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'updat
 
     if ($id <= 0 || !$status) {
         flash('error', 'Invalid request.');
-        redirect('/web/public/admin/withdrawals.php');
+        redirect('/admin/withdrawals.php');
     }
 
     try {
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'updat
     } catch (Throwable) {
         flash('error', 'Failed to update withdrawal.');
     }
-    redirect('/web/public/admin/withdrawals.php');
+    redirect('/admin/withdrawals.php');
 }
 
 $withdrawals = [];
@@ -77,13 +77,13 @@ try {
   <aside class="w-64 bg-slate-900 min-h-screen p-4 flex-shrink-0">
     <div class="text-emerald-400 font-bold text-xl mb-8">3Commas Admin</div>
     <nav class="space-y-1">
-      <a href="/web/public/admin/index.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Dashboard</a>
-      <a href="/web/public/admin/plans.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Plans</a>
-      <a href="/web/public/admin/addresses.php"   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Addresses</a>
-      <a href="/web/public/admin/withdrawals.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-slate-800 text-emerald-400">Withdrawals</a>
-      <a href="/web/public/admin/users.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Users</a>
+      <a href="/admin/index.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Dashboard</a>
+      <a href="/admin/plans.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Plans</a>
+      <a href="/admin/addresses.php"   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Addresses</a>
+      <a href="/admin/withdrawals.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-slate-800 text-emerald-400">Withdrawals</a>
+      <a href="/admin/users.php"       class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Users</a>
       <hr class="border-slate-700 my-3">
-      <a href="/web/public/logout.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 transition">Logout</a>
+      <a href="/logout.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 transition">Logout</a>
     </nav>
   </aside>
 
@@ -139,7 +139,7 @@ try {
               <td class="px-4 py-3">
                 <?php if ($w['status'] === 'pending'): ?>
                 <div class="flex flex-col gap-2 items-end">
-                  <form method="POST" action="/web/public/admin/withdrawals.php" class="flex flex-col gap-1 w-48">
+                  <form method="POST" action="/admin/withdrawals.php" class="flex flex-col gap-1 w-48">
                     <?= csrf_field() ?>
                     <input type="hidden" name="action" value="update">
                     <input type="hidden" name="id" value="<?= (int)$w['id'] ?>">
