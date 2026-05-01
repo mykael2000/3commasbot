@@ -124,3 +124,23 @@ function send_withdrawal_status_email(
     HTML;
     return send_email($email, $subject, $html);
 }
+
+function send_security_otp_email(string $email, string $name, string $otpCode, string $actionLabel = 'security action'): bool
+{
+        $safeAction = htmlspecialchars($actionLabel, ENT_QUOTES, 'UTF-8');
+        $subject = 'Your Security OTP Code - 3Commas';
+        $html = <<<HTML
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#0f172a;color:#fff;padding:32px;border-radius:8px;">
+            <h2 style="color:#10b981;">Security Verification Code</h2>
+            <p>Hi {$name},</p>
+            <p>Use this one-time code to confirm your {$safeAction}:</p>
+            <p style="text-align:center;margin:24px 0;">
+                <span style="display:inline-block;background:#111827;border:1px solid #334155;color:#10b981;padding:12px 22px;border-radius:8px;font-size:28px;font-weight:bold;letter-spacing:6px;">{$otpCode}</span>
+            </p>
+            <p>This code expires in 10 minutes. If you did not initiate this request, secure your account immediately.</p>
+            <hr style="border-color:#334155;margin:24px 0;">
+            <p style="font-size:12px;color:#64748b;">3Commas Platform - Automated Crypto Trading</p>
+        </div>
+        HTML;
+        return send_email($email, $subject, $html);
+}

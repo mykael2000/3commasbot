@@ -74,23 +74,9 @@ try {
 </head>
 <body class="bg-slate-800 text-white min-h-screen">
 <div class="flex min-h-screen">
-  <aside class="w-64 bg-slate-900 min-h-screen p-4 flex-shrink-0">
-    <div class="text-emerald-400 font-bold text-xl mb-8">3Commas Admin</div>
-    <nav class="space-y-1">
-      <a href="/admin/index.php"         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Dashboard</a>
-      <a href="/admin/plans.php"         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Plans</a>
-      <a href="/admin/subscriptions.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Subscriptions</a>
-      <a href="/admin/addresses.php"     class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Addresses</a>
-      <a href="/admin/withdrawals.php"   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-slate-800 text-emerald-400">Withdrawals</a>
-      <a href="/admin/kyc.php"           class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">KYC Review</a>
-      <a href="/admin/documents.php"     class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Documents</a>
-      <a href="/admin/users.php"         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">Users</a>
-      <hr class="border-slate-700 my-3">
-      <a href="/logout.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 transition">Logout</a>
-    </nav>
-  </aside>
+  <?php include __DIR__ . '/_sidebar.php'; ?>
 
-  <main class="flex-1 bg-slate-800 p-6">
+  <main class="flex-1 bg-slate-800 p-4 sm:p-6 lg:p-8 pt-20 lg:pt-8">
     <h1 class="text-2xl font-bold text-white mb-6">Withdrawal Requests</h1>
 
     <?php if ($error): ?>

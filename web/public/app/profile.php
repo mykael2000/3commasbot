@@ -2,70 +2,12 @@
 declare(strict_types=1);
 require_once __DIR__ . '/../../src/config.php';
 require_once __DIR__ . '/../../src/auth.php';
-require_once __DIR__ . '/../../src/csrf.php';
 require_once __DIR__ . '/../../src/helpers.php';
 
 require_login();
 $user    = current_user();
 $error   = get_flash('error');
 $success = get_flash('success');
-
-// ── Handle personal info update ─────────────────────────────────────────────
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'update_info') {
-    csrf_verify();
-    $name    = trim($_POST['name']    ?? '');
-    $phone   = trim($_POST['phone']   ?? '');
-    $country = trim($_POST['country'] ?? '');
-    $address = trim($_POST['address'] ?? '');
-
-    if ($name === '') {
-        flash('error', 'Name is required.');
-        redirect('profile.php');
-    }
-
-    try {
-        db()->prepare(
-            'UPDATE users SET name = ?, phone = ?, country = ?, address = ? WHERE id = ?'
-        )->execute([$name, $phone ?: null, $country ?: null, $address ?: null, $user['id']]);
-        $_SESSION['name'] = $name;
-        flash('success', 'Personal information updated.');
-    } catch (Throwable) {
-        flash('error', 'Failed to update information. Please try again.');
-    }
-    redirect('profile.php');
-}
-
-// ── Handle password change ───────────────────────────────────────────────────
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'change_password') {
-    csrf_verify();
-    $currentPw = $_POST['current_password'] ?? '';
-    $newPw     = $_POST['new_password']     ?? '';
-    $confirm   = $_POST['confirm_password'] ?? '';
-
-    if (!password_verify($currentPw, $user['password'])) {
-        flash('error', 'Current password is incorrect.');
-        redirect('profile.php');
-    }
-    if (strlen($newPw) < 8) {
-        flash('error', 'New password must be at least 8 characters.');
-        redirect('profile.php');
-    }
-    if ($newPw !== $confirm) {
-        flash('error', 'Passwords do not match.');
-        redirect('profile.php');
-    }
-    try {
-        db()->prepare('UPDATE users SET password = ? WHERE id = ?')
-             ->execute([password_hash($newPw, PASSWORD_BCRYPT, ['cost' => 12]), $user['id']]);
-        flash('success', 'Password updated successfully.');
-    } catch (Throwable) {
-        flash('error', 'Failed to update password. Please try again.');
-    }
-    redirect('profile.php');
-}
-
-// Reload fresh user data after any POST
-$user = current_user();
 
 // Fetch KYC status
 $kyc = null;
@@ -202,7 +144,7 @@ $kycColor = match($kycStatus) {
         <p class="text-xs text-slate-500 mt-0.5">Chat with us</p>
       </button>
 
-      <a href="#settings" class="bg-white border border-slate-200 rounded-2xl p-4 hover:border-emerald-300 hover:shadow-sm transition group">
+      <a href="settings.php" class="bg-white border border-slate-200 rounded-2xl p-4 hover:border-emerald-300 hover:shadow-sm transition group">
         <div class="w-9 h-9 bg-slate-100 rounded-xl flex items-center justify-center mb-3 group-hover:bg-slate-200 transition">
           <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
         </div>
@@ -211,86 +153,6 @@ $kycColor = match($kycStatus) {
       </a>
 
     </div>
-
-    <!-- ── Personal Info Edit ──────────────────────────────────────── -->
-    <div id="personal-info" class="bg-white border border-slate-200 rounded-2xl p-6 scroll-mt-20">
-      <h3 class="font-bold text-slate-900 text-lg mb-5">Personal Information</h3>
-      <form method="POST" action="profile.php" class="space-y-4">
-        <?= csrf_field() ?>
-        <input type="hidden" name="action" value="update_info">
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm text-slate-600 mb-1.5">Full Name <span class="text-red-500">*</span></label>
-            <input type="text" name="name" required value="<?= sanitize($user['name']) ?>"
-              class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-slate-400">
-          </div>
-          <div>
-            <label class="block text-sm text-slate-600 mb-1.5">Email <span class="text-slate-400 text-xs">(cannot change)</span></label>
-            <input type="email" value="<?= sanitize($user['email']) ?>" disabled
-              class="w-full bg-slate-50 border border-slate-200 text-slate-500 rounded-lg px-4 py-3 cursor-not-allowed">
-          </div>
-          <div>
-            <label class="block text-sm text-slate-600 mb-1.5">Phone</label>
-            <input type="tel" name="phone" value="<?= sanitize($user['phone'] ?? '') ?>"
-              placeholder="+1 234 567 8900"
-              class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-slate-400">
-          </div>
-          <div>
-            <label class="block text-sm text-slate-600 mb-1.5">Country</label>
-            <input type="text" name="country" value="<?= sanitize($user['country'] ?? '') ?>"
-              placeholder="e.g. United States"
-              class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-slate-400">
-          </div>
-        </div>
-        <div>
-          <label class="block text-sm text-slate-600 mb-1.5">Address</label>
-          <textarea name="address" rows="2" placeholder="Street, City, Postal Code"
-            class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-slate-400 resize-none"><?= sanitize($user['address'] ?? '') ?></textarea>
-        </div>
-
-        <button type="submit"
-          class="bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-3 px-6 rounded-xl transition">
-          Save Changes
-        </button>
-      </form>
-    </div>
-
-    <!-- ── Settings / Password ─────────────────────────────────────── -->
-    <div id="settings" class="bg-white border border-slate-200 rounded-2xl p-6 scroll-mt-20">
-      <h3 class="font-bold text-slate-900 text-lg mb-5">Change Password</h3>
-      <form method="POST" action="profile.php" class="space-y-4">
-        <?= csrf_field() ?>
-        <input type="hidden" name="action" value="change_password">
-
-        <div>
-          <label class="block text-sm text-slate-600 mb-1.5">Current Password</label>
-          <input type="password" name="current_password" required autocomplete="current-password"
-            class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-slate-400"
-            placeholder="••••••••">
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm text-slate-600 mb-1.5">New Password</label>
-            <input type="password" name="new_password" required autocomplete="new-password"
-              class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-slate-400"
-              placeholder="Min. 8 characters">
-          </div>
-          <div>
-            <label class="block text-sm text-slate-600 mb-1.5">Confirm Password</label>
-            <input type="password" name="confirm_password" required autocomplete="new-password"
-              class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-slate-400"
-              placeholder="Repeat new password">
-          </div>
-        </div>
-
-        <button type="submit"
-          class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 px-6 rounded-xl transition">
-          Update Password
-        </button>
-      </form>
-    </div>
-
   </main>
 
   <!-- Support Modal -->

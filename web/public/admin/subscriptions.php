@@ -120,7 +120,7 @@ if ($selectedId > 0) {
 <div class="flex min-h-screen">
   <?php include __DIR__ . '/_sidebar.php'; ?>
 
-  <main class="flex-1 bg-slate-800 p-6">
+  <main class="flex-1 bg-slate-800 p-4 sm:p-6 lg:p-8 pt-20 lg:pt-8">
     <h1 class="text-2xl font-bold text-white mb-2">VIP Subscriptions</h1>
 
     <?php if ($error): ?>
