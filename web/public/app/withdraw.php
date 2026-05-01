@@ -10,11 +10,26 @@ $user    = current_user();
 $error   = get_flash('error');
 $success = get_flash('success');
 
-// Balances from DB
+// Fetch live prices for all non-USDT coins (for USD chip conversion)
+$prices = [];
+foreach (['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT'] as $sym) {
+    $prices[$sym] = price_for_symbol($sym);
+}
+$pricesJson = json_encode([
+    'USDT' => 1.0,
+    'BTC'  => $prices['BTCUSDT'],
+    'ETH'  => $prices['ETHUSDT'],
+    'BNB'  => $prices['BNBUSDT'],
+    'SOL'  => $prices['SOLUSDT'],
+], JSON_THROW_ON_ERROR);
+
+// Balances from DB (all 5 coins)
 $balances = [
     'USDT' => (float)($user['balance']     ?? 0),
     'BTC'  => (float)($user['btc_balance'] ?? 0),
     'ETH'  => (float)($user['eth_balance'] ?? 0),
+    'BNB'  => (float)($user['bnb_balance'] ?? 0),
+    'SOL'  => (float)($user['sol_balance'] ?? 0),
 ];
 
 // Handle Withdrawal Request submission
@@ -24,6 +39,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $method  = trim($_POST['withdraw_method'] ?? ''); // 'bank' or 'crypto'
     $asset   = strtoupper(trim($_POST['asset_ticker'] ?? 'USDT'));
     $amount  = (float)($_POST['amount'] ?? 0);
+
+    // Bank withdrawals are USDT only
+    if ($method === 'bank' && $asset !== 'USDT') {
+        flash('error', 'Bank withdrawals are only available for USDT.');
+        redirect('withdraw.php');
+    }
 
     if ($amount <= 0) {
         flash('error', 'Please enter a valid amount greater than zero.');
@@ -86,7 +107,7 @@ try {
   <title>Withdraw – 3Commas</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-white text-slate-900 min-h-screen pb-20">
+<body class="bg-white text-slate-900 min-h-screen pb-20 md:pb-4">
 
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 px-4 py-3 flex items-center justify-between">
     <div class="flex items-center gap-3">
@@ -150,6 +171,8 @@ try {
             <option value="USDT">USDT – Tether (Available: $<?= number_format($balances['USDT'], 2) ?>)</option>
             <option value="BTC">BTC – Bitcoin (Available: <?= number_format($balances['BTC'], 8) ?> BTC)</option>
             <option value="ETH">ETH – Ethereum (Available: <?= number_format($balances['ETH'], 8) ?> ETH)</option>
+            <option value="BNB">BNB – Binance Coin (Available: <?= number_format($balances['BNB'], 8) ?> BNB)</option>
+            <option value="SOL">SOL – Solana (Available: <?= number_format($balances['SOL'], 8) ?> SOL)</option>
           </select>
         </div>
 
@@ -250,41 +273,22 @@ try {
 
   </main>
 
-  <!-- Bottom Navigation -->
-  <nav class="fixed bottom-0 left-0 right-0 bg-white/95 border-t border-slate-200 flex justify-around py-2 z-50">
-    <a href="index.php" class="flex flex-col items-center text-xs text-slate-600 hover:text-emerald-600 transition gap-1">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-      Home
-    </a>
-    <a href="markets.php" class="flex flex-col items-center text-xs text-slate-600 hover:text-emerald-600 transition gap-1">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
-      Markets
-    </a>
-    <a href="trading.php" class="flex flex-col items-center text-xs text-slate-600 hover:text-emerald-600 transition gap-1">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-      Trade
-    </a>
-    <a href="wallet.php" class="flex flex-col items-center text-xs text-slate-600 hover:text-emerald-600 transition gap-1">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-      Wallet
-    </a>
-    <a href="profile.php" class="flex flex-col items-center text-xs text-slate-600 hover:text-emerald-600 transition gap-1">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-      Profile
-    </a>
-  </nav>
+  <!-- Navigation -->
+  <?php $activePage = 'withdraw.php'; include '_nav.php'; ?>
 
 <script>
 const BALANCES = <?= json_encode($balances, JSON_THROW_ON_ERROR) ?>;
+const PRICES   = <?= $pricesJson ?>;
 
 function selectMethod(method) {
     document.getElementById('withdrawMethod').value = method;
     document.getElementById('withdrawForm').classList.remove('hidden');
 
-    const btnBank   = document.getElementById('btnBank');
-    const btnCrypto = document.getElementById('btnCrypto');
+    const btnBank      = document.getElementById('btnBank');
+    const btnCrypto    = document.getElementById('btnCrypto');
     const bankFields   = document.getElementById('bankFields');
     const cryptoFields = document.getElementById('cryptoFields');
+    const assetSelect  = document.getElementById('assetSelect');
 
     if (method === 'bank') {
         btnBank.classList.add('border-blue-500', 'bg-blue-500/10');
@@ -293,6 +297,11 @@ function selectMethod(method) {
         btnCrypto.classList.add('border-transparent', 'bg-white');
         bankFields.classList.remove('hidden');
         cryptoFields.classList.add('hidden');
+        // Force USDT for bank withdrawals
+        assetSelect.value = 'USDT';
+        Array.from(assetSelect.options).forEach(opt => {
+            opt.disabled = opt.value !== 'USDT';
+        });
     } else {
         btnCrypto.classList.add('border-yellow-500', 'bg-yellow-500/10');
         btnCrypto.classList.remove('border-transparent', 'bg-white');
@@ -300,22 +309,44 @@ function selectMethod(method) {
         btnBank.classList.add('border-transparent', 'bg-white');
         cryptoFields.classList.remove('hidden');
         bankFields.classList.add('hidden');
+        Array.from(assetSelect.options).forEach(opt => {
+            opt.disabled = false;
+        });
     }
     updateBalanceHint();
 }
 
-function setAmount(val) {
-    document.getElementById('amountInput').value = val;
+/**
+ * Fill the amount input from a USD quick-chip value.
+ * For USDT: amount = usdVal (1:1).
+ * For other coins: amount = usdVal / coinPrice (in coin units).
+ */
+function setAmount(usdVal) {
+    const asset = document.getElementById('assetSelect').value;
+    const price = PRICES[asset] || 1.0;
+    let coinAmt;
+    if (asset === 'USDT') {
+        coinAmt = usdVal;
+    } else {
+        coinAmt = usdVal / price;
+    }
+    document.getElementById('amountInput').value = asset === 'USDT'
+        ? coinAmt.toFixed(2)
+        : coinAmt.toFixed(8);
+    updateBalanceHint();
 }
 
 function updateBalanceHint() {
     const asset = document.getElementById('assetSelect').value;
     const bal   = BALANCES[asset] ?? 0;
+    const price = PRICES[asset] || 1.0;
     const hint  = document.getElementById('balanceHint');
     if (asset === 'USDT') {
         hint.textContent = 'Available: $' + bal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' USDT';
     } else {
-        hint.textContent = 'Available: ' + bal.toFixed(8) + ' ' + asset;
+        const usdVal = bal * price;
+        hint.textContent = 'Available: ' + bal.toFixed(8) + ' ' + asset
+            + ' ≈ $' + usdVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
     }
 }
 

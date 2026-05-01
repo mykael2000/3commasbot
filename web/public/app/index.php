@@ -8,25 +8,117 @@ require_once __DIR__ . '/../../src/helpers.php';
 require_login();
 $user = current_user();
 
-// Fetch real-time prices (BTC and ETH only; USDT is always $1)
-$symbols = ['BTCUSDT', 'ETHUSDT'];
+// Coin → DB column map (used by swap handler below)
+$COIN_COLS = [
+    'USDT' => 'balance',
+    'BTC'  => 'btc_balance',
+    'ETH'  => 'eth_balance',
+    'BNB'  => 'bnb_balance',
+    'SOL'  => 'sol_balance',
+];
+
+// Flash messages (set by swap handler redirects)
+$flashSuccess = get_flash('success');
+$flashError   = get_flash('error');
+
+// Handle currency swap (PRG pattern – redirect after POST)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'swap') {
+    csrf_verify();
+    $fromCurrency = strtoupper(trim($_POST['from_currency'] ?? ''));
+    $toCurrency   = strtoupper(trim($_POST['to_currency']   ?? ''));
+    $amount       = (float)($_POST['amount'] ?? 0);
+
+    if (!isset($COIN_COLS[$fromCurrency]) || !isset($COIN_COLS[$toCurrency])) {
+        flash('error', 'Please select valid currencies.');
+        redirect('index.php');
+    }
+    if ($fromCurrency === $toCurrency) {
+        flash('error', 'From and To currencies must be different.');
+        redirect('index.php');
+    }
+    if ($amount < 0.00000001) {
+        flash('error', 'Please enter a valid amount greater than zero.');
+        redirect('index.php');
+    }
+
+    $fromPrice = $fromCurrency === 'USDT' ? 1.0 : price_for_symbol($fromCurrency . 'USDT');
+    $toPrice   = $toCurrency   === 'USDT' ? 1.0 : price_for_symbol($toCurrency   . 'USDT');
+    $rate      = $toPrice > 0 ? ($fromPrice / $toPrice) : 0.0;
+    $toAmount  = round($amount * $rate, 8);
+
+    $fromCol = $COIN_COLS[$fromCurrency];
+    $toCol   = $COIN_COLS[$toCurrency];
+
+    // Secondary whitelist check on the resolved column names.
+    // PDO cannot parameterize column/table identifiers, so we validate against
+    // an explicit static list here. Values come from a hardcoded map above, but
+    // this double-check ensures safety if the map is ever changed.
+    $allowedCols = ['balance', 'btc_balance', 'eth_balance', 'bnb_balance', 'sol_balance'];
+    if (!in_array($fromCol, $allowedCols, true) || !in_array($toCol, $allowedCols, true)) {
+        flash('error', 'Invalid currency mapping.');
+        redirect('index.php');
+    }
+
+    try {
+        $pdo = db();
+        $pdo->beginTransaction();
+
+        // Lock row and read current balance
+        $st = $pdo->prepare('SELECT ' . $fromCol . ' FROM users WHERE id = ? FOR UPDATE');
+        $st->execute([$user['id']]);
+        $currentBal = (float)($st->fetchColumn() ?? 0);
+
+        if ($currentBal < $amount) {
+            $pdo->rollBack();
+            flash('error', 'Insufficient ' . $fromCurrency . ' balance for this swap.');
+            redirect('index.php');
+        }
+
+        $pdo->prepare('UPDATE users SET ' . $fromCol . ' = ' . $fromCol . ' - ? WHERE id = ?')
+            ->execute([$amount, $user['id']]);
+        $pdo->prepare('UPDATE users SET ' . $toCol . ' = ' . $toCol . ' + ? WHERE id = ?')
+            ->execute([$toAmount, $user['id']]);
+        $pdo->prepare(
+            'INSERT INTO swaps (user_id, from_coin, to_coin, from_amount, to_amount, rate_used)
+             VALUES (?, ?, ?, ?, ?, ?)'
+        )->execute([$user['id'], $fromCurrency, $toCurrency, $amount, $toAmount, $rate]);
+
+        $pdo->commit();
+        flash('success', 'Swapped ' . rtrim(number_format($amount, 8, '.', ''), '0') . ' ' . $fromCurrency
+            . ' → ' . rtrim(number_format($toAmount, 8, '.', ''), '0') . ' ' . $toCurrency . '.');
+    } catch (Throwable) {
+        try { if (db()->inTransaction()) db()->rollBack(); } catch (Throwable) {}
+        flash('error', 'Swap failed. Please try again.');
+    }
+    redirect('index.php');
+}
+
+// Re-read user to get fresh balances (post-swap redirect will reload)
+$user = current_user();
+
+// Fetch real-time prices for all 5 coins (USDT is always $1)
+$symbols = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT'];
 $prices  = [];
 foreach ($symbols as $sym) {
     $prices[$sym] = price_for_symbol($sym);
 }
 $prices['USDTUSDT'] = 1.0;
 
-// Mock 24h change percentages – demo data only, not representative of real markets
+// Mock 24h change percentages – demo data only
 $priceChanges = [
     'BTCUSDT'  => (mt_rand(-800, 1500) / 100),
     'ETHUSDT'  => (mt_rand(-600, 1200) / 100),
+    'BNBUSDT'  => (mt_rand(-500, 1000) / 100),
+    'SOLUSDT'  => (mt_rand(-700, 1400) / 100),
     'USDTUSDT' => 0.00,
 ];
 
-// Use actual DB balance for USDT; BTC/ETH balances from DB (default 0)
-$usdtBalance = (float)($user['balance'] ?? 0);
+// All 5 coin balances from DB (default 0)
+$usdtBalance = (float)($user['balance']     ?? 0);
 $btcBalance  = (float)($user['btc_balance'] ?? 0);
 $ethBalance  = (float)($user['eth_balance'] ?? 0);
+$bnbBalance  = (float)($user['bnb_balance'] ?? 0);
+$solBalance  = (float)($user['sol_balance'] ?? 0);
 
 $walletBalances = [
     'BTC'  => [
@@ -38,6 +130,16 @@ $walletBalances = [
         'balance' => $ethBalance,
         'value'   => $ethBalance * $prices['ETHUSDT'],
         'color'   => 'indigo',
+    ],
+    'BNB'  => [
+        'balance' => $bnbBalance,
+        'value'   => $bnbBalance * $prices['BNBUSDT'],
+        'color'   => 'yellow',
+    ],
+    'SOL'  => [
+        'balance' => $solBalance,
+        'value'   => $solBalance * $prices['SOLUSDT'],
+        'color'   => 'purple',
     ],
     'USDT' => [
         'balance' => $usdtBalance,
@@ -79,33 +181,12 @@ try {
     $activePlan = $st->fetch() ?: null;
 } catch (Throwable) {}
 
-// Handle currency swap
-$swapMessage      = '';
-$swapMessageType  = 'success';
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'swap') {
-    csrf_verify();
-    $fromCurrency = sanitize($_POST['from_currency'] ?? '');
-    $toCurrency   = sanitize($_POST['to_currency']   ?? '');
-    $amount       = (float)($_POST['amount'] ?? 0);
-
-    if (!$fromCurrency || !$toCurrency) {
-        $swapMessage     = 'Please select valid currencies.';
-        $swapMessageType = 'error';
-    } elseif ($fromCurrency === $toCurrency) {
-        $swapMessage     = 'From and To currencies must be different.';
-        $swapMessageType = 'error';
-    } elseif ($amount < 0.00000001) {
-        $swapMessage     = 'Please enter a valid amount greater than zero.';
-        $swapMessageType = 'error';
-    } else {
-        $swapMessage = "Successfully swapped {$amount} {$fromCurrency} → {$toCurrency}.";
-    }
-}
-
-// PHP prices JSON for JS exchange-rate widget
+// PHP prices JSON for JS exchange-rate widget (all 5 coins)
 $pricesJson = json_encode([
     'BTC'  => $prices['BTCUSDT'],
     'ETH'  => $prices['ETHUSDT'],
+    'BNB'  => $prices['BNBUSDT'],
+    'SOL'  => $prices['SOLUSDT'],
     'USDT' => 1.0,
 ], JSON_THROW_ON_ERROR);
 ?>
@@ -155,24 +236,56 @@ $pricesJson = json_encode([
         .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 14px 24px rgba(15,23,42,.10); }
     </style>
 </head>
-<body class="bg-white text-slate-900 min-h-screen pb-28 antialiased">
+<body class="bg-white text-slate-900 min-h-screen pb-28 md:pb-4 antialiased">
 
     <!-- ════════════════════════════════════════
          TOP HEADER
     ════════════════════════════════════════ -->
-    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 px-4 py-3">
-        <div class="flex items-center justify-between max-w-7xl mx-auto">
-            <div class="flex items-center gap-3">
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 px-4 py-2.5">
+        <div class="flex items-center justify-between max-w-7xl mx-auto gap-4">
+            <div class="flex items-center gap-3 flex-shrink-0">
                 <a href="index.php" class="flex items-center">
                 <svg aria-labelledby="logo" width="110px" height="28px" viewBox="0 0 125 31" fill="none" xmlns="http://www.w3.org/2000/svg"><text id="logo" class="visually-hidden" font-size="0">3Commas logo</text><g fill-rule="evenodd"><path fill="currentColor" d="M30.795 0v30.918H0V0z" style="color: #05ab8c;"></path><path fill="currentColor" d="M20.354 19.093h3.167a.2.2 0 00.19-.137l1.136-3.417a.2.2 0 00.002-.007l.998-3.434a.2.2 0 00-.016-.15l-.074-.14a.2.2 0 00-.177-.106h-4.024a.2.2 0 00-.198.168l-.588 3.663a.2.2 0 010 .005l-.613 3.318a.2.2 0 00.197.237zm-7.804 0h3.155a.2.2 0 00.19-.137l1.144-3.417a.2.2 0 00.002-.007l1.004-3.434a.2.2 0 00-.015-.15l-.076-.14a.2.2 0 00-.176-.106h-4.054a.2.2 0 00-.198.168l-.592 3.664v.003l-.58 3.321a.2.2 0 00.196.235zm-7.594 0h3.168a.2.2 0 00.19-.137l1.136-3.417a.2.2 0 00.002-.007l.998-3.434a.2.2 0 00-.016-.15l-.075-.14a.2.2 0 00-.176-.106H6.158a.2.2 0 00-.197.168l-.588 3.663a.2.2 0 010 .005l-.613 3.318a.2.2 0 00.196.237z" style="color: #fff;"></path><path d="M47.384 18.37c0 2.589-1.979 4.338-5.164 4.338-1.66 0-3.253-.5-4.14-1.363l.978-1.885c.66.704 1.706 1.09 2.866 1.09 1.729 0 2.776-.886 2.776-2.18s-1.024-2.112-2.594-2.112c-.705 0-1.296.136-1.842.431l-.705-1.294 3.73-4.27h-4.617V8.99h7.984v1.613l-3.503 3.725c2.571.045 4.231 1.68 4.231 4.042zm.842-2.657c0-4.156 2.866-6.904 7.188-6.904 2.207 0 4.004.727 5.346 2.18l-1.638 1.635c-.774-.976-2.07-1.68-3.685-1.68-2.73 0-4.55 1.93-4.55 4.792 0 2.906 1.843 4.837 4.573 4.837 1.842 0 3.093-.818 3.958-2.135l1.751 1.544c-1.296 1.772-3.275 2.726-5.755 2.726-4.299 0-7.188-2.794-7.188-6.995zm13.193 1.885c0-3.066 2.116-5.11 5.301-5.11 3.162 0 5.277 2.044 5.277 5.11 0 3.066-2.115 5.132-5.277 5.132-3.162-.022-5.301-2.066-5.301-5.132zm7.985 0c0-1.794-1.092-2.975-2.684-2.975-1.638 0-2.707 1.181-2.707 2.975s1.091 2.975 2.707 2.975c1.615 0 2.684-1.181 2.684-2.975zm19.404-1.272v6.2h-2.502v-5.791c0-1.272-.796-2.112-2.025-2.112-1.205 0-2.024.84-2.024 2.112v5.791h-2.503v-5.791c0-1.272-.796-2.112-2.024-2.112-1.206 0-2.025.84-2.025 2.112v5.791h-2.502V12.67h2.411l.046 1.181c.705-.886 1.751-1.363 2.957-1.363 1.297 0 2.343.545 2.98 1.476.705-.976 1.865-1.476 3.185-1.476 2.411 0 4.026 1.544 4.026 3.838zm17.242 0v6.2h-2.5v-5.791c0-1.272-.8-2.112-2.03-2.112-1.2 0-2.021.84-2.021 2.112v5.791h-2.502v-5.791c0-1.272-.796-2.112-2.024-2.112-1.206 0-2.025.84-2.025 2.112v5.791h-2.502V12.67h2.411l.045 1.181c.706-.886 1.752-1.363 2.958-1.363 1.296 0 2.343.545 2.98 1.476.705-.976 1.86-1.476 3.18-1.476 2.44 0 4.03 1.544 4.03 3.838zm9.85 0v6.2h-2.39l-.04-1.408c-.66 1.022-1.8 1.59-3.01 1.59-2.04 0-3.43-1.227-3.43-3.066 0-1.908 1.68-3.157 4.21-3.157.68 0 1.43.068 2.18.227v-.182c0-1.317-.89-2.112-2.39-2.112-.93 0-1.68.273-2.29.795l-1.1-1.453c1.07-.863 2.3-1.272 4.03-1.272 2.53 0 4.23 1.522 4.23 3.838zm-2.5 2.09a9.19 9.19 0 00-1.87-.205c-1.18 0-1.93.545-1.93 1.385 0 .795.52 1.34 1.55 1.34 1.16 0 2.25-.908 2.25-2.52zm3.73 3.134l.93-1.499c.94.545 1.87.726 2.84.726.92 0 1.55-.386 1.55-.976 0-.591-.7-.931-1.68-1.181l-.82-.227c-1.66-.432-2.8-1.09-2.8-2.635 0-1.953 1.55-3.247 3.89-3.247 1.48 0 2.75.318 3.73.976l-1.04 1.635a5.218 5.218 0 00-2.51-.635c-.88 0-1.52.34-1.52.885 0 .591.61.863 1.48 1.09l.82.228c1.68.431 3.02 1.203 3.02 2.952 0 1.862-1.64 3.111-4.12 3.111-1.54-.045-2.86-.431-3.77-1.203z" fill="currentColor" style="color: #334155;"></path></g></svg>
                 </a>
-                <div>
-                    
-                    <!-- <p class="text-[10px] text-slate-500 leading-none">Pro Trading Dashboard</p> -->
-                </div>
             </div>
 
-            <div class="flex items-center gap-3">
+            <!-- Desktop navigation (hidden on mobile – see bottom nav) -->
+            <nav class="hidden md:flex items-center gap-0.5 flex-1 justify-center">
+                <a href="index.php" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-emerald-600 bg-emerald-50 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                    Dashboard
+                </a>
+                <a href="markets.php" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+                    Markets
+                </a>
+                <a href="trading.php" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                    Trade
+                </a>
+                <a href="deposit.php" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                    Deposit
+                </a>
+                <a href="withdraw.php" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    Withdraw
+                </a>
+                <a href="swap.php" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m10 4v12m0 0l-4-4m4 4l4-4"/></svg>
+                    Swap
+                </a>
+                <a href="wallet.php" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                    Wallet
+                </a>
+                <a href="profile.php" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    Profile
+                </a>
+            </nav>
+
+            <div class="flex items-center gap-3 flex-shrink-0">
                 <!-- live badge -->
                 <span class="hidden sm:flex items-center gap-1.5 bg-emerald-500/15 border border-emerald-500/30 px-3 py-1 rounded-full">
                     <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
@@ -200,6 +313,18 @@ $pricesJson = json_encode([
     </header>
 
     <main class="max-w-7xl mx-auto px-2 py-2 space-y-3">
+
+        <!-- Flash messages -->
+        <?php if ($flashSuccess): ?>
+        <div class="bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 text-sm rounded-xl px-4 py-3 flex items-center gap-2">
+            <span class="text-emerald-500">✓</span><?= sanitize($flashSuccess) ?>
+        </div>
+        <?php endif; ?>
+        <?php if ($flashError): ?>
+        <div class="bg-red-500/10 border border-red-500/30 text-red-600 text-sm rounded-xl px-4 py-3 flex items-center gap-2">
+            <span>✕</span><?= sanitize($flashError) ?>
+        </div>
+        <?php endif; ?>
 
         <!-- ── Active Plan Banner ── -->
         <?php if ($activePlan): ?>
@@ -313,9 +438,11 @@ $pricesJson = json_encode([
                     $cryptoColors = [
                         'BTC'  => ['badge' => 'crypto-btc',  'icon' => 'text-orange-400', 'bar' => 'from-orange-500 to-amber-400',   'pct' => 'text-orange-400'],
                         'ETH'  => ['badge' => 'crypto-eth',  'icon' => 'text-indigo-400', 'bar' => 'from-indigo-500 to-blue-400',    'pct' => 'text-indigo-400'],
+                        'BNB'  => ['badge' => 'crypto-bnb',  'icon' => 'text-yellow-500', 'bar' => 'from-yellow-500 to-amber-300',   'pct' => 'text-yellow-500'],
+                        'SOL'  => ['badge' => 'crypto-sol',  'icon' => 'text-purple-400', 'bar' => 'from-purple-500 to-pink-400',    'pct' => 'text-purple-400'],
                         'USDT' => ['badge' => 'crypto-usdt', 'icon' => 'text-teal-400',   'bar' => 'from-teal-500 to-emerald-400',   'pct' => 'text-teal-400'],
                     ];
-                    $cryptoDecimals = ['BTC' => 6, 'ETH' => 6, 'USDT' => 2];
+                    $cryptoDecimals = ['BTC' => 6, 'ETH' => 6, 'BNB' => 4, 'SOL' => 4, 'USDT' => 2];
                     foreach ($walletBalances as $crypto => $data):
                         $pct      = $totalBalance > 0 ? ($data['value'] / $totalBalance) * 100 : 0;
                         $col      = $cryptoColors[$crypto] ?? $cryptoColors['USDT'];
@@ -361,9 +488,11 @@ $pricesJson = json_encode([
                         <label class="block text-[11px] text-slate-600 font-semibold uppercase tracking-wider mb-1">From</label>
                         <select name="from_currency" id="swapFrom" required
                                 class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/60 text-sm appearance-none cursor-pointer">
+                            <option value="USDT" selected>$ USDT – Tether</option>
                             <option value="BTC">₿ BTC – Bitcoin</option>
                             <option value="ETH">Ξ ETH – Ethereum</option>
-                            <option value="USDT" selected>$ USDT – Tether</option>
+                            <option value="BNB">◈ BNB – Binance Coin</option>
+                            <option value="SOL">◎ SOL – Solana</option>
                         </select>
                     </div>
 
@@ -378,9 +507,11 @@ $pricesJson = json_encode([
                         <label class="block text-[11px] text-slate-600 font-semibold uppercase tracking-wider mb-1">To</label>
                         <select name="to_currency" id="swapTo" required
                                 class="w-full bg-white border border-slate-300 text-slate-900 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/60 text-sm appearance-none cursor-pointer">
-                            <option value="BTC">₿ BTC – Bitcoin</option>
-                            <option value="ETH" selected>Ξ ETH – Ethereum</option>
                             <option value="USDT">$ USDT – Tether</option>
+                            <option value="BTC" selected>₿ BTC – Bitcoin</option>
+                            <option value="ETH">Ξ ETH – Ethereum</option>
+                            <option value="BNB">◈ BNB – Binance Coin</option>
+                            <option value="SOL">◎ SOL – Solana</option>
                         </select>
                     </div>
 
@@ -397,10 +528,10 @@ $pricesJson = json_encode([
                     </button>
                 </form>
 
-                <?php if ($swapMessage): ?>
-                <div class="mt-2 <?= $swapMessageType === 'success' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700' : 'bg-red-500/10 border-red-500/30 text-red-600' ?> border rounded-xl px-3 py-2 text-sm flex items-start gap-2">
-                    <span><?= $swapMessageType === 'success' ? '✓' : '✕' ?></span>
-                    <span><?= sanitize($swapMessage) ?></span>
+                <?php if ($flashSuccess || $flashError): ?>
+                <div class="mt-2 <?= $flashSuccess ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700' : 'bg-red-500/10 border-red-500/30 text-red-600' ?> border rounded-xl px-3 py-2 text-sm flex items-start gap-2">
+                    <span><?= $flashSuccess ? '✓' : '✕' ?></span>
+                    <span><?= sanitize($flashSuccess ?: $flashError) ?></span>
                 </div>
                 <?php endif; ?>
             </div>
@@ -421,9 +552,11 @@ $pricesJson = json_encode([
             <div class="grid sm:grid-cols-3 gap-2">
                 <?php
                 $marketDefs = [
-                    ['sym' => 'BTCUSDT',  'label' => 'Bitcoin',  'badge_bg' => 'bg-orange-500/15', 'badge_text' => 'text-orange-400', 'price_color' => 'text-orange-300'],
-                    ['sym' => 'ETHUSDT',  'label' => 'Ethereum', 'badge_bg' => 'bg-indigo-500/15', 'badge_text' => 'text-indigo-400', 'price_color' => 'text-indigo-300'],
-                    ['sym' => 'USDTUSDT', 'label' => 'Tether',   'badge_bg' => 'bg-teal-500/15',   'badge_text' => 'text-teal-400',   'price_color' => 'text-teal-300'],
+                    ['sym' => 'BTCUSDT',  'label' => 'Bitcoin',      'badge_bg' => 'bg-orange-500/15', 'badge_text' => 'text-orange-400', 'price_color' => 'text-orange-300'],
+                    ['sym' => 'ETHUSDT',  'label' => 'Ethereum',     'badge_bg' => 'bg-indigo-500/15', 'badge_text' => 'text-indigo-400', 'price_color' => 'text-indigo-300'],
+                    ['sym' => 'BNBUSDT',  'label' => 'BNB',          'badge_bg' => 'bg-yellow-500/15', 'badge_text' => 'text-yellow-500', 'price_color' => 'text-yellow-400'],
+                    ['sym' => 'SOLUSDT',  'label' => 'Solana',       'badge_bg' => 'bg-purple-500/15', 'badge_text' => 'text-purple-400', 'price_color' => 'text-purple-300'],
+                    ['sym' => 'USDTUSDT', 'label' => 'Tether',       'badge_bg' => 'bg-teal-500/15',   'badge_text' => 'text-teal-400',   'price_color' => 'text-teal-300'],
                 ];
                 foreach ($marketDefs as $m):
                     $base   = str_replace('USDT', '', $m['sym']);
@@ -575,30 +708,9 @@ $pricesJson = json_encode([
     </main>
 
     <!-- ════════════════════════════════════════
-         BOTTOM NAVIGATION (Mobile)
+         NAVIGATION (desktop top-bar + mobile bottom-bar)
     ════════════════════════════════════════ -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t border-slate-200 flex justify-around py-1.5 z-50 md:hidden">
-        <a href="index.php" class="flex flex-col items-center text-emerald-400 gap-0.5 py-2 px-3">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h-6z"/></svg>
-            <span class="text-[10px] font-semibold">Home</span>
-        </a>
-        <a href="markets.php" class="flex flex-col items-center text-slate-500 hover:text-emerald-400 gap-0.5 py-2 px-3 transition">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
-            <span class="text-[10px] font-semibold">Markets</span>
-        </a>
-        <a href="trading.php" class="flex flex-col items-center text-slate-500 hover:text-emerald-400 gap-0.5 py-2 px-3 transition">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-            <span class="text-[10px] font-semibold">Trade</span>
-        </a>
-        <a href="wallet.php" class="flex flex-col items-center text-slate-500 hover:text-emerald-400 gap-0.5 py-2 px-3 transition">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-            <span class="text-[10px] font-semibold">Wallet</span>
-        </a>
-        <a href="profile.php" class="flex flex-col items-center text-slate-500 hover:text-emerald-400 gap-0.5 py-2 px-3 transition">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-            <span class="text-[10px] font-semibold">Profile</span>
-        </a>
-    </nav>
+    <?php $activePage = 'index.php'; include '_nav.php'; ?>
 
     <!-- ════════════════════════════════════════
          SWAP LIVE-RATE JS
@@ -606,7 +718,7 @@ $pricesJson = json_encode([
     <script>
     (function () {
         const PRICES   = <?= $pricesJson ?>;
-        const DECIMALS = <?= json_encode($cryptoDecimals, JSON_THROW_ON_ERROR) ?>;
+        const DECIMALS = <?= json_encode(['BTC' => 6, 'ETH' => 6, 'BNB' => 4, 'SOL' => 4, 'USDT' => 2], JSON_THROW_ON_ERROR) ?>;
 
         const fromSel    = document.getElementById('swapFrom');
         const toSel      = document.getElementById('swapTo');
