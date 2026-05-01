@@ -46,8 +46,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
         redirect('/admin/documents.php');
     }
 
+    // Validate MIME type using finfo
+    $allowedMimes = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'text/plain',
+        'image/png',
+        'image/jpeg',
+    ];
+    $finfo    = new finfo(FILEINFO_MIME_TYPE);
+    $mimeType = $finfo->file($_FILES['document']['tmp_name']);
+    if (!in_array($mimeType, $allowedMimes, true)) {
+        flash('error', 'File content type is not allowed.');
+        redirect('/admin/documents.php');
+    }
+
+    // Ensure upload directory and .htaccess protection exist before any file operations
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0755, true);
+    }
+    if (!file_exists($uploadDir . '.htaccess')) {
         file_put_contents($uploadDir . '.htaccess', "Options -ExecCGI\nRemoveHandler .php\nphp_flag engine off\n");
     }
 

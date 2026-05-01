@@ -76,21 +76,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'subsc
 
         $pdo->beginTransaction();
 
-        // Deduct balance
-        $pdo->prepare("UPDATE users SET {$balanceCol} = {$balanceCol} - ? WHERE id = ? AND {$balanceCol} >= ?")
-            ->execute([$coinAmount, $user['id'], $coinAmount]);
-
-        // Verify deduction happened
-        $updated = $pdo->prepare("SELECT {$balanceCol} FROM users WHERE id = ?")->execute([$user['id']]);
-        // Re-fetch to confirm
-        $fresh = $pdo->prepare("SELECT {$balanceCol} FROM users WHERE id = ? LIMIT 1");
-        $fresh->execute([$user['id']]);
-        $row = $fresh->fetch();
-        if ($row === false) {
-            $pdo->rollBack();
-            flash('error', 'Balance deduction failed.');
-            redirect('vip.php');
-        }
+        // Build the UPDATE using a hardcoded column mapping to prevent injection
+        $updateSql = match($currency) {
+            'USDT' => 'UPDATE users SET balance      = balance      - ? WHERE id = ? AND balance      >= ?',
+            'BTC'  => 'UPDATE users SET btc_balance  = btc_balance  - ? WHERE id = ? AND btc_balance  >= ?',
+            'ETH'  => 'UPDATE users SET eth_balance  = eth_balance  - ? WHERE id = ? AND eth_balance  >= ?',
+            'BNB'  => 'UPDATE users SET bnb_balance  = bnb_balance  - ? WHERE id = ? AND bnb_balance  >= ?',
+            'SOL'  => 'UPDATE users SET sol_balance  = sol_balance  - ? WHERE id = ? AND sol_balance  >= ?',
+        };
+        $rowCount = $pdo->prepare($updateSql)->execute([$coinAmount, $user['id'], $coinAmount]);
 
         $startDate = date('Y-m-d');
         $endDate   = date('Y-m-d', strtotime("+{$plan['duration_days']} days"));
@@ -135,13 +129,15 @@ try {
 $pnlMap = [];
 try {
     if (!empty($subscriptions)) {
-        $ids = implode(',', array_map(fn($s) => (int)$s['id'], $subscriptions));
-        $rows = db()->query(
+        $idList = array_map(fn($s) => (int)$s['id'], $subscriptions);
+        $placeholders = implode(',', array_fill(0, count($idList), '?'));
+        $stmt = db()->prepare(
             "SELECT subscription_id, SUM(pnl_amount) AS total_pnl, COUNT(*) AS updates
-             FROM vip_pnl_updates WHERE subscription_id IN ({$ids})
+             FROM vip_pnl_updates WHERE subscription_id IN ({$placeholders})
              GROUP BY subscription_id"
-        )->fetchAll();
-        foreach ($rows as $r) {
+        );
+        $stmt->execute($idList);
+        foreach ($stmt->fetchAll() as $r) {
             $pnlMap[$r['subscription_id']] = $r;
         }
     }

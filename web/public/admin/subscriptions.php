@@ -83,13 +83,15 @@ try {
 $pnlMap = [];
 try {
     if (!empty($subscriptions)) {
-        $ids = implode(',', array_map(fn($s) => (int)$s['id'], $subscriptions));
-        $rows = db()->query(
+        $idList = array_map(fn($s) => (int)$s['id'], $subscriptions);
+        $placeholders = implode(',', array_fill(0, count($idList), '?'));
+        $stmt = db()->prepare(
             "SELECT subscription_id, SUM(pnl_amount) AS total_pnl
-             FROM vip_pnl_updates WHERE subscription_id IN ({$ids})
+             FROM vip_pnl_updates WHERE subscription_id IN ({$placeholders})
              GROUP BY subscription_id"
-        )->fetchAll();
-        foreach ($rows as $r) {
+        );
+        $stmt->execute($idList);
+        foreach ($stmt->fetchAll() as $r) {
             $pnlMap[$r['subscription_id']] = (float)$r['total_pnl'];
         }
     }

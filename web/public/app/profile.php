@@ -193,7 +193,7 @@ $kycColor = match($kycStatus) {
         <p class="text-xs text-slate-500 mt-0.5">Bots &amp; strategies</p>
       </a>
 
-      <button onclick="document.getElementById('support-modal').classList.remove('hidden')"
+      <button onclick="openSupportModal()"
         class="bg-white border border-slate-200 rounded-2xl p-4 hover:border-emerald-300 hover:shadow-sm transition group text-left">
         <div class="w-9 h-9 bg-pink-50 rounded-xl flex items-center justify-center mb-3 group-hover:bg-pink-100 transition">
           <svg class="w-5 h-5 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
@@ -294,7 +294,7 @@ $kycColor = match($kycStatus) {
   </main>
 
   <!-- Support Modal -->
-  <div id="support-modal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4 flex">
+  <div id="support-modal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6">
       <h3 class="font-bold text-slate-900 text-lg mb-2">Live Support</h3>
       <p class="text-slate-600 text-sm mb-4">Our support team is available 24/7. Reach us via email.</p>
@@ -302,14 +302,23 @@ $kycColor = match($kycStatus) {
         class="block w-full text-center bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-3 rounded-xl transition mb-3">
         Email Support
       </a>
-      <button onclick="document.getElementById('support-modal').classList.add('hidden')"
+      <button onclick="closeSupportModal()"
         class="block w-full text-center text-slate-600 hover:text-slate-900 text-sm py-2 transition">
         Close
       </button>
     </div>
   </div>
   <script>
-    document.getElementById('support-modal').classList.add('hidden');
+    function openSupportModal() {
+      const m = document.getElementById('support-modal');
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+    }
+    function closeSupportModal() {
+      const m = document.getElementById('support-modal');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+    }
   </script>
 
 </body>

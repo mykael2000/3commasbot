@@ -33,10 +33,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
     $fields        = ['id_doc' => 'id_doc_path', 'address_doc' => 'address_doc_path', 'selfie' => 'selfie_path'];
     $paths         = [];
 
-    // Ensure upload directory exists
+    // Ensure upload directory and .htaccess protection exist before any file operations
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0755, true);
-        // Block direct execution of uploaded files
+    }
+    if (!file_exists($uploadDir . '.htaccess')) {
         file_put_contents($uploadDir . '.htaccess', "Options -ExecCGI\nAddHandler cgi-script .php .pl .py .rb .sh\nRemoveHandler .php\nphp_flag engine off\n");
     }
 
@@ -59,10 +60,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
             flash('error', 'Invalid file type for ' . $field . '. Allowed: JPG, PNG, PDF.');
             redirect('kyc.php');
         }
-        // Validate MIME for images
+        // Validate MIME type using finfo for all files
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mimeType = $finfo->file($_FILES[$field]['tmp_name']);
+        $allowedMimes = ['image/jpeg', 'image/png', 'application/pdf'];
+        if (!in_array($mimeType, $allowedMimes, true)) {
+            flash('error', 'File ' . $field . ' has an invalid content type. Allowed: JPG, PNG, PDF.');
+            redirect('kyc.php');
+        }
+        // Additional image integrity check
         if (in_array($ext, ['jpg', 'jpeg', 'png'], true)) {
-            $imageInfo = @getimagesize($_FILES[$field]['tmp_name']);
-            if ($imageInfo === false) {
+            if (@getimagesize($_FILES[$field]['tmp_name']) === false) {
                 flash('error', 'File ' . $field . ' does not appear to be a valid image.');
                 redirect('kyc.php');
             }
