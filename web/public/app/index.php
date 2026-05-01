@@ -49,6 +49,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $fromCol = $COIN_COLS[$fromCurrency];
     $toCol   = $COIN_COLS[$toCurrency];
 
+    // Secondary whitelist check on the resolved column names.
+    // PDO cannot parameterize column/table identifiers, so we validate against
+    // an explicit static list here. Values come from a hardcoded map above, but
+    // this double-check ensures safety if the map is ever changed.
+    $allowedCols = ['balance', 'btc_balance', 'eth_balance', 'bnb_balance', 'sol_balance'];
+    if (!in_array($fromCol, $allowedCols, true) || !in_array($toCol, $allowedCols, true)) {
+        flash('error', 'Invalid currency mapping.');
+        redirect('index.php');
+    }
+
     try {
         $pdo = db();
         $pdo->beginTransaction();

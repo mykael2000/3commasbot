@@ -6,22 +6,12 @@
 declare(strict_types=1);
 $activePage = $activePage ?? basename($_SERVER['PHP_SELF'] ?? '');
 
-function _nav_link(string $href, string $label, string $icon, string $active): string
-{
-    $isActive = $active === $label;
-    $base     = $isActive
-        ? 'text-emerald-600 bg-emerald-50'
-        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100';
-    return '<a href="' . $href . '" class="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium ' . $base . ' transition">'
-        . $icon . '<span>' . $label . '</span></a>';
-}
-
 $_navPage = $activePage;
 ?>
 <!-- ═══════════════════════════════════════════
      DESKTOP NAVIGATION (hidden on mobile)
 ═══════════════════════════════════════════ -->
-<nav class="hidden md:flex items-center gap-0.5 bg-white/95 border-b border-slate-100 px-4 py-1 sticky top-[57px] z-30 shadow-sm backdrop-blur">
+<nav class="hidden md:flex items-center gap-0.5 bg-white/95 border-b border-slate-100 px-4 py-1 shadow-sm backdrop-blur">
     <div class="max-w-7xl mx-auto w-full flex items-center gap-0.5 flex-wrap">
 
         <a href="index.php"

@@ -49,6 +49,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $fromCol = $COIN_COLS[$fromCurrency];
     $toCol   = $COIN_COLS[$toCurrency];
 
+    // Secondary whitelist check on the resolved column names.
+    // PDO cannot parameterize column/table identifiers, so we validate against
+    // an explicit static list here. Values come from a hardcoded map above, but
+    // this double-check ensures safety if the map is ever changed.
+    $allowedCols = ['balance', 'btc_balance', 'eth_balance', 'bnb_balance', 'sol_balance'];
+    if (!in_array($fromCol, $allowedCols, true) || !in_array($toCol, $allowedCols, true)) {
+        flash('error', 'Invalid currency mapping.');
+        redirect('swap.php');
+    }
+
     try {
         $pdo = db();
         $pdo->beginTransaction();
@@ -264,7 +274,7 @@ try {
   <script>
   (function () {
     const PRICES = <?= $pricesJson ?>;
-    const DECIMALS = { USDT: 2, BTC: 8, ETH: 8, BNB: 6, SOL: 6 };
+    const DECIMALS = { USDT: 2, BTC: 8, ETH: 8, BNB: 8, SOL: 8 };
 
     const fromSel   = document.getElementById('swapFrom');
     const toSel     = document.getElementById('swapTo');

@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS swaps (
     to_coin      VARCHAR(10)   NOT NULL,
     from_amount  DECIMAL(18,8) NOT NULL,
     to_amount    DECIMAL(18,8) NOT NULL,
-    rate_used    DECIMAL(18,8) NOT NULL COMMENT 'from_coin_usd_price / to_coin_usd_price at swap time',
+    rate_used    DECIMAL(18,8) NOT NULL COMMENT 'Exchange rate: from_coin_usd_price / to_coin_usd_price (units of to_coin per 1 unit of from_coin at swap time)',
     created_at   DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_user (user_id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
