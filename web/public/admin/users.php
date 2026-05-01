@@ -58,17 +58,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'toggl
 // Update balance
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'update_balance') {
     csrf_verify();
-    $id          = (int)($_POST['id'] ?? 0);
-    $balance     = (float)($_POST['balance'] ?? 0);
-    $btcBalance  = (float)($_POST['btc_balance'] ?? 0);
-    $ethBalance  = (float)($_POST['eth_balance'] ?? 0);
-    if ($id <= 0 || $balance < 0 || $btcBalance < 0 || $ethBalance < 0) {
+    $id         = (int)($_POST['id'] ?? 0);
+    $balance    = (float)($_POST['balance']     ?? 0);
+    $btcBalance = (float)($_POST['btc_balance'] ?? 0);
+    $ethBalance = (float)($_POST['eth_balance'] ?? 0);
+    $bnbBalance = (float)($_POST['bnb_balance'] ?? 0);
+    $solBalance = (float)($_POST['sol_balance'] ?? 0);
+    if ($id <= 0 || $balance < 0 || $btcBalance < 0 || $ethBalance < 0 || $bnbBalance < 0 || $solBalance < 0) {
         flash('error', 'Invalid balance value.');
         redirect('/admin/users.php');
     }
     try {
-        db()->prepare('UPDATE users SET balance = ?, btc_balance = ?, eth_balance = ? WHERE id = ?')
-            ->execute([$balance, $btcBalance, $ethBalance, $id]);
+        db()->prepare(
+            'UPDATE users SET balance = ?, btc_balance = ?, eth_balance = ?, bnb_balance = ?, sol_balance = ? WHERE id = ?'
+        )->execute([$balance, $btcBalance, $ethBalance, $bnbBalance, $solBalance, $id]);
         flash('success', 'Balances updated.');
     } catch (Throwable) {
         flash('error', 'Failed to update balances.');
@@ -122,7 +125,7 @@ try {
               <th class="text-left text-slate-400 font-medium px-4 py-3">User</th>
               <th class="text-center text-slate-400 font-medium px-4 py-3">Role</th>
               <th class="text-center text-slate-400 font-medium px-4 py-3">Status</th>
-              <th class="text-right text-slate-400 font-medium px-4 py-3">Balances (USDT / BTC / ETH)</th>
+              <th class="text-right text-slate-400 font-medium px-4 py-3">Balances (USDT / BTC / ETH / BNB / SOL)</th>
               <th class="text-left text-slate-400 font-medium px-4 py-3">Joined</th>
               <th class="text-right text-slate-400 font-medium px-4 py-3">Actions</th>
             </tr>
@@ -167,6 +170,16 @@ try {
                     title="ETH Balance"
                     class="w-24 bg-slate-600 border border-slate-500 text-white rounded px-2 py-1 text-xs text-right focus:outline-none focus:ring-1 focus:ring-indigo-500"
                     placeholder="ETH">
+                  <input type="number" name="bnb_balance" step="0.00000001" min="0"
+                    value="<?= sanitize(number_format((float)($u['bnb_balance'] ?? 0), 8, '.', '')) ?>"
+                    title="BNB Balance"
+                    class="w-24 bg-slate-600 border border-slate-500 text-white rounded px-2 py-1 text-xs text-right focus:outline-none focus:ring-1 focus:ring-yellow-500"
+                    placeholder="BNB">
+                  <input type="number" name="sol_balance" step="0.00000001" min="0"
+                    value="<?= sanitize(number_format((float)($u['sol_balance'] ?? 0), 8, '.', '')) ?>"
+                    title="SOL Balance"
+                    class="w-24 bg-slate-600 border border-slate-500 text-white rounded px-2 py-1 text-xs text-right focus:outline-none focus:ring-1 focus:ring-purple-500"
+                    placeholder="SOL">
                   <button type="submit" class="text-emerald-400 hover:text-emerald-300 text-xs bg-emerald-500/10 px-2 py-1 rounded transition">Set</button>
                 </form>
               </td>
