@@ -408,7 +408,7 @@ $pricesJson = json_encode([
                     ↓ Deposit
                 </a>
                 <a href="withdraw.php"
-                   class="flex-1 text-center bg-gradient-to-r from-amber-600 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-white font-bold px-4 py-2 rounded-xl transition-all transform hover:scale-[1.02] shadow-lg shadow-amber-900/40">
+                         class="flex-1 text-center bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-white font-bold px-4 py-2 rounded-xl transition-all transform hover:scale-[1.02] shadow-lg shadow-slate-900/35">
                     ↑ Withdraw
                 </a>
             </div>
