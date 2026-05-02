@@ -52,6 +52,36 @@ try {
     $st->execute([$user['id']]);
     $depositHistory = $st->fetchAll();
 } catch (Throwable) {}
+
+  $addressChoices = [];
+  $assetChoices = [];
+  $defaultAddressKey = '';
+
+  foreach ($depositAddresses as $index => $depositAddress) {
+    $addressKey = 'addr_' . (int)($depositAddress['id'] ?? $index);
+    $addressChoices[$addressKey] = [
+      'asset_ticker' => (string)$depositAddress['asset_ticker'],
+      'network' => (string)$depositAddress['network'],
+      'address' => (string)$depositAddress['address'],
+    ];
+
+    if (!isset($assetChoices[$depositAddress['asset_ticker']])) {
+      $assetChoices[$depositAddress['asset_ticker']] = [
+        'asset_ticker' => (string)$depositAddress['asset_ticker'],
+        'label' => (string)$depositAddress['asset_ticker'] . ' - ' . (string)$depositAddress['network'],
+        'address_key' => $addressKey,
+      ];
+    }
+
+    if ($defaultAddressKey === '' || strtoupper((string)$depositAddress['asset_ticker']) === 'USDT') {
+      $defaultAddressKey = $addressKey;
+      if (strtoupper((string)$depositAddress['asset_ticker']) === 'USDT') {
+        break;
+      }
+    }
+  }
+
+  $defaultAddress = $defaultAddressKey !== '' ? ($addressChoices[$defaultAddressKey] ?? null) : null;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -89,6 +119,29 @@ try {
 
     .copy-feedback {
       transition: opacity .2s ease, transform .2s ease;
+    }
+
+    .selector-shell {
+      position: relative;
+    }
+
+    .selector-shell::after {
+      content: '';
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      width: 0.65rem;
+      height: 0.65rem;
+      border-right: 2px solid #475569;
+      border-bottom: 2px solid #475569;
+      transform: translateY(-70%) rotate(45deg);
+      pointer-events: none;
+    }
+
+    .selector-input {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
     }
   </style>
 </head>
@@ -143,37 +196,50 @@ try {
         </div>
         <div class="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-500">Always send only the listed asset to the matching network.</div>
       </div>
-      <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-      <?php foreach ($depositAddresses as $da): ?>
-      <article class="group relative overflow-hidden rounded-[24px] border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-emerald-50/60 p-4 shadow-[0_18px_35px_rgba(15,23,42,0.06)] transition hover:-translate-y-1 hover:shadow-[0_24px_45px_rgba(15,23,42,0.10)]">
-        <div class="absolute right-0 top-0 h-24 w-24 rounded-full bg-emerald-400/10 blur-2xl"></div>
-        <div class="relative flex items-start justify-between gap-3">
-          <div>
-            <span class="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.22em] text-emerald-700"><?= sanitize($da['asset_ticker']) ?></span>
-            <p class="mt-3 text-xs font-medium uppercase tracking-[0.18em] text-slate-500">Network</p>
-            <p class="mt-1 text-sm font-semibold text-slate-800"><?= sanitize($da['network']) ?></p>
+      <div class="grid gap-4 lg:grid-cols-[minmax(220px,280px)_1fr] lg:items-start">
+        <div class="rounded-[24px] border border-slate-200 bg-slate-50/80 p-4">
+          <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">Select coin</p>
+          <div class="selector-shell mt-3">
+            <select id="addressSelector" class="selector-input w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+              <?php foreach ($assetChoices as $assetChoice): ?>
+                <option value="<?= sanitize($assetChoice['address_key']) ?>" <?= $assetChoice['address_key'] === $defaultAddressKey ? 'selected' : '' ?>><?= sanitize($assetChoice['label']) ?></option>
+              <?php endforeach; ?>
+            </select>
           </div>
-          <div class="qr-shell rounded-2xl border border-slate-200 p-2">
-            <div class="qr-code h-[108px] w-[108px] overflow-hidden rounded-xl bg-white" data-address="<?= sanitize($da['address']) ?>"></div>
-          </div>
+          <p class="mt-3 text-xs leading-5 text-slate-500">Use the dropdown to switch between available wallet routes without showing every address at once.</p>
         </div>
 
-        <div class="relative mt-4 rounded-2xl border border-slate-200 bg-white/90 p-3">
-          <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Wallet Address</p>
-          <p class="mt-2 break-all font-mono text-sm leading-6 text-slate-900"><?= sanitize($da['address']) ?></p>
-        </div>
+        <?php if ($defaultAddress): ?>
+        <article class="group relative overflow-hidden rounded-[24px] border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-emerald-50/60 p-4 shadow-[0_18px_35px_rgba(15,23,42,0.06)] transition hover:-translate-y-1 hover:shadow-[0_24px_45px_rgba(15,23,42,0.10)]">
+          <div class="absolute right-0 top-0 h-24 w-24 rounded-full bg-emerald-400/10 blur-2xl"></div>
+          <div class="relative flex items-start justify-between gap-3">
+            <div>
+              <span id="activeAssetBadge" class="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.22em] text-emerald-700"><?= sanitize($defaultAddress['asset_ticker']) ?></span>
+              <p class="mt-3 text-xs font-medium uppercase tracking-[0.18em] text-slate-500">Network</p>
+              <p id="activeNetwork" class="mt-1 text-sm font-semibold text-slate-800"><?= sanitize($defaultAddress['network']) ?></p>
+            </div>
+            <div class="qr-shell rounded-2xl border border-slate-200 p-2">
+              <div id="activeQrCode" class="h-[108px] w-[108px] overflow-hidden rounded-xl bg-white"></div>
+            </div>
+          </div>
 
-        <div class="relative mt-4 flex items-center justify-between gap-3">
-          <span class="copy-feedback text-xs font-medium text-slate-500">Scan or copy for your wallet app</span>
-          <button type="button"
-                  class="copy-address inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-950 px-3 py-2 text-xs font-semibold text-white transition hover:bg-emerald-600"
-                  data-copy-text="<?= sanitize($da['address']) ?>">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h8a2 2 0 002-2V6a2 2 0 00-2-2H8a2 2 0 00-2 2v8a2 2 0 002 2zm-2 4h8a2 2 0 002-2"></path></svg>
-            Tap Copy
-          </button>
-        </div>
-      </article>
-      <?php endforeach; ?>
+          <div class="relative mt-4 rounded-2xl border border-slate-200 bg-white/90 p-3">
+            <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Wallet Address</p>
+            <p id="activeAddressText" class="mt-2 break-all font-mono text-sm leading-6 text-slate-900"><?= sanitize($defaultAddress['address']) ?></p>
+          </div>
+
+          <div class="relative mt-4 flex items-center justify-between gap-3">
+            <span class="copy-feedback text-xs font-medium text-slate-500">Scan or copy for your wallet app</span>
+            <button type="button"
+                    id="copyActiveAddress"
+                    class="copy-address inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-950 px-3 py-2 text-xs font-semibold text-white transition hover:bg-emerald-600"
+                    data-copy-text="<?= sanitize($defaultAddress['address']) ?>">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h8a2 2 0 002-2V6a2 2 0 00-2-2H8a2 2 0 00-2 2v8a2 2 0 002 2zm-2 4h8a2 2 0 002-2"></path></svg>
+              Tap Copy
+            </button>
+          </div>
+        </article>
+        <?php endif; ?>
       </div>
     </section>
     <?php endif; ?>
@@ -192,11 +258,13 @@ try {
 
         <div>
           <label class="block text-sm text-slate-600 mb-1.5">Asset</label>
-          <select name="asset_ticker" class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
-            <option value="BTC">BTC – Bitcoin</option>
-            <option value="ETH">ETH – Ethereum</option>
-            <option value="USDT" selected>USDT – Tether</option>
-          </select>
+          <div class="selector-shell">
+            <select id="depositAssetSelect" name="asset_ticker" class="selector-input w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+              <?php foreach ($assetChoices as $assetChoice): ?>
+                <option value="<?= sanitize($assetChoice['asset_ticker']) ?>" <?= $assetChoice['address_key'] === $defaultAddressKey ? 'selected' : '' ?>><?= sanitize($assetChoice['asset_ticker']) ?></option>
+              <?php endforeach; ?>
+            </select>
+          </div>
         </div>
         <div>
           <label class="block text-sm text-slate-600 mb-1.5">Amount</label>
@@ -255,14 +323,22 @@ try {
 
   <script>
     (function () {
-      const qrNodes = document.querySelectorAll('.qr-code');
-      qrNodes.forEach((node) => {
-        const address = node.dataset.address || '';
-        if (!address || typeof QRCode === 'undefined') {
+      const addressBook = <?= json_encode($addressChoices, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_THROW_ON_ERROR) ?>;
+      const addressSelector = document.getElementById('addressSelector');
+      const assetSelector = document.getElementById('depositAssetSelect');
+      const assetBadge = document.getElementById('activeAssetBadge');
+      const networkLabel = document.getElementById('activeNetwork');
+      const addressText = document.getElementById('activeAddressText');
+      const qrNode = document.getElementById('activeQrCode');
+      const copyButton = document.getElementById('copyActiveAddress');
+
+      function renderQrCode(address) {
+        if (!qrNode || !address || typeof QRCode === 'undefined') {
           return;
         }
 
-        new QRCode(node, {
+        qrNode.innerHTML = '';
+        new QRCode(qrNode, {
           text: address,
           width: 108,
           height: 108,
@@ -270,7 +346,60 @@ try {
           colorLight: '#ffffff',
           correctLevel: QRCode.CorrectLevel.M,
         });
-      });
+      }
+
+      function syncAddressState(addressKey) {
+        const entry = addressBook[addressKey];
+        if (!entry) {
+          return;
+        }
+
+        if (assetBadge) {
+          assetBadge.textContent = entry.asset_ticker;
+        }
+        if (networkLabel) {
+          networkLabel.textContent = entry.network;
+        }
+        if (addressText) {
+          addressText.textContent = entry.address;
+        }
+        if (copyButton) {
+          copyButton.dataset.copyText = entry.address;
+        }
+        if (assetSelector) {
+          assetSelector.value = entry.asset_ticker;
+        }
+
+        renderQrCode(entry.address);
+      }
+
+      function findAddressKeyForAsset(assetTicker) {
+        return Object.keys(addressBook).find((key) => addressBook[key].asset_ticker === assetTicker) || '';
+      }
+
+      if (addressSelector) {
+        addressSelector.addEventListener('change', function () {
+          syncAddressState(this.value);
+        });
+      }
+
+      if (assetSelector) {
+        assetSelector.addEventListener('change', function () {
+          const nextKey = findAddressKeyForAsset(this.value);
+          if (!nextKey) {
+            return;
+          }
+
+          if (addressSelector) {
+            addressSelector.value = nextKey;
+          }
+          syncAddressState(nextKey);
+        });
+      }
+
+      if (addressSelector && addressSelector.value) {
+        syncAddressState(addressSelector.value);
+      }
 
       async function copyText(value) {
         if (navigator.clipboard && window.isSecureContext) {
