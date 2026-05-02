@@ -101,6 +101,26 @@ try {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wallet – 3Commas</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    body {
+      background:
+        radial-gradient(circle at top right, rgba(16, 185, 129, 0.14), transparent 28%),
+        radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.10), transparent 24%),
+        linear-gradient(180deg, #ffffff 0%, #f8fafc 58%, #eefaf5 100%);
+    }
+
+    .wallet-panel {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(226, 232, 240, 0.95);
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+      backdrop-filter: blur(18px);
+    }
+
+    .wallet-qr-shell {
+      background: linear-gradient(145deg, #ffffff, #f8fafc);
+    }
+  </style>
 </head>
 <body class="bg-white text-slate-900 min-h-screen pb-20">
 
@@ -130,17 +150,36 @@ try {
       <h2 class="font-bold text-slate-900 text-lg">Deposit Funds</h2>
 
       <?php if (!empty($depositAddresses)): ?>
-      <div class="space-y-3">
+      <div class="space-y-4">
         <p class="text-slate-600 text-sm">Send crypto to one of the addresses below, then submit your deposit request.</p>
+        <div class="grid gap-4 md:grid-cols-2">
         <?php foreach ($depositAddresses as $da): ?>
-        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
-          <div class="flex items-center justify-between mb-2">
-            <span class="font-semibold text-emerald-400"><?= sanitize($da['asset_ticker']) ?></span>
-            <span class="text-xs text-slate-600 bg-slate-100 px-2 py-1 rounded"><?= sanitize($da['network']) ?></span>
+        <div class="wallet-panel relative overflow-hidden rounded-[24px] p-4">
+          <div class="absolute right-0 top-0 h-20 w-20 rounded-full bg-emerald-400/10 blur-2xl"></div>
+          <div class="relative flex items-start justify-between gap-3 mb-3">
+            <div>
+              <span class="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.22em] text-emerald-700"><?= sanitize($da['asset_ticker']) ?></span>
+              <p class="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Network</p>
+              <p class="mt-1 text-sm font-semibold text-slate-900"><?= sanitize($da['network']) ?></p>
+            </div>
+            <div class="wallet-qr-shell rounded-2xl border border-slate-200 p-2">
+              <div class="wallet-qr h-24 w-24 overflow-hidden rounded-xl bg-white" data-address="<?= sanitize($da['address']) ?>"></div>
+            </div>
           </div>
-          <p class="text-slate-900 text-sm font-mono break-all select-all"><?= sanitize($da['address']) ?></p>
+          <div class="rounded-2xl border border-slate-200 bg-slate-50/90 p-3">
+            <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Wallet Address</p>
+            <p class="mt-2 break-all text-sm font-mono text-slate-900"><?= sanitize($da['address']) ?></p>
+          </div>
+          <div class="mt-3 flex items-center justify-between gap-3">
+            <span class="text-xs text-slate-500">Scan or copy instantly</span>
+            <button type="button" class="copy-address inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-950 px-3 py-2 text-xs font-semibold text-white transition hover:bg-emerald-600" data-copy-text="<?= sanitize($da['address']) ?>">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h8a2 2 0 002-2V6a2 2 0 00-2-2H8a2 2 0 00-2 2v8a2 2 0 002 2zm-2 4h8a2 2 0 002-2"></path></svg>
+              Tap Copy
+            </button>
+          </div>
         </div>
         <?php endforeach; ?>
+        </div>
       </div>
       <?php endif; ?>
 
@@ -149,6 +188,75 @@ try {
         <input type="hidden" name="action" value="deposit">
 
         <div>
+        <script>
+          (function () {
+            const qrNodes = document.querySelectorAll('.wallet-qr');
+            qrNodes.forEach((node) => {
+              const address = node.dataset.address || '';
+              if (!address || typeof QRCode === 'undefined') {
+                return;
+              }
+
+              new QRCode(node, {
+                text: address,
+                width: 96,
+                height: 96,
+                colorDark: '#0f172a',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.M,
+              });
+            });
+
+            async function copyText(value) {
+              if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(value);
+                return;
+              }
+
+              const textarea = document.createElement('textarea');
+              textarea.value = value;
+              textarea.setAttribute('readonly', 'readonly');
+              textarea.style.position = 'absolute';
+              textarea.style.left = '-9999px';
+              document.body.appendChild(textarea);
+              textarea.select();
+              document.execCommand('copy');
+              document.body.removeChild(textarea);
+            }
+
+            document.querySelectorAll('.copy-address').forEach((button) => {
+              button.addEventListener('click', async function () {
+                const text = this.dataset.copyText || '';
+                if (!text) {
+                  return;
+                }
+
+                const label = this.lastChild;
+
+                try {
+                  await copyText(text);
+                  this.classList.remove('bg-slate-950');
+                  this.classList.add('bg-emerald-600');
+                  if (label && label.nodeType === Node.TEXT_NODE) {
+                    label.textContent = ' Copied';
+                  }
+                } catch (error) {
+                  if (label && label.nodeType === Node.TEXT_NODE) {
+                    label.textContent = ' Failed';
+                  }
+                }
+
+                window.setTimeout(() => {
+                  this.classList.add('bg-slate-950');
+                  this.classList.remove('bg-emerald-600');
+                  if (label && label.nodeType === Node.TEXT_NODE) {
+                    label.textContent = ' Tap Copy';
+                  }
+                }, 1800);
+              });
+            });
+          })();
+        </script>
           <label class="block text-sm text-slate-600 mb-1.5">Asset</label>
           <select name="asset_ticker" class="w-full bg-white border border-slate-300 text-slate-900 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500">
             <option value="BTC">BTC – Bitcoin</option>
