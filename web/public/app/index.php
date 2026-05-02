@@ -586,6 +586,45 @@ $pricesJson = json_encode([
             </div>
         </div>
 
+        <!-- Quick Links -->
+        <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <a href="forex.php"
+               class="glass-card rounded-2xl border border-slate-200 p-4 transition hover-lift hover:border-sky-400/50 group">
+                <div class="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-sky-500/15 text-sky-500 group-hover:bg-sky-500/25 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+                </div>
+                <p class="text-sm font-bold text-slate-800 group-hover:text-slate-950 transition">Forex Trading</p>
+                <span class="mt-1 block text-[11px] font-medium uppercase tracking-wide text-slate-500">Live FX desk</span>
+            </a>
+
+            <a href="auto_trading.php"
+               class="glass-card rounded-2xl border border-slate-200 p-4 transition hover-lift hover:border-emerald-400/50 group">
+                <div class="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-500/15 text-emerald-500 group-hover:bg-emerald-500/25 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </div>
+                <p class="text-sm font-bold text-slate-800 group-hover:text-slate-950 transition">Auto Trading</p>
+                <span class="mt-1 block text-[11px] font-medium uppercase tracking-wide text-slate-500">Bot plan vault</span>
+            </a>
+
+            <a href="copy_trading.php"
+               class="glass-card rounded-2xl border border-slate-200 p-4 transition hover-lift hover:border-violet-400/50 group">
+                <div class="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-violet-500/15 text-violet-500 group-hover:bg-violet-500/25 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5V10a2 2 0 00-2-2h-3m-10 12H2V8a2 2 0 012-2h3m3 14v-4a2 2 0 012-2h0a2 2 0 012 2v4m-6 0h6M9 8a3 3 0 116 0 3 3 0 01-6 0z"/></svg>
+                </div>
+                <p class="text-sm font-bold text-slate-800 group-hover:text-slate-950 transition">Copy Trading</p>
+                <span class="mt-1 block text-[11px] font-medium uppercase tracking-wide text-slate-500">Trader signal copy</span>
+            </a>
+
+            <a href="mining.php"
+               class="glass-card rounded-2xl border border-slate-200 p-4 transition hover-lift hover:border-amber-400/50 group">
+                <div class="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-500/15 text-amber-500 group-hover:bg-amber-500/25 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v18m9-9H3m14.364-6.364L6.636 18.364m10.728 0L6.636 5.636"/></svg>
+                </div>
+                <p class="text-sm font-bold text-slate-800 group-hover:text-slate-950 transition">Crypto Mining</p>
+                <span class="mt-1 block text-[11px] font-medium uppercase tracking-wide text-slate-500">Mining pool hub</span>
+            </a>
+        </div>
+
         <!-- ════════════════════════════════════════
              OPEN POSITIONS  +  ACCOUNT STATUS
         ════════════════════════════════════════ -->
