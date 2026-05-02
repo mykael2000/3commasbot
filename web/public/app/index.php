@@ -405,11 +405,11 @@ $pricesJson = json_encode([
             <div class="relative grid grid-cols-2 gap-2">
                 <a href="deposit.php"
                    class="flex-1 text-center bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold px-4 py-2 rounded-xl transition-all transform hover:scale-[1.02] shadow-lg shadow-emerald-900/40">
-                    ↓ Deposit
+                    + Deposit
                 </a>
                 <a href="withdraw.php"
                          class="flex-1 text-center bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-white font-bold px-4 py-2 rounded-xl transition-all transform hover:scale-[1.02] shadow-lg shadow-slate-900/35">
-                    ↑ Withdraw
+                    - Withdraw
                 </a>
             </div>
         </div>
