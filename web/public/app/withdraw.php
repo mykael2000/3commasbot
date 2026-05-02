@@ -133,16 +133,6 @@ try {
       <h2 class="font-bold text-slate-900 text-base">Select Withdrawal Method</h2>
 
       <div class="grid grid-cols-2 gap-3">
-        <button type="button" id="btnBank"
-          onclick="selectMethod('bank')"
-          class="method-card border-2 border-transparent rounded-xl p-4 text-center cursor-pointer transition bg-white hover:border-blue-500/60">
-          <div class="w-10 h-10 bg-blue-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
-            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-          </div>
-          <p class="text-sm font-bold text-slate-800">Bank Transfer</p>
-          <p class="text-xs text-slate-600 mt-0.5">Wire / ACH</p>
-        </button>
-
         <button type="button" id="btnCrypto"
           onclick="selectMethod('crypto')"
           class="method-card border-2 border-transparent rounded-xl p-4 text-center cursor-pointer transition bg-white hover:border-yellow-500/60">
@@ -151,6 +141,16 @@ try {
           </div>
           <p class="text-sm font-bold text-slate-800">Crypto</p>
           <p class="text-xs text-slate-600 mt-0.5">BTC / ETH / USDT</p>
+        </button>
+
+        <button type="button" id="btnBank"
+          onclick="selectMethod('bank')"
+          class="method-card border-2 border-transparent rounded-xl p-4 text-center cursor-pointer transition bg-white hover:border-blue-500/60">
+          <div class="w-10 h-10 bg-blue-500/15 rounded-xl flex items-center justify-center mx-auto mb-2">
+            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+          </div>
+          <p class="text-sm font-bold text-slate-800">Bank Transfer</p>
+          <p class="text-xs text-slate-600 mt-0.5">Wire / ACH</p>
         </button>
       </div>
     </div>
@@ -351,6 +351,9 @@ function updateBalanceHint() {
 }
 
 document.getElementById('assetSelect').addEventListener('change', updateBalanceHint);
+
+// Default to crypto flow on first load until user selects bank.
+selectMethod('crypto');
 </script>
 
 </body>
