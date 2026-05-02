@@ -587,7 +587,7 @@ $pricesJson = json_encode([
         </div>
 
         <!-- Quick Links -->
-        <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <div class="grid grid-cols-2 gap-3">
             <a href="forex.php"
                class="glass-card rounded-2xl border border-slate-200 p-4 transition hover-lift hover:border-sky-400/50 group">
                 <div class="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-sky-500/15 text-sky-500 group-hover:bg-sky-500/25 transition">
