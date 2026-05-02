@@ -402,7 +402,7 @@ $pricesJson = json_encode([
             </div>
 
             <!-- Action Buttons -->
-            <div class="relative flex flex-col sm:flex-row gap-2">
+            <div class="relative grid grid-cols-2 gap-2">
                 <a href="deposit.php"
                    class="flex-1 text-center bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold px-4 py-2 rounded-xl transition-all transform hover:scale-[1.02] shadow-lg shadow-emerald-900/40">
                     ↓ Deposit
@@ -410,10 +410,6 @@ $pricesJson = json_encode([
                 <a href="withdraw.php"
                    class="flex-1 text-center bg-gradient-to-r from-amber-600 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-white font-bold px-4 py-2 rounded-xl transition-all transform hover:scale-[1.02] shadow-lg shadow-amber-900/40">
                     ↑ Withdraw
-                </a>
-                <a href="trading.php"
-                   class="flex-1 text-center bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-600 hover:to-blue-500 text-white font-bold px-4 py-2 rounded-xl transition-all transform hover:scale-[1.02] shadow-lg shadow-blue-900/40">
-                    ⚡ Trade
                 </a>
             </div>
         </div>
@@ -673,13 +669,7 @@ $pricesJson = json_encode([
 
                 <!-- Quick Links -->
                 <div class="grid grid-cols-2 gap-2">
-                    <a href="profile.php"
-                       class="glass-card hover:border-emerald-500/40 rounded-2xl p-2 text-center transition hover-lift group border border-slate-200">
-                        <div class="w-10 h-10 bg-emerald-500/15 rounded-xl flex items-center justify-center mx-auto mb-1 group-hover:bg-emerald-500/25 transition">
-                            <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                        </div>
-                        <p class="text-xs font-bold text-slate-600 group-hover:text-slate-900 transition">Profile</p>
-                    </a>
+                    
                     <a href="wallet.php"
                        class="glass-card hover:border-emerald-500/40 rounded-2xl p-2 text-center transition hover-lift group border border-slate-200">
                         <div class="w-10 h-10 bg-blue-500/15 rounded-xl flex items-center justify-center mx-auto mb-1 group-hover:bg-blue-500/25 transition">
@@ -687,20 +677,14 @@ $pricesJson = json_encode([
                         </div>
                         <p class="text-xs font-bold text-slate-600 group-hover:text-slate-900 transition">Wallet</p>
                     </a>
-                    <a href="trading.php"
+                    <a href="documents.php"
                        class="glass-card hover:border-emerald-500/40 rounded-2xl p-2 text-center transition hover-lift group border border-slate-200">
                         <div class="w-10 h-10 bg-purple-500/15 rounded-xl flex items-center justify-center mx-auto mb-1 group-hover:bg-purple-500/25 transition">
                             <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
                         </div>
-                        <p class="text-xs font-bold text-slate-600 group-hover:text-slate-900 transition">Trade</p>
+                        <p class="text-xs font-bold text-slate-600 group-hover:text-slate-900 transition">Documents</p>
                     </a>
-                    <a href="markets.php"
-                       class="glass-card hover:border-emerald-500/40 rounded-2xl p-2 text-center transition hover-lift group border border-slate-200">
-                        <div class="w-10 h-10 bg-amber-500/15 rounded-xl flex items-center justify-center mx-auto mb-1 group-hover:bg-amber-500/25 transition">
-                            <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                        </div>
-                        <p class="text-xs font-bold text-slate-600 group-hover:text-slate-900 transition">Markets</p>
-                    </a>
+                    
                 </div>
             </div>
         </div>
