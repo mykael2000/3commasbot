@@ -294,7 +294,12 @@ $user = current_user();
             : ((float)$trade['price_open'] - $cp) * (float)$trade['qty'];
         $pnlClass = $pnl >= 0 ? 'text-emerald-400' : 'text-red-400';
       ?>
-      <div class="px-5 py-4 border-b border-slate-200 last:border-0">
+      <div class="px-5 py-4 border-b border-slate-200 last:border-0"
+           data-trade-row="1"
+           data-symbol="<?= sanitize($trade['symbol']) ?>"
+           data-side="<?= sanitize($trade['side']) ?>"
+           data-open="<?= (float)$trade['price_open'] ?>"
+           data-qty="<?= (float)$trade['qty'] ?>">
         <div class="flex items-start justify-between">
           <div>
             <span class="font-semibold text-slate-900"><?= sanitize($trade['symbol']) ?></span>
@@ -304,11 +309,11 @@ $user = current_user();
             <div class="text-slate-600 text-xs mt-1">
               Open: $<?= number_format((float)$trade['price_open'], 2) ?> &middot;
               Qty: <?= (float)$trade['qty'] ?> &middot;
-              Now: $<?= number_format($cp, 2) ?>
+              Now: <span data-now-price="1">$<?= number_format($cp, 2) ?></span>
             </div>
           </div>
           <div class="text-right">
-            <p class="font-bold <?= $pnlClass ?>">
+            <p class="font-bold <?= $pnlClass ?>" data-pnl="1">
               <?= $pnl >= 0 ? '+' : '' ?>$<?= format_currency($pnl) ?>
             </p>
             <form method="POST" action="trading.php?mode=<?= $mode ?>" class="mt-2">
@@ -382,21 +387,91 @@ $user = current_user();
   <?php $activePage = 'trading.php'; include '_nav.php'; ?>
 
   <script>
-    // Update price when symbol changes
-    document.getElementById('symbolSelect').addEventListener('change', function() {
-      const sym = this.value;
-      fetch('https://api.binance.com/api/v3/ticker/price?symbol=' + sym)
-        .then(r => r.json())
-        .then(d => {
-          if (d.price) {
-            document.getElementById('priceDisplay').textContent =
-              '$' + parseFloat(d.price).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    (function () {
+      const symbolSelect = document.getElementById('symbolSelect');
+      const priceDisplay = document.getElementById('priceDisplay');
+
+      function fmtUsd(n) {
+        return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+
+      function fetchOne(symbol) {
+        return fetch('https://api.binance.com/api/v3/ticker/price?symbol=' + symbol)
+          .then((r) => r.json())
+          .then((d) => (d && d.price ? parseFloat(d.price) : null));
+      }
+
+      function collectSymbols() {
+        const symbols = new Set();
+        if (symbolSelect && symbolSelect.value) {
+          symbols.add(symbolSelect.value);
+        }
+        document.querySelectorAll('[data-trade-row="1"]').forEach((row) => {
+          const sym = row.dataset.symbol || '';
+          if (sym) {
+            symbols.add(sym);
           }
-        })
-        .catch(err => {
-          console.error('Price fetch error:', err);
         });
-    });
+        return Array.from(symbols);
+      }
+
+      async function refreshPrices() {
+        const symbols = collectSymbols();
+        if (!symbols.length) {
+          return;
+        }
+
+        const results = await Promise.all(
+          symbols.map((sym) =>
+            fetchOne(sym)
+              .then((price) => ({ sym, price }))
+              .catch(() => ({ sym, price: null }))
+          )
+        );
+
+        const map = {};
+        results.forEach((item) => {
+          if (item.price !== null) {
+            map[item.sym] = item.price;
+          }
+        });
+
+        if (symbolSelect && map[symbolSelect.value] !== undefined) {
+          priceDisplay.textContent = fmtUsd(map[symbolSelect.value]);
+        }
+
+        document.querySelectorAll('[data-trade-row="1"]').forEach((row) => {
+          const sym = row.dataset.symbol || '';
+          const side = row.dataset.side || 'buy';
+          const open = parseFloat(row.dataset.open || '0');
+          const qty = parseFloat(row.dataset.qty || '0');
+          const now = map[sym];
+          if (now === undefined) {
+            return;
+          }
+
+          const nowNode = row.querySelector('[data-now-price="1"]');
+          if (nowNode) {
+            nowNode.textContent = fmtUsd(now);
+          }
+
+          const pnlNode = row.querySelector('[data-pnl="1"]');
+          if (pnlNode) {
+            const pnl = side === 'buy' ? (now - open) * qty : (open - now) * qty;
+            pnlNode.textContent = (pnl >= 0 ? '+' : '') + fmtUsd(Math.abs(pnl));
+            pnlNode.classList.remove('text-emerald-400', 'text-red-400');
+            pnlNode.classList.add(pnl >= 0 ? 'text-emerald-400' : 'text-red-400');
+          }
+        });
+      }
+
+      if (symbolSelect) {
+        symbolSelect.addEventListener('change', refreshPrices);
+      }
+
+      refreshPrices();
+      setInterval(refreshPrices, 5000);
+    })();
   </script>
 
 </body>
