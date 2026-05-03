@@ -121,6 +121,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>3Commas – Automated Crypto Trading</title>
+
+  <!-- SEO -->
+  <meta name="description" content="3Commas is a powerful automated crypto trading platform. Connect your exchange, set up bots, and trade smarter 24/7.">
+
+  <!-- Open Graph / link preview -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://3commas.io/">
+  <meta property="og:title" content="3Commas – Automated Crypto Trading">
+  <meta property="og:description" content="3Commas is a powerful automated crypto trading platform. Connect your exchange, set up bots, and trade smarter 24/7.">
+  <meta property="og:image" content="<?= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . htmlspecialchars($_SERVER['HTTP_HOST'], ENT_QUOTES) ?>/images/og-image.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="3Commas – Automated Crypto Trading">
+  <meta name="twitter:description" content="3Commas is a powerful automated crypto trading platform. Connect your exchange, set up bots, and trade smarter 24/7.">
+  <meta name="twitter:image" content="<?= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . htmlspecialchars($_SERVER['HTTP_HOST'], ENT_QUOTES) ?>/images/og-image.svg">
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
