@@ -381,21 +381,21 @@ $pricesJson = json_encode([
                 <div class="glass-card rounded-2xl p-2 hover-lift">
                     <p class="text-slate-500 text-[11px] font-semibold uppercase tracking-wider mb-2">Total Deposit</p>
                     <p class="text-xl sm:text-2xl font-black tabular-nums text-emerald-400">$<?= number_format($equity, 2) ?></p>
-                    <p class="text-xs text-slate-500 mt-1">Set by admin</p>
+                    
                 </div>
 
                 <!-- Auto Trading Allocated -->
                 <div class="glass-card rounded-2xl p-2 hover-lift">
                     <p class="text-slate-500 text-[11px] font-semibold uppercase tracking-wider mb-2">Auto Trading Allocated</p>
                     <p class="text-xl sm:text-2xl font-black tabular-nums text-blue-400">$<?= number_format($margin, 2) ?></p>
-                    <p class="text-xs text-slate-500 mt-1">Set by admin</p>
+                    
                 </div>
 
                 <!-- Copy Trading Allocated -->
                 <div class="glass-card rounded-2xl p-2 hover-lift">
                     <p class="text-slate-500 text-[11px] font-semibold uppercase tracking-wider mb-2">Copy Trading Allocated</p>
                     <p class="text-xl sm:text-2xl font-black tabular-nums text-cyan-400">$<?= number_format($freeMargin, 2) ?></p>
-                    <p class="text-xs text-slate-500 mt-1">Set by admin</p>
+                  
                 </div>
             </div>
 
