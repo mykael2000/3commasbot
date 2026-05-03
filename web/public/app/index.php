@@ -276,9 +276,9 @@ $pricesJson = json_encode([
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m10 4v12m0 0l-4-4m4 4l4-4"/></svg>
                     Swap
                 </a>
-                <a href="wallet.php" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-                    Wallet
+                <a href="trading.php" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                    Trade
                 </a>
                 <a href="profile.php" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
@@ -706,12 +706,12 @@ $pricesJson = json_encode([
                 <!-- Quick Links -->
                 <div class="grid grid-cols-2 gap-2">
                     
-                    <a href="wallet.php"
+                        <a href="trading.php"
                        class="glass-card hover:border-emerald-500/40 rounded-2xl p-2 text-center transition hover-lift group border border-slate-200">
                         <div class="w-10 h-10 bg-blue-500/15 rounded-xl flex items-center justify-center mx-auto mb-1 group-hover:bg-blue-500/25 transition">
-                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                               <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
                         </div>
-                        <p class="text-xs font-bold text-slate-600 group-hover:text-slate-900 transition">Wallet</p>
+                            <p class="text-xs font-bold text-slate-600 group-hover:text-slate-900 transition">Trade</p>
                     </a>
                     <a href="documents.php"
                        class="glass-card hover:border-emerald-500/40 rounded-2xl p-2 text-center transition hover-lift group border border-slate-200">
