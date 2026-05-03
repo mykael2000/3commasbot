@@ -34,12 +34,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = trim((string)($_POST['action'] ?? ''));
     $userId = (int)($_POST['user_id'] ?? 0);
     $amount = (float)($_POST['amount'] ?? 0);
+  $assetTicker = strtoupper(trim((string)($_POST['asset_ticker'] ?? 'USDT')));
 
     $validActions = ['add_deposit', 'add_profit', 'add_auto_trading', 'add_copy_trading'];
+  $assetToColumn = [
+    'USDT' => 'balance',
+    'BTC'  => 'btc_balance',
+    'ETH'  => 'eth_balance',
+    'BNB'  => 'bnb_balance',
+    'SOL'  => 'sol_balance',
+  ];
     if (!in_array($action, $validActions, true) || $userId <= 0 || $amount <= 0) {
         flash('error', 'Please choose a valid user and amount greater than zero.');
         redirect('/admin/add_balances.php');
     }
+
+  if ($action === 'add_deposit' && !isset($assetToColumn[$assetTicker])) {
+    flash('error', 'Please select a valid coin for deposit.');
+    redirect('/admin/add_balances.php');
+  }
 
     try {
         $pdo = db();
@@ -56,10 +69,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($action === 'add_deposit') {
-            // Add deposit to wallet balance and total deposit metric together.
-            $pdo->prepare('UPDATE users SET balance = balance + ?, dashboard_equity = dashboard_equity + ? WHERE id = ?')
-                ->execute([$amount, $amount, $userId]);
-            flash('success', 'Added $' . number_format($amount, 2) . ' deposit to ' . $selectedUser['name'] . '.');
+          // Credit selected coin balance and also increase total deposit metric in USD-equivalent.
+          $coinColumn = $assetToColumn[$assetTicker];
+          $usdValue = $assetTicker === 'USDT' ? $amount : ($amount * price_for_symbol($assetTicker . 'USDT'));
+
+          $pdo->prepare('UPDATE users SET ' . $coinColumn . ' = ' . $coinColumn . ' + ?, dashboard_equity = dashboard_equity + ? WHERE id = ?')
+            ->execute([$amount, $usdValue, $userId]);
+
+          flash('success', 'Added ' . rtrim(rtrim(number_format($amount, 8, '.', ''), '0'), '.') . ' ' . $assetTicker . ' deposit to ' . $selectedUser['name'] . '.');
         } elseif ($action === 'add_profit') {
             $pdo->prepare('UPDATE users SET dashboard_today_pnl = dashboard_today_pnl + ? WHERE id = ?')
                 ->execute([$amount, $userId]);
@@ -124,7 +141,7 @@ try {
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
       <section class="bg-slate-700 rounded-2xl p-5">
         <h2 class="font-bold text-white mb-1">Add Deposit</h2>
-        <p class="text-xs text-slate-400 mb-4">Adds to USDT balance and Total Deposit.</p>
+        <p class="text-xs text-slate-400 mb-4">Adds to selected coin balance and updates Total Deposit.</p>
         <form method="POST" action="/admin/add_balances.php" class="space-y-3">
           <?= csrf_field() ?>
           <input type="hidden" name="action" value="add_deposit">
@@ -138,7 +155,17 @@ try {
             </select>
           </div>
           <div>
-            <label class="block text-xs text-slate-300 mb-1">Amount (USD)</label>
+            <label class="block text-xs text-slate-300 mb-1">Coin</label>
+            <select name="asset_ticker" required class="w-full bg-slate-600 border border-slate-500 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/60">
+              <option value="USDT" selected>USDT</option>
+              <option value="BTC">BTC</option>
+              <option value="ETH">ETH</option>
+              <option value="BNB">BNB</option>
+              <option value="SOL">SOL</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs text-slate-300 mb-1">Amount</label>
             <input type="number" name="amount" min="0.00000001" step="0.00000001" required class="w-full bg-slate-600 border border-slate-500 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/60" placeholder="0.00">
           </div>
           <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-4 py-2 rounded-lg transition">Add Deposit</button>

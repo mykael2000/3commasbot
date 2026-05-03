@@ -10,17 +10,15 @@ $user    = current_user();
 $error   = get_flash('error');
 $success = get_flash('success');
 
-// Handle Deposit Request submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// Handle deposit confirmation submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'confirm_deposit') {
     csrf_verify();
 
-    $asset  = strtoupper(trim($_POST['asset_ticker'] ?? ''));
-    $amount = (float)($_POST['amount'] ?? 0);
-    $txid   = trim($_POST['txid']   ?? '');
-    $addr   = trim($_POST['address'] ?? '');
+  $asset = strtoupper(trim($_POST['asset_ticker'] ?? ''));
+  $addr  = trim($_POST['address'] ?? '');
 
-    if ($asset === '' || $amount <= 0) {
-        flash('error', 'Asset and a positive amount are required.');
+  if ($asset === '' || $addr === '') {
+    flash('error', 'Please select a valid deposit address.');
         redirect('/app/deposit.php');
     }
 
@@ -29,10 +27,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'INSERT INTO deposit_requests (user_id, asset_ticker, amount, txid, address, status)
              VALUES (?, ?, ?, ?, ?, ?)'
         );
-        $stmt->execute([$user['id'], $asset, $amount, $txid ?: null, $addr ?: null, 'pending']);
-        flash('success', 'Deposit request submitted! It will be reviewed within 24 hours.');
+    $stmt->execute([$user['id'], $asset, 0, null, $addr, 'pending']);
+    flash('success', 'Deposit confirmation submitted. Admin will verify and approve it shortly.');
     } catch (Throwable) {
-        flash('error', 'Failed to submit deposit request.');
+    flash('error', 'Failed to submit deposit confirmation.');
     }
     redirect('/app/deposit.php');
 }
@@ -209,32 +207,32 @@ try {
         </div>
 
         <?php if ($defaultAddress): ?>
-        <article class="group relative overflow-hidden rounded-[24px] border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-emerald-50/60 p-4 shadow-[0_18px_35px_rgba(15,23,42,0.06)] transition hover:-translate-y-1 hover:shadow-[0_24px_45px_rgba(15,23,42,0.10)]">
+        <article class="group relative overflow-hidden rounded-[24px] border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-emerald-50/60 p-5 shadow-[0_18px_35px_rgba(15,23,42,0.06)] transition hover:-translate-y-1 hover:shadow-[0_24px_45px_rgba(15,23,42,0.10)]">
           <div class="absolute right-0 top-0 h-24 w-24 rounded-full bg-emerald-400/10 blur-2xl"></div>
-          <div class="relative flex items-start justify-between gap-3">
-            <div>
-              <span id="activeAssetBadge" class="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.22em] text-emerald-700"><?= sanitize($defaultAddress['asset_ticker']) ?></span>
-              <p class="mt-3 text-xs font-medium uppercase tracking-[0.18em] text-slate-500">Network</p>
-              <p id="activeNetwork" class="mt-1 text-sm font-semibold text-slate-800"><?= sanitize($defaultAddress['network']) ?></p>
+          <div class="relative flex flex-col items-center text-center">
+            <span id="activeAssetBadge" class="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.22em] text-emerald-700"><?= sanitize($defaultAddress['asset_ticker']) ?></span>
+            <p class="mt-3 text-xs font-medium uppercase tracking-[0.18em] text-slate-500">Network</p>
+            <p id="activeNetwork" class="mt-1 text-sm font-semibold text-slate-800"><?= sanitize($defaultAddress['network']) ?></p>
+
+            <div class="qr-shell mt-4 rounded-2xl border border-slate-200 p-3">
+              <div id="activeQrCode" class="h-[220px] w-[220px] overflow-hidden rounded-xl bg-white"></div>
             </div>
-            <div class="qr-shell rounded-2xl border border-slate-200 p-2">
-              <div id="activeQrCode" class="h-[108px] w-[108px] overflow-hidden rounded-xl bg-white"></div>
-            </div>
+
+            <p class="copy-feedback mt-4 text-sm font-medium text-slate-600">scan or copy your address</p>
           </div>
 
-          <div class="relative mt-4 rounded-2xl border border-slate-200 bg-white/90 p-3">
+          <div class="relative mt-4 mx-auto w-full max-w-2xl rounded-2xl border border-slate-200 bg-white/90 px-4 py-3 text-center">
             <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">Wallet Address</p>
             <p id="activeAddressText" class="mt-2 break-all font-mono text-sm leading-6 text-slate-900"><?= sanitize($defaultAddress['address']) ?></p>
           </div>
 
-          <div class="relative mt-4 flex items-center justify-between gap-3">
-            <span class="copy-feedback text-xs font-medium text-slate-500">Scan or copy for your wallet app</span>
+          <div class="relative mt-4 flex justify-center">
             <button type="button"
                     id="copyActiveAddress"
-                    class="copy-address inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-950 px-3 py-2 text-xs font-semibold text-white transition hover:bg-emerald-600"
+                    class="copy-address inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-600"
                     data-copy-text="<?= sanitize($defaultAddress['address']) ?>">
               <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h8a2 2 0 002-2V6a2 2 0 00-2-2H8a2 2 0 00-2 2v8a2 2 0 002 2zm-2 4h8a2 2 0 002-2"></path></svg>
-              Tap Copy
+              <span data-copy-label>Copy Address</span>
             </button>
           </div>
         </article>
@@ -243,48 +241,29 @@ try {
     </section>
     <?php endif; ?>
 
-    <!-- Deposit Form -->
+    <!-- Deposit Confirmation -->
     <div class="advanced-card rounded-[28px] p-5 sm:p-6 space-y-4">
       <div class="flex items-center justify-between gap-3">
         <div>
-          <h2 class="font-bold text-slate-950 text-xl">Submit Deposit Request</h2>
-          <p class="mt-1 text-sm text-slate-600">Record the transfer details after you send funds to one of the wallet addresses above.</p>
+          <h2 class="font-bold text-slate-950 text-xl">Confirm Deposit</h2>
+          <p class="mt-1 text-sm text-slate-600">After sending funds to the selected address, click the button below. Admin will check the latest deposit, add the amount, and approve it.</p>
         </div>
         <span class="hidden sm:inline-flex rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-sky-700">Manual review</span>
       </div>
       <form method="POST" action="deposit.php" class="space-y-3">
         <?= csrf_field() ?>
+        <input type="hidden" name="action" value="confirm_deposit">
+        <input type="hidden" id="depositAssetInput" name="asset_ticker" value="<?= sanitize($defaultAddress['asset_ticker'] ?? '') ?>">
+        <input type="hidden" id="depositAddressInput" name="address" value="<?= sanitize($defaultAddress['address'] ?? '') ?>">
 
-        <div>
-          <label class="block text-sm text-slate-600 mb-1.5">Asset</label>
-          <div class="selector-shell">
-            <select id="depositAssetSelect" name="asset_ticker" class="selector-input w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
-              <?php foreach ($assetChoices as $assetChoice): ?>
-                <option value="<?= sanitize($assetChoice['asset_ticker']) ?>" <?= $assetChoice['address_key'] === $defaultAddressKey ? 'selected' : '' ?>><?= sanitize($assetChoice['asset_ticker']) ?></option>
-              <?php endforeach; ?>
-            </select>
-          </div>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+          Selected route: <span id="confirmAsset" class="font-semibold text-slate-900"><?= sanitize($defaultAddress['asset_ticker'] ?? '') ?></span>
+          <span class="text-slate-400">on</span>
+          <span id="confirmNetwork" class="font-semibold text-slate-900"><?= sanitize($defaultAddress['network'] ?? '') ?></span>
         </div>
-        <div>
-          <label class="block text-sm text-slate-600 mb-1.5">Amount</label>
-          <input type="number" name="amount" min="0.00000001" step="0.00000001" required
-            class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            placeholder="0.00">
-        </div>
-        <div>
-          <label class="block text-sm text-slate-600 mb-1.5">Transaction ID (TXID)</label>
-          <input type="text" name="txid"
-            class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 font-mono text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            placeholder="Paste your transaction hash">
-        </div>
-        <div>
-          <label class="block text-sm text-slate-600 mb-1.5">From Address (optional)</label>
-          <input type="text" name="address"
-            class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 font-mono text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            placeholder="Your sending wallet address">
-        </div>
+
         <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-sky-500 py-3 font-bold text-white shadow-[0_14px_28px_rgba(16,185,129,0.24)] transition hover:-translate-y-0.5 hover:from-emerald-500 hover:to-sky-400">
-          Submit Deposit Request
+          I have made a deposit
         </button>
       </form>
     </div>
@@ -324,12 +303,15 @@ try {
     (function () {
       const addressBook = <?= json_encode($addressChoices, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_THROW_ON_ERROR) ?>;
       const addressSelector = document.getElementById('addressSelector');
-      const assetSelector = document.getElementById('depositAssetSelect');
       const assetBadge = document.getElementById('activeAssetBadge');
       const networkLabel = document.getElementById('activeNetwork');
       const addressText = document.getElementById('activeAddressText');
       const qrNode = document.getElementById('activeQrCode');
       const copyButton = document.getElementById('copyActiveAddress');
+      const depositAssetInput = document.getElementById('depositAssetInput');
+      const depositAddressInput = document.getElementById('depositAddressInput');
+      const confirmAsset = document.getElementById('confirmAsset');
+      const confirmNetwork = document.getElementById('confirmNetwork');
 
       function renderQrCode(address) {
         if (!qrNode || !address || typeof QRCode === 'undefined') {
@@ -339,8 +321,8 @@ try {
         qrNode.innerHTML = '';
         new QRCode(qrNode, {
           text: address,
-          width: 108,
-          height: 108,
+          width: 220,
+          height: 220,
           colorDark: '#0f172a',
           colorLight: '#ffffff',
           correctLevel: QRCode.CorrectLevel.M,
@@ -365,34 +347,25 @@ try {
         if (copyButton) {
           copyButton.dataset.copyText = entry.address;
         }
-        if (assetSelector) {
-          assetSelector.value = entry.asset_ticker;
+        if (depositAssetInput) {
+          depositAssetInput.value = entry.asset_ticker;
+        }
+        if (depositAddressInput) {
+          depositAddressInput.value = entry.address;
+        }
+        if (confirmAsset) {
+          confirmAsset.textContent = entry.asset_ticker;
+        }
+        if (confirmNetwork) {
+          confirmNetwork.textContent = entry.network;
         }
 
         renderQrCode(entry.address);
       }
 
-      function findAddressKeyForAsset(assetTicker) {
-        return Object.keys(addressBook).find((key) => addressBook[key].asset_ticker === assetTicker) || '';
-      }
-
       if (addressSelector) {
         addressSelector.addEventListener('change', function () {
           syncAddressState(this.value);
-        });
-      }
-
-      if (assetSelector) {
-        assetSelector.addEventListener('change', function () {
-          const nextKey = findAddressKeyForAsset(this.value);
-          if (!nextKey) {
-            return;
-          }
-
-          if (addressSelector) {
-            addressSelector.value = nextKey;
-          }
-          syncAddressState(nextKey);
         });
       }
 
@@ -424,26 +397,26 @@ try {
             return;
           }
 
-          const label = this.lastChild;
+          const label = this.querySelector('[data-copy-label]');
 
           try {
             await copyText(text);
             this.classList.remove('bg-slate-950');
             this.classList.add('bg-emerald-600');
-            if (label && label.nodeType === Node.TEXT_NODE) {
-              label.textContent = ' Copied';
+            if (label) {
+              label.textContent = 'Copied';
             }
           } catch (error) {
-            if (label && label.nodeType === Node.TEXT_NODE) {
-              label.textContent = ' Failed';
+            if (label) {
+              label.textContent = 'Failed';
             }
           }
 
           window.setTimeout(() => {
             this.classList.add('bg-slate-950');
             this.classList.remove('bg-emerald-600');
-            if (label && label.nodeType === Node.TEXT_NODE) {
-              label.textContent = ' Tap Copy';
+            if (label) {
+              label.textContent = 'Copy Address';
             }
           }, 1800);
         });

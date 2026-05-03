@@ -46,6 +46,7 @@ $_adminPage = $activeAdminPage ?? basename($_SERVER['PHP_SELF'] ?? '');
         'copy_traders.php'  => 'Copy Traders',
         'copy_requests.php' => 'Copy Requests',
         'addresses.php'     => 'Addresses',
+        'deposits.php'      => 'Deposits',
         'withdrawals.php'   => 'Withdrawals',
         'kyc.php'           => 'KYC Review',
         'documents.php'     => 'Documents',

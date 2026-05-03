@@ -63,6 +63,10 @@ try {
           <h3 class="font-bold text-white mb-1">Add Balances</h3>
           <p class="text-slate-400 text-sm">Add deposit, profit, auto and copy trading balances</p>
         </a>
+        <a href="/admin/deposits.php" class="bg-slate-700 hover:bg-slate-600 rounded-2xl p-5 transition block">
+          <h3 class="font-bold text-white mb-1">Review Deposits</h3>
+          <p class="text-slate-400 text-sm"><?= $stats['pending_deposits'] ?> pending requests</p>
+        </a>
         <a href="/admin/withdrawals.php" class="bg-slate-700 hover:bg-slate-600 rounded-2xl p-5 transition block">
           <h3 class="font-bold text-white mb-1">Review Withdrawals</h3>
           <p class="text-slate-400 text-sm"><?= $stats['pending_withdrawals'] ?> pending requests</p>
