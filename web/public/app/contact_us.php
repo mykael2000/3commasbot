@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         redirect('contact_us.php');
     }
 
-    $to = 'support@3commas.io';
+    $to = 'support@3commasbot.io';
     $safeName = sanitize($name);
     $safeEmail = sanitize($email);
     $safeSubject = sanitize($subject);

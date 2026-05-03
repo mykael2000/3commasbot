@@ -179,7 +179,7 @@ $kycColor = match($kycStatus) {
     <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6">
       <h3 class="font-bold text-slate-900 text-lg mb-2">Live Support</h3>
       <p class="text-slate-600 text-sm mb-4">Our support team is available 24/7. Reach us via email.</p>
-      <a href="mailto:support@3commas.io"
+      <a href="mailto:support@3commasbot.io"
         class="block w-full text-center bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-3 rounded-xl transition mb-3">
         Email Support
       </a>

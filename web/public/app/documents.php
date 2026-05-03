@@ -59,7 +59,7 @@ try {
 
   $legalContents = [
     'rpp_from'       => '<p class="text-xs text-slate-400 mb-3 italic">This Recurring Payment Policy is effective as of December 29, 2024. For definitions of capitalized terms, refer to the Terms of Use.</p>
-<p><strong>1.</strong> For issues related to payments or refunds, consult the 3Commas Help Center. To request assistance, contact 3Commas Support through the "Contact Us"/"Support" form or email support[at]3commas.io.</p>
+<p><strong>1.</strong> For issues related to payments or refunds, consult the 3Commas Help Center. To request assistance, contact 3Commas Support through the "Contact Us"/"Support" form or email support[at]3commasbot.io.</p>
 <p><strong>2. Authorization.</strong> By agreeing to this policy, you authorize 3C Trade Tech Ltd. (BVI company number: 2164568, address: Geneva Place, 2nd Floor, #333 Waterfront Drive, Road Town Tortola, British Virgin Islands) or 3Commas Technologies OÜ (registration code 14125515, address: Laeva 2, Tallinn, Estonia, 10412) on behalf of 3C Trade Tech Ltd. (each separately "3Commas") to charge your specified default payment method, whether it\'s a Visa, Mastercard, or other payment card, or your PayPal account (including linked cards and bank accounts) every 30 days (also referred to as \'monthly\' or \'on a month-to-month basis\') or every year (also referred to as \'annual\' or \'on a year-to-year basis\'), as chosen when subscribing.</p>
 <p><strong>3. Payment Processing:</strong></p>
 <ul class="list-disc pl-5 space-y-1">
@@ -91,7 +91,7 @@ try {
 <p>After three consecutive failed attempts within these time frames, recurring payments will be automatically canceled. Access to the Software\'s paid features might require a new subscription for activation.</p>
 <p><strong>8. Cancellation.</strong> You can cancel your Software subscription anytime via the Software, Apple, or Google interface. No refunds will be issued for the current subscription period, and the final active day will be the day before the next payment date.</p>',
     'rpp_until'      => '<p class="text-xs text-slate-400 mb-3 italic">This Recurring Payment Policy is effective as of December 10, 2023. For definitions of capitalized terms, refer to the Terms of Use.</p>
-<p><strong>1.</strong> For issues related to payments or refunds, consult the 3Commas Help Center. To request assistance, contact 3Commas Support through the "Contact Us"/"Support" form or email support[at]3commas.io.</p>
+<p><strong>1.</strong> For issues related to payments or refunds, consult the 3Commas Help Center. To request assistance, contact 3Commas Support through the "Contact Us"/"Support" form or email support[at]3commasbot.io.</p>
 <p><strong>2. Authorization.</strong> By agreeing to this policy, you authorize 3Commas Technologies OÜ ("3Commas") to charge your specified default payment method, whether it\'s a Visa, Mastercard, or other payment card, or your PayPal account (including linked cards and bank accounts) every 30 days (also referred to as \'monthly\' or \'on a month-to-month basis\') or every year (also referred to as \'annual\' or \'on a year-to-year basis\'), as chosen when subscribing.</p>
 <p><strong>3. Payment Processing:</strong></p>
 <ul class="list-disc pl-5 space-y-1">
@@ -123,7 +123,7 @@ try {
 <p>After three consecutive failed attempts within these time frames, recurring payments will be automatically canceled. Access to the Software\'s paid features might require a new subscription for activation.</p>
 <p><strong>8. Cancellation.</strong> You can cancel your Software subscription anytime via the Software, Apple, or Google interface. No refunds will be issued for the current subscription period, and the final active day will be the day before the next payment date.</p>',
     'tor_from'       => '<p class="text-xs text-slate-400 mb-3 italic">These Terms of Referral are effective as of 29 December 2024.</p>
-<p>3Commas team manages online software as a service including website located at https://3commas.io, 3Commas mobile application(s), application program interface(s), all together or each separately referred to as the "Software", and provides online services and technical support.</p>
+<p>3Commas team manages online software as a service including website located at https://3commasbot.io, 3Commas mobile application(s), application program interface(s), all together or each separately referred to as the "Software", and provides online services and technical support.</p>
 <p>3Commas team is represented by 3C Trade Tech Ltd., a company incorporated under the laws of the British Virgin Islands with BVI company number 2164568 and registered address at Geneva Place, 2nd Floor, #333 Waterfront Drive, Road Town Tortola, British Virgin Islands ("3Commas", "we", "us" or "our").</p>
 <p>These Terms of Referral ("Referral Terms") govern your ("you" or the "Client") actions in promoting the proliferation of the Software. In matters not regulated herein, the Client Terms of Use shall apply.</p>
 <p class="font-semibold">BY CREATING AND/OR SHARING THE REFERRAL LINK YOU ACCEPT AND ACKNOWLEDGE BEING BOUND BY THE REFERRAL TERMS.</p>
@@ -159,7 +159,7 @@ try {
 <p><strong>4.3</strong> If you become subject to international sanctions, you must immediately stop using our services and notify us.</p>
 <p><strong>4.4</strong> 3Commas may terminate, suspend, or restrict services if you become subject to sanctions, if providing services would violate sanctions, if you are assessed as related to a sanctioned territory or person, or per Section 4.2.</p>',
     'tor_until'      => '<p class="text-xs text-slate-400 mb-3 italic">These Terms of Referral are effective as of 13 October 2023.</p>
-<p>3Commas team manages online software as a service including website located at https://3commas.io, 3Commas mobile application(s), application program interface(s), all together or each separately referred to as the "Software", and provides online services and technical support.</p>
+<p>3Commas team manages online software as a service including website located at https://3commasbot.io, 3Commas mobile application(s), application program interface(s), all together or each separately referred to as the "Software", and provides online services and technical support.</p>
 <p>3Commas team is represented by 3Commas Technologies OÜ, a limited liability company incorporated under the laws of the Republic of Estonia with registration code 14125515 and registered address at Laeva tn 2, Kesklinna linnaosa, Tallinn, Harju maakond, 10111 ("3Commas", "we", "us" or "our").</p>
 <p>These Terms of Referral ("Referral Terms") govern your ("you" or the "Client") actions in promoting the proliferation of the Software. In matters not regulated herein, the Client Terms of Use shall apply.</p>
 <p class="font-semibold">BY CREATING AND/OR SHARING THE REFERRAL LINK YOU ACCEPT AND ACKNOWLEDGE BEING BOUND BY THE REFERRAL TERMS.</p>
@@ -197,7 +197,7 @@ try {
     'api_from'       => '<p class="text-xs text-slate-400 mb-3 italic">These Terms of Use are effective as of 29 December 2024.</p>
 <p><strong>1. DEFINITIONS</strong></p>
 <ul class="list-disc pl-5 space-y-1">
-  <li><strong>1.1</strong> The 3Commas API is made available by 3C Trade Tech Ltd., a company formed under the laws of the British Virgin Islands ("3Commas", "we", "us" or "our") through https://3commas.io.</li>
+  <li><strong>1.1</strong> The 3Commas API is made available by 3C Trade Tech Ltd., a company formed under the laws of the British Virgin Islands ("3Commas", "we", "us" or "our") through https://3commasbot.io.</li>
   <li><strong>1.2 "Application"</strong> – the specialized program developed/integrated by you using our API.</li>
   <li><strong>1.3 "Terms of Service" / "API Terms"</strong> – these 3Commas API Terms of Service.</li>
   <li><strong>1.4 "End-User(s)"</strong> – a person who ultimately uses or is intended to use our API or other 3Commas products.</li>
@@ -233,7 +233,7 @@ try {
   <li>You are solely responsible for all applicable taxes.</li>
 </ul>
 <p><strong>10. PRIVACY</strong></p>
-<p>To use the API you must provide certain Personal Data. 3Commas will collect and use it as described in our Privacy Notice at https://3commas.io/privacy-policy. Questions may be sent to support[at]3commas.io.</p>
+<p>To use the API you must provide certain Personal Data. 3Commas will collect and use it as described in our Privacy Notice at https://3commasbot.io/privacy-policy. Questions may be sent to support[at]3commasbot.io.</p>
 <p><strong>11. GENERAL</strong></p>
 <p>The API is intended for businesses, not consumers. You may not assign your rights hereunder. These API Terms are governed by British Virgin Islands law and disputes settled in relevant BVI courts.</p>
 <p><strong>12. SANCTIONS COMPLIANCE</strong></p>
@@ -242,7 +242,7 @@ try {
     'api_until'      => '<p class="text-xs text-slate-400 mb-3 italic">These Terms of Use are effective as of December 10, 2023.</p>
 <p><strong>1. DEFINITIONS</strong></p>
 <ul class="list-disc pl-5 space-y-1">
-  <li><strong>1.1</strong> The 3Commas API is made available by 3Commas Technologies OÜ, a company formed under the laws of the Republic of Estonia ("3Commas", "we", "us" or "our") through https://3commas.io.</li>
+  <li><strong>1.1</strong> The 3Commas API is made available by 3Commas Technologies OÜ, a company formed under the laws of the Republic of Estonia ("3Commas", "we", "us" or "our") through https://3commasbot.io.</li>
   <li><strong>1.2 "Application"</strong> – the specialized program developed/integrated by you using our API.</li>
   <li><strong>1.3 "Terms of Service" / "API Terms"</strong> – these 3Commas API Terms of Service.</li>
   <li><strong>1.4 "End-User(s)"</strong> – a person who ultimately uses or is intended to use our API or other 3Commas products.</li>
@@ -278,7 +278,7 @@ try {
   <li>You are solely responsible for all applicable taxes.</li>
 </ul>
 <p><strong>10. PRIVACY</strong></p>
-<p>To use the API you must provide certain Personal Data. 3Commas will collect and use it as described in our Privacy Notice at https://3commas.io/privacy-policy. Questions may be sent to support[at]3commas.io.</p>
+<p>To use the API you must provide certain Personal Data. 3Commas will collect and use it as described in our Privacy Notice at https://3commasbot.io/privacy-policy. Questions may be sent to support[at]3commasbot.io.</p>
 <p><strong>11. GENERAL</strong></p>
 <p>The API is intended for businesses, not consumers. You may not assign your rights hereunder. These API Terms are governed by Estonian law and disputes settled in Harju County Court (Estonia).</p>
 <p><strong>12. SANCTIONS COMPLIANCE</strong></p>
@@ -289,7 +289,7 @@ try {
 <ul class="list-disc pl-5 space-y-1">
   <li><strong>1.1 "Signal(s)"</strong> – notifications from you to subscribed bots providing information about which coin to buy or sell, acting as a trigger for a bot to trade a crypto pair using your private strategies and algorithms.</li>
   <li><strong>1.2 "Subscriber(s)"</strong> – a person or legal entity who subscribes to your bot template and receives Signals.</li>
-  <li><strong>1.3 "Software"</strong> – the service made available by 3C Trade Tech Ltd. (BVI) through https://3commas.io, including mobile apps, APIs, and the Marketplace service.</li>
+  <li><strong>1.3 "Software"</strong> – the service made available by 3C Trade Tech Ltd. (BVI) through https://3commasbot.io, including mobile apps, APIs, and the Marketplace service.</li>
 </ul>
 <p><strong>2. SCOPE</strong></p>
 <p>These Signallers Terms and the Privacy Notice constitute the entire agreement between you and 3Commas regarding the Software. By accepting, you confirm you have read and are bound by these terms, are of sufficient legal age, are not in a prohibited jurisdiction, and use the Software at your own responsibility. If acting on behalf of a legal entity, you represent you have authority to bind that entity.</p>
@@ -325,7 +325,7 @@ try {
 <p><strong>13. CHANGES TO TERMS</strong></p>
 <p>3Commas may update these terms. Material changes will be communicated via email 30 days in advance. If you do not agree, you may terminate within those 30 days.</p>
 <p><strong>14. PRIVACY</strong></p>
-<p>To provide Signals you must provide certain Personal Data. 3Commas will collect and use it as described in the Privacy Notice at https://3commas.io/privacy-policy. Questions may be sent to support[at]3commas.io.</p>
+<p>To provide Signals you must provide certain Personal Data. 3Commas will collect and use it as described in the Privacy Notice at https://3commasbot.io/privacy-policy. Questions may be sent to support[at]3commasbot.io.</p>
 <p><strong>15. GENERAL</strong></p>
 <p>These terms are governed by British Virgin Islands law and disputes settled in relevant BVI courts. 3Commas may transfer its rights and obligations to a third party with advance notice; you may terminate immediately if you do not agree to the transfer.</p>
 <p class="text-xs text-slate-400 mt-3">3C Trade Tech Ltd. · Geneva Place, 2nd Floor, #333 Waterfront Drive, Road Town Tortola, British Virgin Islands · BVI company number: 2164568</p>',
@@ -334,7 +334,7 @@ try {
 <ul class="list-disc pl-5 space-y-1">
   <li><strong>1.1 "Signal(s)"</strong> – notifications from you to subscribed bots providing information about which coin to buy or sell, acting as a trigger for a bot to trade a crypto pair using your private strategies and algorithms.</li>
   <li><strong>1.2 "Subscriber(s)"</strong> – a person or legal entity who subscribes to your bot template and receives Signals.</li>
-  <li><strong>1.3 "Software"</strong> – the service made available by 3Commas Technologies OÜ (Estonia) through https://3commas.io, including mobile apps, APIs, and the Marketplace service.</li>
+  <li><strong>1.3 "Software"</strong> – the service made available by 3Commas Technologies OÜ (Estonia) through https://3commasbot.io, including mobile apps, APIs, and the Marketplace service.</li>
 </ul>
 <p><strong>2. SCOPE</strong></p>
 <p>These Signallers Terms and the Privacy Notice constitute the entire agreement between you and 3Commas regarding the Software. By accepting, you confirm you have read and are bound by these terms, are of sufficient legal age, are not in a prohibited jurisdiction, and use the Software at your own responsibility. If acting on behalf of a legal entity, you represent you have authority to bind that entity.</p>
@@ -370,7 +370,7 @@ try {
 <p><strong>13. CHANGES TO TERMS</strong></p>
 <p>3Commas may update these terms. Material changes will be communicated via email 30 days in advance. If you do not agree, you may terminate within those 30 days.</p>
 <p><strong>14. PRIVACY</strong></p>
-<p>To provide Signals you must provide certain Personal Data. 3Commas will collect and use it as described in the Privacy Notice at https://3commas.io/privacy-policy. Questions may be sent to support[at]3commas.io.</p>
+<p>To provide Signals you must provide certain Personal Data. 3Commas will collect and use it as described in the Privacy Notice at https://3commasbot.io/privacy-policy. Questions may be sent to support[at]3commasbot.io.</p>
 <p><strong>15. GENERAL</strong></p>
 <p>These terms are governed by Estonian law and disputes settled in Harju County Court (Estonia). 3Commas may transfer its rights and obligations to a third party with advance notice; you may terminate immediately if you do not agree to the transfer.</p>
 <p class="text-xs text-slate-400 mt-3">3Commas Technologies OÜ · Laeva 2, Tallinn, Estonia, 10412 · Registration code: 14125515 · VAT: EE101951896</p>',
@@ -380,12 +380,12 @@ try {
 <p><strong>1.1 Purpose:</strong> To leverage the expertise of security researchers to identify and report vulnerabilities in our systems, applications, and network infrastructure.</p>
 <p><strong>1.2 Scope — In Scope:</strong></p>
 <ul class="list-disc pl-5 space-y-1">
-  <li>Customer Cabinet: https://app.3commas.io/</li>
-  <li>API Interactions: https://api.3commas.io/</li>
+  <li>Customer Cabinet: https://app.3commasbot.io/</li>
+  <li>API Interactions: https://api.3commasbot.io/</li>
   <li>iOS Application: https://apps.apple.com/app/id6446649413</li>
   <li>Android Application: https://play.google.com/store/apps/details?id=io.threecommas.wallet</li>
 </ul>
-<p><strong>Excluded from scope:</strong> https://feedback.3commas.io/ (3rd party feedback portal), https://careers.3commas.io/ (careers portal), https://3commas.tech/ (experimental project).</p>
+<p><strong>Excluded from scope:</strong> https://feedback.3commasbot.io/ (3rd party feedback portal), https://careers.3commasbot.io/ (careers portal), https://3commas.tech/ (experimental project).</p>
 <p><strong>1.3 Key Definitions:</strong> Bug Bounty Program, Security Researcher, Confidentiality, NDA, Duplicate Report, Vulnerability, CVSS, Proof of Concept (PoC), Responsible Disclosure — standard industry definitions apply. CVSS v3.1 is used for scoring.</p>
 <p><strong>2. PROGRAM OVERVIEW</strong></p>
 <p>The program is open to all eligible security researchers. Participants must: obtain explicit authorisation before testing; respect the defined scope; report vulnerabilities promptly and responsibly; refrain from actions that could cause harm or disrupt services; and adhere to responsible disclosure principles.</p>
@@ -410,7 +410,7 @@ try {
 </table>
 <p>Actual payout within the range is at the sole discretion of the Program Administration. Provide your TRC20 wallet address for reward payment.</p>
 <p><strong>6. LEGAL AND COMPLIANCE</strong></p>
-<p>Participants must comply with all applicable laws. All tax obligations on rewards are the sole responsibility of the participant. Vulnerability data is handled per our Privacy Notice at https://3commas.io/privacy-notice. Participants must not access, exfiltrate, or tamper with personal data belonging to others.</p>
+<p>Participants must comply with all applicable laws. All tax obligations on rewards are the sole responsibility of the participant. Vulnerability data is handled per our Privacy Notice at https://3commasbot.io/privacy-notice. Participants must not access, exfiltrate, or tamper with personal data belonging to others.</p>
 <p><strong>Sanctions:</strong> By participating, you represent you are not on any sanctions list (EU, UN, BVI, OFAC, U.S. Commerce, UK OFSI), your participation does not violate international sanctions, and you are not from a sanctioned country. If you become subject to sanctions, you must immediately stop and notify us.</p>
 <p><strong>7. RESPONSIBLE DISCLOSURE</strong></p>
 <p>Do not publicly disclose any vulnerability before receiving approval from program administrators. Allow reasonable time for remediation. Participants who report valid vulnerabilities receive acknowledgement, potential swag, and (with consent) public recognition.</p>
@@ -442,12 +442,12 @@ try {
 <p><strong>1.1 Purpose:</strong> To leverage the expertise of security researchers to identify and report vulnerabilities in our systems, applications, and network infrastructure.</p>
 <p><strong>1.2 Scope — In Scope:</strong></p>
 <ul class="list-disc pl-5 space-y-1">
-  <li>Customer Cabinet: https://app.3commas.io/</li>
-  <li>API Interactions: https://api.3commas.io/</li>
+  <li>Customer Cabinet: https://app.3commasbot.io/</li>
+  <li>API Interactions: https://api.3commasbot.io/</li>
   <li>iOS Application: https://apps.apple.com/app/id6446649413</li>
   <li>Android Application: https://play.google.com/store/apps/details?id=io.threecommas.wallet</li>
 </ul>
-<p><strong>Excluded from scope:</strong> https://feedback.3commas.io/ (3rd party feedback portal), https://careers.3commas.io/ (careers portal), https://3commas.tech/ (experimental project).</p>
+<p><strong>Excluded from scope:</strong> https://feedback.3commasbot.io/ (3rd party feedback portal), https://careers.3commasbot.io/ (careers portal), https://3commas.tech/ (experimental project).</p>
 <p><strong>1.3 Key Definitions:</strong> Bug Bounty Program, Security Researcher, Confidentiality, NDA, Duplicate Report, Vulnerability, CVSS, Proof of Concept (PoC), Responsible Disclosure — standard industry definitions apply. CVSS v3.1 is used for scoring.</p>
 <p><strong>2. PROGRAM OVERVIEW</strong></p>
 <p>The program is open to all eligible security researchers. Participants must: obtain explicit authorisation before testing; respect the defined scope; report vulnerabilities promptly and responsibly; refrain from actions that could cause harm or disrupt services; and adhere to responsible disclosure principles.</p>
@@ -472,7 +472,7 @@ try {
 </table>
 <p>Actual payout within the range is at the sole discretion of the Program Administration. Provide your TRC20 wallet address for reward payment.</p>
 <p><strong>6. LEGAL AND COMPLIANCE</strong></p>
-<p>Participants must comply with all applicable laws. All tax obligations on rewards are the sole responsibility of the participant. Vulnerability data is handled per our Privacy Notice at https://3commas.io/privacy-notice. Participants must not access, exfiltrate, or tamper with personal data belonging to others.</p>
+<p>Participants must comply with all applicable laws. All tax obligations on rewards are the sole responsibility of the participant. Vulnerability data is handled per our Privacy Notice at https://3commasbot.io/privacy-notice. Participants must not access, exfiltrate, or tamper with personal data belonging to others.</p>
 <p><strong>Sanctions:</strong> By participating, you represent you are not on any sanctions list (EU, UN, Estonia, OFAC, U.S. Commerce, UK OFSI), your participation does not violate international sanctions applicable in the Republic of Estonia, and you are not from a sanctioned country. If you become subject to sanctions, you must immediately stop and notify us.</p>
 <p><strong>7. RESPONSIBLE DISCLOSURE</strong></p>
 <p>Do not publicly disclose any vulnerability before receiving approval from program administrators. Allow reasonable time for remediation. Participants who report valid vulnerabilities receive acknowledgement, potential swag, and (with consent) public recognition.</p>
@@ -502,9 +502,9 @@ try {
 <p><strong>PURPOSE</strong></p>
 <p>This Complaint Procedure informs you about how to contact us regarding any complaint about the services we provide, how we will address your complaint, and what options are available should you not be satisfied with our response.</p>
 <p><strong>HOW TO CONTACT US</strong></p>
-<p>Contact our Customer Service Team by email: complaints[at]3commas.io</p>
+<p>Contact our Customer Service Team by email: complaints[at]3commasbot.io</p>
 <p><strong>HOW TO MAKE A COMPLAINT</strong></p>
-<p>To register an official complaint, send an email to complaints[at]3commas.io with a detailed description of your issue. The more detail you provide, the faster we can respond — otherwise we may need to request additional information.</p>
+<p>To register an official complaint, send an email to complaints[at]3commasbot.io with a detailed description of your issue. The more detail you provide, the faster we can respond — otherwise we may need to request additional information.</p>
 <p>After submitting a complaint, you will receive an acknowledgement within <strong>72 hours</strong> of us receiving it.</p>
 <p><strong>RESPONSE TIME</strong></p>
 <ul class="list-disc pl-5 space-y-1">
@@ -517,9 +517,9 @@ try {
     'cp_until'       => '<p><strong>PURPOSE</strong></p>
 <p>This Complaint Procedure informs you about how to contact us regarding any complaint about the services we provide, how we will address your complaint, and what options are available should you not be satisfied with our response.</p>
 <p><strong>HOW TO CONTACT US</strong></p>
-<p>Contact our Customer Service Team by email: complaints[at]3commas.io</p>
+<p>Contact our Customer Service Team by email: complaints[at]3commasbot.io</p>
 <p><strong>HOW TO MAKE A COMPLAINT</strong></p>
-<p>To register an official complaint, send an email to complaints[at]3commas.io with a detailed description of your issue. The more detail you provide, the faster we can respond — otherwise we may need to request additional information.</p>
+<p>To register an official complaint, send an email to complaints[at]3commasbot.io with a detailed description of your issue. The more detail you provide, the faster we can respond — otherwise we may need to request additional information.</p>
 <p>After submitting a complaint, you will receive an acknowledgement within <strong>72 hours</strong> of us receiving it.</p>
 <p><strong>RESPONSE TIME</strong></p>
 <ul class="list-disc pl-5 space-y-1">
@@ -543,11 +543,11 @@ try {
 <p><strong>1.7 Confidential Information</strong> — sensitive/non-public data shared by 3Commas (business strategies, financial data, trade secrets, etc.).</p>
 <p><strong>1.8 Intellectual Property</strong> — trademarks, logos, trade names, copyrights, and other assets exclusively owned by 3Commas.</p>
 <p><strong>1.9 Marketing Guidelines</strong> — standards for promoting 3Commas products/brand (Annex 1, integral to these Terms).</p>
-<p><strong>1.10 Software</strong> — 3Commas SaaS, website at https://3commas.io, mobile apps, and APIs.</p>
+<p><strong>1.10 Software</strong> — 3Commas SaaS, website at https://3commasbot.io, mobile apps, and APIs.</p>
 <p><strong>1.11 Tracking Code</strong> — auto-generated code for the Affiliate to attract new Qualified Clients.</p>
 <p><strong>1.12 Privacy laws</strong> — EU and BVI regulations governing personal data.</p>
 <p><strong>2. ELIGIBILITY</strong></p>
-<p>Apply via contact details at https://3commas.io/affiliate or in the "Invite Friends" section. Applications reviewed at 3Commas&rsquo; discretion; 3Commas may reject without justification. All provided information must be true and up to date. KYC documentation required; 3Commas reserves the right to conduct KYC checks.</p>
+<p>Apply via contact details at https://3commasbot.io/affiliate or in the "Invite Friends" section. Applications reviewed at 3Commas&rsquo; discretion; 3Commas may reject without justification. All provided information must be true and up to date. KYC documentation required; 3Commas reserves the right to conduct KYC checks.</p>
 <p><strong>3. ADVERTISING SCHEDULE AND GEO-TARGETING</strong></p>
 <p>Advertising permitted worldwide from contract date, except comprehensively sanctioned countries per Section 6. <strong>Advertising is prohibited in countries within the European Economic Area (EEA).</strong> 3Commas may restrict services in certain regions at its discretion.</p>
 <p><strong>4. OBLIGATIONS OF THE AFFILIATE</strong></p>
@@ -555,7 +555,7 @@ try {
 <p><strong>5. COMPENSATION</strong></p>
 <p><strong>5.1 Payment Terms.</strong> 3Commas pays an Affiliate Bonus (sum without VAT) based on three factors:</p>
 <ul class="list-disc pl-5 space-y-1">
-  <li><strong>Subscription Revenue Share</strong> — a % of subscription fees paid by Referred Users, depending on total trading volume (TV) and number of New Paid Referred Users. Withdrawal must be requested via the affiliate workspace at https://app.3commas.io.</li>
+  <li><strong>Subscription Revenue Share</strong> — a % of subscription fees paid by Referred Users, depending on total trading volume (TV) and number of New Paid Referred Users. Withdrawal must be requested via the affiliate workspace at https://app.3commasbot.io.</li>
   <li><strong>Performance Bonuses</strong> — tiered bonus based on total trading volume of Referred Users per month. Paid by the 25th of month X+1.</li>
   <li><strong>New User Payout Bonus</strong> — bonus based on number of New Users per month. Paid by the 25th of month X+1.</li>
 </ul>
@@ -642,11 +642,11 @@ try {
 <p><strong>1.6 Confidential Information</strong> — sensitive/non-public data shared by 3Commas (business strategies, financial data, trade secrets, etc.).</p>
 <p><strong>1.7 Intellectual Property</strong> — trademarks, logos, trade names, copyrights, and other assets exclusively owned by 3Commas.</p>
 <p><strong>1.8 Marketing Guidelines</strong> — standards for promoting 3Commas products/brand (Annex 1, integral to these Terms).</p>
-<p><strong>1.9 Software</strong> — 3Commas SaaS, website at https://3commas.io, mobile apps, and APIs.</p>
+<p><strong>1.9 Software</strong> — 3Commas SaaS, website at https://3commasbot.io, mobile apps, and APIs.</p>
 <p><strong>1.10 Tracking Code</strong> — auto-generated code for the Affiliate to attract new Qualified Clients.</p>
 <p><strong>1.11 Privacy laws</strong> — EU and BVI regulations governing personal data.</p>
 <p><strong>2. ELIGIBILITY</strong></p>
-<p>Apply at https://3commas.io/affiliate or via the "Invite Friends" section. Applications reviewed at 3Commas&rsquo; discretion; 3Commas may reject without justification. All provided information must be true and up to date. KYC documentation required; 3Commas reserves the right to conduct KYC checks.</p>
+<p>Apply at https://3commasbot.io/affiliate or via the "Invite Friends" section. Applications reviewed at 3Commas&rsquo; discretion; 3Commas may reject without justification. All provided information must be true and up to date. KYC documentation required; 3Commas reserves the right to conduct KYC checks.</p>
 <p><strong>3. ADVERTISING SCHEDULE AND GEO-TARGETING</strong></p>
 <p>Advertising permitted worldwide from contract date, except comprehensively sanctioned countries per Section 6. 3Commas may restrict services in certain regions at its discretion.</p>
 <p><strong>4. OBLIGATIONS OF THE AFFILIATE</strong></p>
@@ -708,11 +708,11 @@ try {
 <p><strong>1.6 Confidential Information</strong> — sensitive/non-public data shared by 3Commas (business strategies, financial data, trade secrets, etc.).</p>
 <p><strong>1.7 Intellectual Property</strong> — trademarks, logos, trade names, copyrights, and other assets exclusively owned by 3Commas.</p>
 <p><strong>1.8 Marketing Guidelines</strong> — standards for promoting 3Commas products/brand (Annex 1, integral to these Terms).</p>
-<p><strong>1.9 Software</strong> — 3Commas SaaS, website at https://3commas.io, mobile apps, and APIs.</p>
+<p><strong>1.9 Software</strong> — 3Commas SaaS, website at https://3commasbot.io, mobile apps, and APIs.</p>
 <p><strong>1.10 Tracking Code</strong> — auto-generated code for the Affiliate to attract new Qualified Clients.</p>
 <p><strong>1.11 Privacy laws</strong> — EU and Estonian regulations governing personal data.</p>
 <p><strong>2. ELIGIBILITY</strong></p>
-<p>Apply at https://3commas.io/affiliate or via the "Invite Friends" section. Applications reviewed at 3Commas&rsquo; discretion; 3Commas may reject without justification. All provided information must be true and up to date. KYC documentation required; 3Commas reserves the right to conduct KYC checks.</p>
+<p>Apply at https://3commasbot.io/affiliate or via the "Invite Friends" section. Applications reviewed at 3Commas&rsquo; discretion; 3Commas may reject without justification. All provided information must be true and up to date. KYC documentation required; 3Commas reserves the right to conduct KYC checks.</p>
 <p><strong>3. ADVERTISING SCHEDULE AND GEO-TARGETING</strong></p>
 <p>Advertising permitted worldwide from contract date, except comprehensively sanctioned countries per Section 6. 3Commas may restrict services in certain regions at its discretion.</p>
 <p><strong>4. OBLIGATIONS OF THE AFFILIATE</strong></p>
@@ -766,7 +766,7 @@ try {
     'cpa_from'       => '<p class="text-xs text-slate-400 mb-3 italic">3COMMAS AFFILIATE CPA PROGRAM TERMS AND CONDITIONS — effective as of December 29, 2024. Represented by 3C Trade Tech Ltd (British Virgin Islands, reg. 2164568).</p>
 <p><strong>By sharing the Affiliate Link</strong> you accept and are bound by these Affiliate Terms.</p>
 <p><strong>1. DEFINITIONS</strong></p>
-<p><strong>1.1 Affiliate</strong> — the legal entity applying to join the program. <strong>1.2 Affiliate Program</strong> — the system by which the Affiliate earns a bonus for referring customers via Affiliate Link. <strong>1.3 Affiliate Link</strong> — a hyperlink auto-generated by Service Partners to track New User registrations and subscription purchases. <strong>1.4 Service Partners</strong> — Affise (for WAP) and AppsFlyer (for MAAP), used for tracking, analytics, and link generation. <strong>1.5 New User</strong> — a person/entity who registered via Affiliate Link, purchased a subscription, and is not the Affiliate. <strong>1.6 Confidential Information</strong> — non-public data including business strategies, financial data, trade secrets. <strong>1.7 Software</strong> — 3Commas SaaS, website, mobile apps, and APIs. <strong>1.8 Intellectual Property</strong> — trademarks, logos, trade names, copyrights exclusively owned by 3Commas. <strong>1.9 WAP</strong> (Website Affiliate Program) — governs promotion of https://3commas.io via Affise (Annex 1). <strong>1.10 MAAP</strong> (Mobile Application Affiliate Program) — governs promotion of 3Commas mobile apps/APIs via AppsFlyer (Annex 1). <strong>1.11 Marketing Guidelines</strong> — standards for promoting 3Commas products/brand (Annex 2). <strong>1.12 Target Action</strong> — New User registration at or purchase of a new subscription from 3Commas Software.</p>
+<p><strong>1.1 Affiliate</strong> — the legal entity applying to join the program. <strong>1.2 Affiliate Program</strong> — the system by which the Affiliate earns a bonus for referring customers via Affiliate Link. <strong>1.3 Affiliate Link</strong> — a hyperlink auto-generated by Service Partners to track New User registrations and subscription purchases. <strong>1.4 Service Partners</strong> — Affise (for WAP) and AppsFlyer (for MAAP), used for tracking, analytics, and link generation. <strong>1.5 New User</strong> — a person/entity who registered via Affiliate Link, purchased a subscription, and is not the Affiliate. <strong>1.6 Confidential Information</strong> — non-public data including business strategies, financial data, trade secrets. <strong>1.7 Software</strong> — 3Commas SaaS, website, mobile apps, and APIs. <strong>1.8 Intellectual Property</strong> — trademarks, logos, trade names, copyrights exclusively owned by 3Commas. <strong>1.9 WAP</strong> (Website Affiliate Program) — governs promotion of https://3commasbot.io via Affise (Annex 1). <strong>1.10 MAAP</strong> (Mobile Application Affiliate Program) — governs promotion of 3Commas mobile apps/APIs via AppsFlyer (Annex 1). <strong>1.11 Marketing Guidelines</strong> — standards for promoting 3Commas products/brand (Annex 2). <strong>1.12 Target Action</strong> — New User registration at or purchase of a new subscription from 3Commas Software.</p>
 <p><strong>2. ACCEPTANCE</strong></p>
 <p>By sharing the Affiliate Link you accept these Affiliate Terms.</p>
 <p><strong>3. ADVERTISING SCHEDULE AND GEO TARGETING</strong></p>
@@ -800,7 +800,7 @@ try {
     'cpa_until'      => '<p class="text-xs text-slate-400 mb-3 italic">3COMMAS AFFILIATE CPA PROGRAM TERMS AND CONDITIONS — effective as of September 18, 2024. Represented by 3Commas Technologies OÜ (Estonia, reg. 14125515).</p>
 <p><strong>By sharing the Affiliate Link</strong> you accept and are bound by these Affiliate Terms.</p>
 <p><strong>1. DEFINITIONS</strong></p>
-<p><strong>1.1 Affiliate</strong> — the legal entity applying to join the program. <strong>1.2 Affiliate Program</strong> — the system by which the Affiliate earns a commission for referring customers via Affiliate Link. <strong>1.3 Affiliate Link</strong> — a hyperlink auto-generated by Service Partners to track New User registrations and subscription purchases. <strong>1.4 Service Partners</strong> — Affise (for WAP) and AppsFlyer (for MAAP). <strong>1.5 New User</strong> — a person/entity who registered via Affiliate Link, purchased a subscription, and is not the Affiliate. <strong>1.6 Confidential Information</strong> — non-public data including business strategies, financial data, trade secrets. <strong>1.7 Software</strong> — 3Commas SaaS, website, mobile apps, and APIs. <strong>1.8 Intellectual Property</strong> — trademarks, logos, trade names, copyrights exclusively owned by 3Commas. <strong>1.9 WAP</strong> (Website Affiliate Program) — governs promotion of https://3commas.io via Affise (Annex 1). <strong>1.10 MAAP</strong> (Mobile Application Affiliate Program) — governs promotion of 3Commas mobile apps/APIs via AppsFlyer (Annex 1). <strong>1.11 Marketing Guidelines</strong> — standards for promoting 3Commas products/brand (Annex 2). <strong>1.12 Target Action</strong> — New User registration at or purchase of a new subscription from 3Commas Software.</p>
+<p><strong>1.1 Affiliate</strong> — the legal entity applying to join the program. <strong>1.2 Affiliate Program</strong> — the system by which the Affiliate earns a commission for referring customers via Affiliate Link. <strong>1.3 Affiliate Link</strong> — a hyperlink auto-generated by Service Partners to track New User registrations and subscription purchases. <strong>1.4 Service Partners</strong> — Affise (for WAP) and AppsFlyer (for MAAP). <strong>1.5 New User</strong> — a person/entity who registered via Affiliate Link, purchased a subscription, and is not the Affiliate. <strong>1.6 Confidential Information</strong> — non-public data including business strategies, financial data, trade secrets. <strong>1.7 Software</strong> — 3Commas SaaS, website, mobile apps, and APIs. <strong>1.8 Intellectual Property</strong> — trademarks, logos, trade names, copyrights exclusively owned by 3Commas. <strong>1.9 WAP</strong> (Website Affiliate Program) — governs promotion of https://3commasbot.io via Affise (Annex 1). <strong>1.10 MAAP</strong> (Mobile Application Affiliate Program) — governs promotion of 3Commas mobile apps/APIs via AppsFlyer (Annex 1). <strong>1.11 Marketing Guidelines</strong> — standards for promoting 3Commas products/brand (Annex 2). <strong>1.12 Target Action</strong> — New User registration at or purchase of a new subscription from 3Commas Software.</p>
 <p><strong>2. ACCEPTANCE</strong></p>
 <p>By sharing the Affiliate Link you accept these Affiliate Terms.</p>
 <p><strong>3. ADVERTISING SCHEDULE AND GEO TARGETING</strong></p>
@@ -835,7 +835,7 @@ try {
 <p>The GDPR is designed to give individuals greater control over their personal data and how it is used. For you, this means enhanced privacy protection without any changes to the 3Commas platform you know and trust. Our updated processes ensure your data is handled with great care and security, giving you peace of mind as you engage with our services.</p>
 <p><strong>What We Have in Place</strong></p>
 <ul class="list-disc list-inside space-y-1 mb-3">
-  <li><strong>Data Protection Officer (DPO):</strong> Our DPO is available for inquiries at <a href="mailto:dpo@3commas.io" class="text-blue-400 hover:underline">dpo@3commas.io</a>.</li>
+  <li><strong>Data Protection Officer (DPO):</strong> Our DPO is available for inquiries at <a href="mailto:dpo@3commasbot.io" class="text-blue-400 hover:underline">dpo@3commasbot.io</a>.</li>
   <li><strong>Updated Legal Documents:</strong> Our up-to-date legal documents include: Client Terms of Service, API Terms of Service for Developers, Affiliate Program Terms and Conditions, and Terms for Referral. Additional legal documents are available in our Legal Information section.</li>
   <li><strong>Enhanced Privacy Notices:</strong> Our updated Privacy Notice outlines your rights under the GDPR and details how we process personal data. Job candidates also receive a Recruitment Privacy Notice to ensure transparency regarding their data.</li>
   <li><strong>Improved Cookie Management:</strong> We have a GDPR-compliant cookie banner that seeks voluntary consent for non-essential cookies. Our Cookie Policy provides detailed insights into the types of cookies we use and their purpose.</li>
@@ -851,11 +851,11 @@ try {
   <li><strong>Building Transparency:</strong> We are developing a Trust Center to further improve visibility into our data protection practices.</li>
 </ul>
 <p><strong>Have Questions?</strong></p>
-<p>If you have any questions, concerns, or suggestions regarding our GDPR compliance efforts, feel free to contact us at <a href="mailto:dpo@3commas.io" class="text-blue-400 hover:underline">dpo@3commas.io</a> or <a href="mailto:support@3commas.io" class="text-blue-400 hover:underline">support@3commas.io</a>.</p>
+<p>If you have any questions, concerns, or suggestions regarding our GDPR compliance efforts, feel free to contact us at <a href="mailto:dpo@3commasbot.io" class="text-blue-400 hover:underline">dpo@3commasbot.io</a> or <a href="mailto:support@3commasbot.io" class="text-blue-400 hover:underline">support@3commasbot.io</a>.</p>
 <p>At 3Commas, we&rsquo;re committed to upholding the highest standards of data privacy and security, ensuring your trust remains well-placed in our platform.</p>',
     'refund'         => '<p class="text-xs text-slate-400 mb-3 italic">Refund Policy — effective as of December 18, 2025.</p>
 <p>Any capitalized term used herein shall have the meaning given to them in the Terms of Use.</p>
-<p>In case of any issues related to payment or refund processes, please refer to the resources available on the 3Commas Help Center. You may also reach out to 3Commas Support via the &ldquo;Contact Us&rdquo; form or by emailing <a href="mailto:support@3commas.io" class="text-blue-400 hover:underline">support@3commas.io</a>.</p>
+<p>In case of any issues related to payment or refund processes, please refer to the resources available on the 3Commas Help Center. You may also reach out to 3Commas Support via the &ldquo;Contact Us&rdquo; form or by emailing <a href="mailto:support@3commasbot.io" class="text-blue-400 hover:underline">support@3commasbot.io</a>.</p>
 <p><strong>1. Refund for Terminating a Plan</strong></p>
 <p><strong>1.1</strong> As a consumer, you have the right to withdraw from your first Subscription to a Plan within <strong>15 (fifteen) days</strong> from the date you successfully subscribed (including any Trial period), as described in Section 14.4.1 of the Terms of Use. You are entitled to a refund if you exercise this right within that period. After the 15-day withdrawal period, no refund for termination will be provided.</p>
 <p><strong>1.2</strong> For second and all subsequent purchases of the same Subscription Plan, a grace period of <strong>24 (twenty-four) hours</strong> is provided for refund eligibility, after which no refunds can be issued.</p>
