@@ -130,13 +130,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta property="og:url" content="https://3commasbot.io/">
   <meta property="og:title" content="3Commas – Automated Crypto Trading">
   <meta property="og:description" content="3Commas is a powerful automated crypto trading platform. Connect your exchange, set up bots, and trade smarter 24/7.">
-  <meta property="og:image" content="<?= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . htmlspecialchars($_SERVER['HTTP_HOST'], ENT_QUOTES) ?>/images/og-image.svg">
+  <meta property="og:image" content="<?= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . htmlspecialchars($_SERVER['HTTP_HOST'], ENT_QUOTES) ?>/images/og-image.png?v=2">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="3Commas – Automated Crypto Trading">
   <meta name="twitter:description" content="3Commas is a powerful automated crypto trading platform. Connect your exchange, set up bots, and trade smarter 24/7.">
-  <meta name="twitter:image" content="<?= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . htmlspecialchars($_SERVER['HTTP_HOST'], ENT_QUOTES) ?>/images/og-image.svg">
+  <meta name="twitter:image" content="<?= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . htmlspecialchars($_SERVER['HTTP_HOST'], ENT_QUOTES) ?>/images/og-image.png?v=2">
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
