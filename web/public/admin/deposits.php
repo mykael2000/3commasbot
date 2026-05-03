@@ -72,10 +72,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'updat
             $pdo->prepare('UPDATE deposit_requests SET amount = ?, status = ?, admin_note = ? WHERE id = ?')
                 ->execute([$amount, 'approved', $note ?: null, $id]);
 
-            $pdo->prepare('UPDATE users SET balance = balance + ?, dashboard_equity = dashboard_equity + ? WHERE id = ?')
-                ->execute([$amount, $amount, (int)$deposit['user_id']]);
+            $assetToColumn = [
+                'USDT' => 'balance',
+                'BTC'  => 'btc_balance',
+                'ETH'  => 'eth_balance',
+                'BNB'  => 'bnb_balance',
+                'SOL'  => 'sol_balance',
+            ];
+            $assetTicker = strtoupper(trim((string)($deposit['asset_ticker'] ?? 'USDT')));
+            $coinColumn  = $assetToColumn[$assetTicker] ?? 'balance';
+            $usdValue    = $assetTicker === 'USDT' ? $amount : ($amount * price_for_symbol($assetTicker . 'USDT'));
 
-            flash('success', 'Deposit approved and user wallet credited.');
+            $pdo->prepare('UPDATE users SET ' . $coinColumn . ' = ' . $coinColumn . ' + ?, dashboard_equity = dashboard_equity + ? WHERE id = ?')
+                ->execute([$amount, $usdValue, (int)$deposit['user_id']]);
+
+            flash('success', 'Deposit approved and user ' . $assetTicker . ' wallet credited.');
         } else {
             $pdo->prepare('UPDATE deposit_requests SET status = ?, admin_note = ? WHERE id = ?')
                 ->execute(['rejected', $note ?: null, $id]);
