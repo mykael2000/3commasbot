@@ -49,8 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         redirect('/admin/add_balances.php');
     }
 
-  if ($action === 'add_deposit' && !isset($assetToColumn[$assetTicker])) {
-    flash('error', 'Please select a valid coin for deposit.');
+  if (($action === 'add_deposit' || $action === 'add_profit') && !isset($assetToColumn[$assetTicker])) {
+    flash('error', 'Please select a valid coin.');
     redirect('/admin/add_balances.php');
   }
 
@@ -79,9 +79,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
           flash('success', 'Added $' . number_format($usdValue, 2) . ' (' . rtrim(rtrim(number_format($coinAmount, 8, '.', ''), '0'), '.') . ' ' . $assetTicker . ') deposit to ' . $selectedUser['name'] . '.');
         } elseif ($action === 'add_profit') {
-            $pdo->prepare('UPDATE users SET dashboard_today_pnl = dashboard_today_pnl + ? WHERE id = ?')
-                ->execute([$amount, $userId]);
-            flash('success', 'Added $' . number_format($amount, 2) . ' profit to ' . $selectedUser['name'] . '.');
+          // Profit is entered in USD; also credit selected coin balance.
+          $coinColumn  = $assetToColumn[$assetTicker];
+          $usdValue    = $amount;
+          $coinAmount  = $assetTicker === 'USDT' ? $amount : ($amount / price_for_symbol($assetTicker . 'USDT'));
+
+          $pdo->prepare('UPDATE users SET dashboard_today_pnl = dashboard_today_pnl + ?, ' . $coinColumn . ' = ' . $coinColumn . ' + ? WHERE id = ?')
+            ->execute([$usdValue, $coinAmount, $userId]);
+
+          flash('success', 'Added $' . number_format($usdValue, 2) . ' profit and credited ' . rtrim(rtrim(number_format($coinAmount, 8, '.', ''), '0'), '.') . ' ' . $assetTicker . ' to ' . $selectedUser['name'] . '.');
         } elseif ($action === 'add_auto_trading') {
             $pdo->prepare('UPDATE users SET dashboard_margin = dashboard_margin + ? WHERE id = ?')
                 ->execute([$amount, $userId]);
@@ -176,7 +182,7 @@ try {
 
       <section class="bg-slate-700 rounded-2xl p-5">
         <h2 class="font-bold text-white mb-1">Add Profit</h2>
-        <p class="text-xs text-slate-400 mb-4">Adds to Today's PnL.</p>
+        <p class="text-xs text-slate-400 mb-4">Adds to Today's PnL and credits selected coin balance.</p>
         <form method="POST" action="/admin/add_balances.php" class="space-y-3">
           <?= csrf_field() ?>
           <input type="hidden" name="action" value="add_profit">
@@ -187,6 +193,16 @@ try {
               <?php foreach ($users as $u): ?>
               <option value="<?= (int)$u['id'] ?>"><?= sanitize($u['name']) ?> (<?= sanitize($u['email']) ?>)</option>
               <?php endforeach; ?>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs text-slate-300 mb-1">Coin</label>
+            <select name="asset_ticker" required class="w-full bg-slate-600 border border-slate-500 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-red-500/60">
+              <option value="USDT" selected>USDT</option>
+              <option value="BTC">BTC</option>
+              <option value="ETH">ETH</option>
+              <option value="BNB">BNB</option>
+              <option value="SOL">SOL</option>
             </select>
           </div>
           <div>
