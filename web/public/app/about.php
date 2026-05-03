@@ -139,7 +139,7 @@ require_login();
         </div>
         <div>
           <p class="font-semibold text-slate-900">Business Partnerships</p>
-          <p><a href="mailto:partners@3commas.io" class="text-emerald-600 hover:text-emerald-500">partners@3commas.io</a></p>
+          <p><a href="mailto:partners@3commasbot.io" class="text-emerald-600 hover:text-emerald-500">partners@3commasbot.io</a></p>
           <p>Learn more about partnership opportunities</p>
         </div>
       </div>
