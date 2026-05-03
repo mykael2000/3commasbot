@@ -10,6 +10,27 @@ require_admin();
 $error   = get_flash('error');
 $success = get_flash('success');
 
+function ensure_user_dashboard_metric_columns(): void
+{
+  static $ensured = false;
+  if ($ensured) {
+    return;
+  }
+
+  try {
+    db()->exec('ALTER TABLE users ADD COLUMN IF NOT EXISTS dashboard_today_pnl DECIMAL(18,8) NOT NULL DEFAULT 0.00000000');
+    db()->exec('ALTER TABLE users ADD COLUMN IF NOT EXISTS dashboard_equity DECIMAL(18,8) NOT NULL DEFAULT 0.00000000');
+    db()->exec('ALTER TABLE users ADD COLUMN IF NOT EXISTS dashboard_margin DECIMAL(18,8) NOT NULL DEFAULT 0.00000000');
+    db()->exec('ALTER TABLE users ADD COLUMN IF NOT EXISTS dashboard_free_margin DECIMAL(18,8) NOT NULL DEFAULT 0.00000000');
+  } catch (Throwable) {
+    // Ignore here; fallback behavior will still keep the page usable.
+  }
+
+  $ensured = true;
+}
+
+ensure_user_dashboard_metric_columns();
+
 // Toggle active/disabled
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'toggle_status') {
     csrf_verify();
@@ -64,17 +85,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'updat
     $ethBalance = (float)($_POST['eth_balance'] ?? 0);
     $bnbBalance = (float)($_POST['bnb_balance'] ?? 0);
     $solBalance = (float)($_POST['sol_balance'] ?? 0);
-    if ($id <= 0 || $balance < 0 || $btcBalance < 0 || $ethBalance < 0 || $bnbBalance < 0 || $solBalance < 0) {
+  $todayPnl   = (float)($_POST['dashboard_today_pnl'] ?? 0);
+  $equity     = (float)($_POST['dashboard_equity'] ?? 0);
+  $margin     = (float)($_POST['dashboard_margin'] ?? 0);
+  $freeMargin = (float)($_POST['dashboard_free_margin'] ?? 0);
+
+  if ($id <= 0 || $balance < 0 || $btcBalance < 0 || $ethBalance < 0 || $bnbBalance < 0 || $solBalance < 0 || $equity < 0 || $margin < 0 || $freeMargin < 0) {
         flash('error', 'Invalid balance value.');
         redirect('/admin/users.php');
     }
     try {
         db()->prepare(
-            'UPDATE users SET balance = ?, btc_balance = ?, eth_balance = ?, bnb_balance = ?, sol_balance = ? WHERE id = ?'
-        )->execute([$balance, $btcBalance, $ethBalance, $bnbBalance, $solBalance, $id]);
-        flash('success', 'Balances updated.');
+      'UPDATE users
+       SET balance = ?, btc_balance = ?, eth_balance = ?, bnb_balance = ?, sol_balance = ?,
+         dashboard_today_pnl = ?, dashboard_equity = ?, dashboard_margin = ?, dashboard_free_margin = ?
+       WHERE id = ?'
+    )->execute([$balance, $btcBalance, $ethBalance, $bnbBalance, $solBalance, $todayPnl, $equity, $margin, $freeMargin, $id]);
+    flash('success', 'Balances and dashboard stats updated.');
     } catch (Throwable) {
-        flash('error', 'Failed to update balances.');
+    flash('error', 'Failed to update balances and dashboard stats.');
     }
     redirect('/admin/users.php');
 }
@@ -114,7 +143,7 @@ try {
               <th class="text-left text-slate-400 font-medium px-4 py-3">User</th>
               <th class="text-center text-slate-400 font-medium px-4 py-3">Role</th>
               <th class="text-center text-slate-400 font-medium px-4 py-3">Status</th>
-              <th class="text-right text-slate-400 font-medium px-4 py-3">Balances (USDT / BTC / ETH / BNB / SOL)</th>
+              <th class="text-right text-slate-400 font-medium px-4 py-3">Balances + Today PnL / Total Deposit / Auto Trading Allocated / Copy Trading Allocated</th>
               <th class="text-left text-slate-400 font-medium px-4 py-3">Joined</th>
               <th class="text-right text-slate-400 font-medium px-4 py-3">Actions</th>
             </tr>
@@ -169,6 +198,26 @@ try {
                     title="SOL Balance"
                     class="w-24 bg-slate-600 border border-slate-500 text-white rounded px-2 py-1 text-xs text-right focus:outline-none focus:ring-1 focus:ring-purple-500"
                     placeholder="SOL">
+                  <input type="number" name="dashboard_today_pnl" step="0.00000001"
+                    value="<?= sanitize(number_format((float)($u['dashboard_today_pnl'] ?? 0), 8, '.', '')) ?>"
+                    title="Today's PnL"
+                    class="w-24 bg-slate-600 border border-slate-500 text-white rounded px-2 py-1 text-xs text-right focus:outline-none focus:ring-1 focus:ring-red-500"
+                    placeholder="Today PnL">
+                  <input type="number" name="dashboard_equity" step="0.00000001" min="0"
+                    value="<?= sanitize(number_format((float)($u['dashboard_equity'] ?? 0), 8, '.', '')) ?>"
+                    title="Total Deposit"
+                    class="w-24 bg-slate-600 border border-slate-500 text-white rounded px-2 py-1 text-xs text-right focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                    placeholder="Total Deposit">
+                  <input type="number" name="dashboard_margin" step="0.00000001" min="0"
+                    value="<?= sanitize(number_format((float)($u['dashboard_margin'] ?? 0), 8, '.', '')) ?>"
+                    title="Auto Trading Allocated"
+                    class="w-24 bg-slate-600 border border-slate-500 text-white rounded px-2 py-1 text-xs text-right focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    placeholder="Auto Trading">
+                  <input type="number" name="dashboard_free_margin" step="0.00000001" min="0"
+                    value="<?= sanitize(number_format((float)($u['dashboard_free_margin'] ?? 0), 8, '.', '')) ?>"
+                    title="Copy Trading Allocated"
+                    class="w-24 bg-slate-600 border border-slate-500 text-white rounded px-2 py-1 text-xs text-right focus:outline-none focus:ring-1 focus:ring-cyan-500"
+                    placeholder="Copy Trading">
                   <button type="submit" class="text-emerald-400 hover:text-emerald-300 text-xs bg-emerald-500/10 px-2 py-1 rounded transition">Set</button>
                 </form>
               </td>

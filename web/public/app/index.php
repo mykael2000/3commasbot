@@ -148,14 +148,15 @@ $walletBalances = [
     ],
 ];
 
-$totalBalance    = array_sum(array_column($walletBalances, 'value'));
-$todayPnl        = (rand(-500, 2000) + rand(0, 100) / 100);
-$todayPnlPercent = $totalBalance > 0 ? ($todayPnl / $totalBalance) * 100 : 0;
+$totalBalance = array_sum(array_column($walletBalances, 'value'));
 
-// Derived account metrics
-$equity     = $totalBalance * 1.15;
-$margin     = $totalBalance * 0.30;
-$freeMargin = $margin * 0.70;
+// Admin-set dashboard metrics
+$todayPnl   = (float)($user['dashboard_today_pnl'] ?? 0);
+$equity     = (float)($user['dashboard_equity'] ?? 0);
+$margin     = (float)($user['dashboard_margin'] ?? 0);
+$freeMargin = (float)($user['dashboard_free_margin'] ?? 0);
+
+$todayPnlPercent = $equity > 0 ? ($todayPnl / $equity) * 100 : 0;
 
 // Fetch open demo trades
 $openTrades = [];
@@ -376,25 +377,25 @@ $pricesJson = json_encode([
                     </p>
                 </div>
 
-                <!-- Equity -->
+                <!-- Total Deposit -->
                 <div class="glass-card rounded-2xl p-2 hover-lift">
-                    <p class="text-slate-500 text-[11px] font-semibold uppercase tracking-wider mb-2">Equity</p>
+                    <p class="text-slate-500 text-[11px] font-semibold uppercase tracking-wider mb-2">Total Deposit</p>
                     <p class="text-xl sm:text-2xl font-black tabular-nums text-emerald-400">$<?= number_format($equity, 2) ?></p>
-                    <p class="text-xs text-slate-500 mt-1">Account value</p>
+                    <p class="text-xs text-slate-500 mt-1">Set by admin</p>
                 </div>
 
-                <!-- Margin -->
+                <!-- Auto Trading Allocated -->
                 <div class="glass-card rounded-2xl p-2 hover-lift">
-                    <p class="text-slate-500 text-[11px] font-semibold uppercase tracking-wider mb-2">Margin</p>
+                    <p class="text-slate-500 text-[11px] font-semibold uppercase tracking-wider mb-2">Auto Trading Allocated</p>
                     <p class="text-xl sm:text-2xl font-black tabular-nums text-blue-400">$<?= number_format($margin, 2) ?></p>
-                    <p class="text-xs text-slate-500 mt-1">Available</p>
+                    <p class="text-xs text-slate-500 mt-1">Set by admin</p>
                 </div>
 
-                <!-- Free Margin -->
+                <!-- Copy Trading Allocated -->
                 <div class="glass-card rounded-2xl p-2 hover-lift">
-                    <p class="text-slate-500 text-[11px] font-semibold uppercase tracking-wider mb-2">Free Margin</p>
+                    <p class="text-slate-500 text-[11px] font-semibold uppercase tracking-wider mb-2">Copy Trading Allocated</p>
                     <p class="text-xl sm:text-2xl font-black tabular-nums text-cyan-400">$<?= number_format($freeMargin, 2) ?></p>
-                    <p class="text-xs text-slate-500 mt-1">Usable</p>
+                    <p class="text-xs text-slate-500 mt-1">Set by admin</p>
                 </div>
             </div>
 
