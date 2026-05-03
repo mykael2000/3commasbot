@@ -40,6 +40,7 @@ $_adminPage = $activeAdminPage ?? basename($_SERVER['PHP_SELF'] ?? '');
     <?php
       $links = [
         'index.php'         => 'Dashboard',
+        'add_balances.php'  => 'Add Balances',
         'plans.php'         => 'Plans',
         'subscriptions.php' => 'Subscriptions',
         'copy_traders.php'  => 'Copy Traders',
