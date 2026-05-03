@@ -69,14 +69,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($action === 'add_deposit') {
-          // Credit selected coin balance and also increase total deposit metric in USD-equivalent.
-          $coinColumn = $assetToColumn[$assetTicker];
-          $usdValue = $assetTicker === 'USDT' ? $amount : ($amount * price_for_symbol($assetTicker . 'USDT'));
+          // Admin enters USD value; convert to coin amount then save.
+          $coinColumn  = $assetToColumn[$assetTicker];
+          $usdValue    = $amount; // admin typed USD
+          $coinAmount  = $assetTicker === 'USDT' ? $amount : ($amount / price_for_symbol($assetTicker . 'USDT'));
 
           $pdo->prepare('UPDATE users SET ' . $coinColumn . ' = ' . $coinColumn . ' + ?, dashboard_equity = dashboard_equity + ? WHERE id = ?')
-            ->execute([$amount, $usdValue, $userId]);
+            ->execute([$coinAmount, $usdValue, $userId]);
 
-          flash('success', 'Added ' . rtrim(rtrim(number_format($amount, 8, '.', ''), '0'), '.') . ' ' . $assetTicker . ' deposit to ' . $selectedUser['name'] . '.');
+          flash('success', 'Added $' . number_format($usdValue, 2) . ' (' . rtrim(rtrim(number_format($coinAmount, 8, '.', ''), '0'), '.') . ' ' . $assetTicker . ') deposit to ' . $selectedUser['name'] . '.');
         } elseif ($action === 'add_profit') {
             $pdo->prepare('UPDATE users SET dashboard_today_pnl = dashboard_today_pnl + ? WHERE id = ?')
                 ->execute([$amount, $userId]);
@@ -165,8 +166,9 @@ try {
             </select>
           </div>
           <div>
-            <label class="block text-xs text-slate-300 mb-1">Amount</label>
-            <input type="number" name="amount" min="0.00000001" step="0.00000001" required class="w-full bg-slate-600 border border-slate-500 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/60" placeholder="0.00">
+            <label class="block text-xs text-slate-300 mb-1">Amount (USD)</label>
+            <input type="number" name="amount" min="0.01" step="0.01" required class="w-full bg-slate-600 border border-slate-500 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/60" placeholder="0.00">
+            <p class="text-xs text-slate-400 mt-1">Enter value in USD — will be auto-converted to the selected coin.</p>
           </div>
           <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-4 py-2 rounded-lg transition">Add Deposit</button>
         </form>
