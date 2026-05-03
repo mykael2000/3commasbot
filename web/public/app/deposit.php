@@ -238,35 +238,24 @@ try {
         </article>
         <?php endif; ?>
       </div>
-    </section>
-    <?php endif; ?>
-
-    <!-- Deposit Confirmation -->
-    <div class="advanced-card rounded-[28px] p-5 sm:p-6 space-y-4">
-      <div class="flex items-center justify-between gap-3">
-        <div>
-          <h2 class="font-bold text-slate-950 text-xl">Confirm Deposit</h2>
-          <p class="mt-1 text-sm text-slate-600">After sending funds to the selected address, click the button below. Admin will check the latest deposit, add the amount, and approve it.</p>
-        </div>
-        <span class="hidden sm:inline-flex rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-sky-700">Manual review</span>
-      </div>
       <form method="POST" action="deposit.php" class="space-y-3">
         <?= csrf_field() ?>
         <input type="hidden" name="action" value="confirm_deposit">
         <input type="hidden" id="depositAssetInput" name="asset_ticker" value="<?= sanitize($defaultAddress['asset_ticker'] ?? '') ?>">
         <input type="hidden" id="depositAddressInput" name="address" value="<?= sanitize($defaultAddress['address'] ?? '') ?>">
 
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+        <!-- <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
           Selected route: <span id="confirmAsset" class="font-semibold text-slate-900"><?= sanitize($defaultAddress['asset_ticker'] ?? '') ?></span>
           <span class="text-slate-400">on</span>
           <span id="confirmNetwork" class="font-semibold text-slate-900"><?= sanitize($defaultAddress['network'] ?? '') ?></span>
-        </div>
+        </div> -->
 
         <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-sky-500 py-3 font-bold text-white shadow-[0_14px_28px_rgba(16,185,129,0.24)] transition hover:-translate-y-0.5 hover:from-emerald-500 hover:to-sky-400">
           I have made a deposit
         </button>
       </form>
-    </div>
+    </section>
+    <?php endif; ?>
 
     <!-- Deposit History -->
     <?php if (!empty($depositHistory)): ?>
