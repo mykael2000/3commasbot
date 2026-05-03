@@ -61,7 +61,6 @@ $_adminPage = $activeAdminPage ?? basename($_SERVER['PHP_SELF'] ?? '');
     <?php endforeach; ?>
     <hr class="border-slate-700 my-3">
     <a href="/app/index.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white transition">User Dashboard</a>
-    <a href="/logout.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 transition">Logout</a>
   </nav>
 </aside>
 

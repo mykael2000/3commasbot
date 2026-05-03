@@ -49,9 +49,8 @@ $kycColor = match($kycStatus) {
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen pb-24 md:pb-6">
 
-  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 px-4 py-3 flex items-center justify-between md:hidden">
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 px-4 py-3 flex items-center justify-start md:hidden">
     <span class="text-xl font-extrabold text-emerald-400">Account</span>
-    <a href="../logout.php" class="text-red-500 hover:text-red-600 transition text-sm">Logout</a>
   </header>
 
   <?php $activePage = 'profile.php'; include '_nav.php'; ?>
@@ -150,6 +149,26 @@ $kycColor = match($kycStatus) {
         </div>
         <p class="text-sm font-semibold text-slate-900">Settings</p>
         <p class="text-xs text-slate-500 mt-0.5">Password &amp; security</p>
+      </a>
+
+      <a href="about.php" class="bg-white border border-slate-200 rounded-2xl p-4 hover:border-emerald-300 hover:shadow-sm transition group">
+        <div class="w-9 h-9 bg-indigo-50 rounded-xl flex items-center justify-center mb-3 group-hover:bg-indigo-100 transition">
+          <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <p class="text-sm font-semibold text-slate-900">About Us</p>
+        <p class="text-xs text-slate-500 mt-0.5">Who we are</p>
+      </a>
+
+      <a href="contact_us.php" class="bg-white border border-slate-200 rounded-2xl p-4 hover:border-emerald-300 hover:shadow-sm transition group">
+        <div class="w-9 h-9 bg-rose-50 rounded-xl flex items-center justify-center mb-3 group-hover:bg-rose-100 transition">
+          <svg class="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h8m-8 4h5m5 5H6a2 2 0 01-2-2V7a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        </div>
+        <p class="text-sm font-semibold text-slate-900">Contact Us</p>
+        <p class="text-xs text-slate-500 mt-0.5">Send support message</p>
+      </a>
+
+      <a href="../logout.php" class="col-span-2 sm:col-span-3 bg-red-500 hover:bg-red-600 text-white text-center font-bold py-3.5 rounded-2xl transition">
+        Logout
       </a>
 
     </div>

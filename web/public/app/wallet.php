@@ -126,7 +126,6 @@ try {
 
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 px-4 py-3 flex items-center justify-between">
     <span class="text-xl font-extrabold text-emerald-400">Wallet</span>
-    <a href="../logout.php" class="text-slate-600 hover:text-red-500 transition text-xs">Logout</a>
   </header>
 
   <main class="max-w-lg mx-auto px-4 py-6 space-y-6">

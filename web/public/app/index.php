@@ -305,9 +305,6 @@ $pricesJson = json_encode([
                         <p class="text-[11px] text-slate-500"><?= sanitize($user['email']) ?></p>
                     </div>
                 </div>
-                <a href="../logout.php" class="text-slate-600 hover:text-red-500 transition text-xs px-3 py-1.5 border border-slate-300 hover:border-red-500/60 rounded-lg">
-                    Logout
-                </a>
             </div>
         </div>
     </header>
