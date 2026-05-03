@@ -531,13 +531,341 @@ try {
 <p>If you are not satisfied with our response regarding Personal Data, or believe we are processing your Personal Data unlawfully, you may submit a claim to the Estonian Data Protection Inspectorate (Andmekaitse Inspektsioon) at info[at]aki.ee (https://www.aki.ee/).</p>
 <p><strong>ONLINE DISPUTE RESOLUTION</strong></p>
 <p>You always have the right to use the EU Online Dispute Resolution (ODR) platform to lodge a consumer complaint: https://ec.europa.eu/consumers/odr/</p>',
-    'aff_from_2025'  => '',
-    'aff_until_2025' => '',
-    'aff_until_2024' => '',
-    'cpa_from'       => '',
-    'cpa_until'      => '',
-    'gdpr'           => '',
-    'refund'         => '',
+    'aff_from_2025'  => '<p class="text-xs text-slate-400 mb-3 italic">3COMMAS AFFILIATE PROGRAM TERMS AND CONDITIONS — effective as of 10 November, 2025. Represented by 3C Trade Tech Ltd (British Virgin Islands, reg. 2164568).</p>
+<p><strong>BY SHARING THE AFFILIATE LINK</strong> you accept these terms. Accepting automatically terminates the Terms of Referral — simultaneous participation in Affiliate and Referral Programs is not permitted.</p>
+<p><strong>1. DEFINITIONS</strong></p>
+<p><strong>1.1 Affiliate / you</strong> — a natural person or legal entity with a Client Account, not banned/blocked/sanctioned, who has accepted the Affiliate Terms and intends to attract New Users via the Affiliate Link.</p>
+<p><strong>1.2 Affiliate Account</strong> — a separately displayed account available upon acceptance; funds accounted in USDC equivalent and accrued per Section 5.</p>
+<p><strong>1.3 Affiliate Program</strong> — the system by which the Affiliate earns a bonus for referring customers via Affiliate Link.</p>
+<p><strong>1.4 Affiliate Link</strong> — an auto-generated hyperlink to the Software registration scenario, personalized for the Affiliate.</p>
+<p><strong>1.5 Client / New User</strong> — a person/entity who (a) registered via Affiliate Link or Tracking Code, (b) purchased and paid for a subscription for the first time, and (c) is not the Affiliate itself.</p>
+<p><strong>1.6 Referred User</strong> — a person/entity who (a) registered via Affiliate Link or Tracking Code, (b) currently maintains an active paid subscription, and (c) is not the Affiliate itself.</p>
+<p><strong>1.7 Confidential Information</strong> — sensitive/non-public data shared by 3Commas (business strategies, financial data, trade secrets, etc.).</p>
+<p><strong>1.8 Intellectual Property</strong> — trademarks, logos, trade names, copyrights, and other assets exclusively owned by 3Commas.</p>
+<p><strong>1.9 Marketing Guidelines</strong> — standards for promoting 3Commas products/brand (Annex 1, integral to these Terms).</p>
+<p><strong>1.10 Software</strong> — 3Commas SaaS, website at https://3commas.io, mobile apps, and APIs.</p>
+<p><strong>1.11 Tracking Code</strong> — auto-generated code for the Affiliate to attract new Qualified Clients.</p>
+<p><strong>1.12 Privacy laws</strong> — EU and BVI regulations governing personal data.</p>
+<p><strong>2. ELIGIBILITY</strong></p>
+<p>Apply via contact details at https://3commas.io/affiliate or in the "Invite Friends" section. Applications reviewed at 3Commas&rsquo; discretion; 3Commas may reject without justification. All provided information must be true and up to date. KYC documentation required; 3Commas reserves the right to conduct KYC checks.</p>
+<p><strong>3. ADVERTISING SCHEDULE AND GEO-TARGETING</strong></p>
+<p>Advertising permitted worldwide from contract date, except comprehensively sanctioned countries per Section 6. <strong>Advertising is prohibited in countries within the European Economic Area (EEA).</strong> 3Commas may restrict services in certain regions at its discretion.</p>
+<p><strong>4. OBLIGATIONS OF THE AFFILIATE</strong></p>
+<p>Comply with all applicable laws, regulations, and marketing/consumer protection rules. The Affiliate shall not: enter agreements on 3Commas&rsquo; behalf; present themselves as a 3Commas employee/partner; collude with Clients; make warranties about the Software; harm 3Commas&rsquo; reputation. Non-3Commas materials must be submitted for approval before publication.</p>
+<p><strong>5. COMPENSATION</strong></p>
+<p><strong>5.1 Payment Terms.</strong> 3Commas pays an Affiliate Bonus (sum without VAT) based on three factors:</p>
+<ul class="list-disc pl-5 space-y-1">
+  <li><strong>Subscription Revenue Share</strong> — a % of subscription fees paid by Referred Users, depending on total trading volume (TV) and number of New Paid Referred Users. Withdrawal must be requested via the affiliate workspace at https://app.3commas.io.</li>
+  <li><strong>Performance Bonuses</strong> — tiered bonus based on total trading volume of Referred Users per month. Paid by the 25th of month X+1.</li>
+  <li><strong>New User Payout Bonus</strong> — bonus based on number of New Users per month. Paid by the 25th of month X+1.</li>
+</ul>
+<p><strong>5.2 General Payment Terms.</strong> Affiliate Bonus paid in USDC via ERC20 network. An invoice may be required before payment.</p>
+<p><strong>5.3 Performance Bonuses (monthly trading volume tiers):</strong></p>
+<div class="overflow-x-auto">
+<table class="w-full text-xs border-collapse border border-slate-600 my-2">
+  <thead><tr class="bg-slate-700">
+    <th class="border border-slate-600 px-2 py-1">Minimal Performance Level</th>
+    <th class="border border-slate-600 px-2 py-1">Performance Bonus</th>
+  </tr></thead>
+  <tbody>
+    <tr><td class="border border-slate-600 px-2 py-1">$0</td><td class="border border-slate-600 px-2 py-1">$0.00</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">$500,000</td><td class="border border-slate-600 px-2 py-1">$28.00</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">$1,000,000</td><td class="border border-slate-600 px-2 py-1">$56.00</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">$2,000,000</td><td class="border border-slate-600 px-2 py-1">$130.00</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">$5,000,000</td><td class="border border-slate-600 px-2 py-1">$278.00</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">$10,000,000</td><td class="border border-slate-600 px-2 py-1">$463.00</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">$15,000,000</td><td class="border border-slate-600 px-2 py-1">$648.00</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">$20,000,000</td><td class="border border-slate-600 px-2 py-1">$833.00</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">$25,000,000</td><td class="border border-slate-600 px-2 py-1">$1,018.00</td></tr>
+  </tbody>
+</table>
+</div>
+<p>Bonuses may be adjusted based on market, legal, or financial conditions with prior notice.</p>
+<p><strong>5.4 Revenue Share Bonus:</strong></p>
+<div class="overflow-x-auto">
+<table class="w-full text-xs border-collapse border border-slate-600 my-2">
+  <thead><tr class="bg-slate-700">
+    <th class="border border-slate-600 px-2 py-1">Conditions</th>
+    <th class="border border-slate-600 px-2 py-1">Share</th>
+  </tr></thead>
+  <tbody>
+    <tr><td class="border border-slate-600 px-2 py-1">Basic tier (active until higher tier is reached)</td><td class="border border-slate-600 px-2 py-1">30%</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">5M+ in Performance OR &ge;25 New Users/month</td><td class="border border-slate-600 px-2 py-1">40%</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">10M+ in Performance OR &ge;50 New Users/month</td><td class="border border-slate-600 px-2 py-1">45%</td></tr>
+  </tbody>
+</table>
+</div>
+<p><strong>5.5 New User Payout Bonus:</strong></p>
+<p><strong>Starter (first 3 months):</strong> $15 per new user. Auto-promoted to Pro after 3 months, or earlier if 20+ new paid users are reached in one month.</p>
+<div class="overflow-x-auto">
+<table class="w-full text-xs border-collapse border border-slate-600 my-2">
+  <thead><tr class="bg-slate-700">
+    <th class="border border-slate-600 px-2 py-1">Pro Tier</th>
+    <th class="border border-slate-600 px-2 py-1">CPA Bonus (re-calculated monthly)</th>
+  </tr></thead>
+  <tbody>
+    <tr><td class="border border-slate-600 px-2 py-1">&ge;5 new paid/month</td><td class="border border-slate-600 px-2 py-1">$15 per new user</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">&ge;20 new paid/month</td><td class="border border-slate-600 px-2 py-1">$17 per new user</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">&ge;20 new paid/month (higher)</td><td class="border border-slate-600 px-2 py-1">$19 per new user</td></tr>
+  </tbody>
+</table>
+</div>
+<p><strong>5.6 Additional Bonuses.</strong> Performance-based bonuses available for reaching milestones (exclusive promotions, early feature access, bonus payments). <strong>5.7 Withdrawals.</strong> Funds withdrawable to external wallet subject to Software-displayed limitations. <strong>5.8 Custom Plans.</strong> Available via a separate signed order form; standard terms apply until signing.</p>
+<p><strong>6. SANCTION COMPLIANCE</strong></p>
+<p>You warrant you are not on EU, UN, BVI, OFAC, U.S. Commerce, or UK OFSI sanctions lists; your use does not violate sanctions applicable in the BVI; you are not from a comprehensively sanctioned country. 3Commas may restrict services and terminate this Agreement if you become subject to sanctions.</p>
+<p><strong>7. MARKETING COMPLIANCE</strong></p>
+<p>Comply with Marketing Guidelines (Annex 1). Certain materials require prior written approval. 3Commas may monitor activities. Breaches may result in warnings, sanctions, suspension, or termination.</p>
+<p><strong>8. LIABILITY</strong></p>
+<p>3Commas is not liable for indirect, incidental, special, or consequential damages, or loss of revenue or profits.</p>
+<p><strong>9. GOVERNING LAW AND JURISDICTION</strong></p>
+<p>Governed by the laws of the British Virgin Islands. Disputes settled in the relevant court in the BVI.</p>
+<p><strong>10. CONFIDENTIALITY</strong></p>
+<p>Preserve Confidential Information; use only for Affiliate Program purposes; take reasonable safeguards against disclosure; notify 3Commas of any unauthorized use. All Confidential Information remains 3Commas property.</p>
+<p><strong>11. INTELLECTUAL PROPERTY</strong></p>
+<p>All IP exclusively owned by 3Commas. Limited, non-exclusive, revocable license granted solely for marketing. Must not modify IP or register similar trademarks/domains without consent. Cease use upon termination. Unauthorized IP use must be indemnified.</p>
+<p><strong>12. INDEMNIFICATION</strong></p>
+<p>Affiliate indemnifies 3Commas against third-party claims and regulatory fines/penalties caused by Affiliate non-compliance. Does not apply to 3Commas&rsquo; own gross negligence or willful misconduct.</p>
+<p><strong>13. TERM AND TERMINATION</strong></p>
+<p>3Commas may terminate at any time, effective immediately, for any reason including law violations, fraud, or misrepresentation. Fraudulent activity results in automatic termination without payment of Affiliate Bonus.</p>
+<p><strong>14. PRIVACY AND PERSONAL DATA</strong></p>
+<p>Neither party acts as Controller/Processor for the other. Personal data processed per 3Commas Privacy Notice.</p>
+<p><strong>Annex 1 — Marketing Guidelines</strong></p>
+<p>No false/guaranteed profit claims; no risk-free or expertise claims; no misleading performance claims; no FOMO/FUD. All advertising must be clear, lawful, and properly disclose affiliate status, risks, and advertiser identity.</p>',
+    'aff_until_2025' => '<p class="text-xs text-slate-400 mb-3 italic">3COMMAS AFFILIATE PROGRAM TERMS AND CONDITIONS — effective as of December 29, 2024. Represented by 3C Trade Tech Ltd (British Virgin Islands, reg. 2164568).</p>
+<p><strong>BY SHARING THE AFFILIATE LINK</strong> you accept these terms. Accepting automatically terminates the Terms of Referral — simultaneous participation in Affiliate and Referral Programs is not permitted.</p>
+<p><strong>1. DEFINITIONS</strong></p>
+<p><strong>1.1 Affiliate / you</strong> — a natural person or legal entity with a Client Account, not banned/blocked/sanctioned, who has accepted the Affiliate Terms and intends to attract New Users via the Affiliate Link.</p>
+<p><strong>1.2 Affiliate Account</strong> — a separately displayed account available upon acceptance; funds accounted in USDC equivalent and accrued per Section 5.</p>
+<p><strong>1.3 Affiliate Program</strong> — the system by which the Affiliate earns a bonus for referring customers via Affiliate Link.</p>
+<p><strong>1.4 Affiliate Link</strong> — an auto-generated hyperlink to the Software registration scenario, personalized for the Affiliate.</p>
+<p><strong>1.5 Client / New User</strong> — a person/entity who (a) registered via Affiliate Link or Tracking Code, (b) purchased and paid for a subscription for the first time, and (c) is not the Affiliate itself.</p>
+<p><strong>1.6 Confidential Information</strong> — sensitive/non-public data shared by 3Commas (business strategies, financial data, trade secrets, etc.).</p>
+<p><strong>1.7 Intellectual Property</strong> — trademarks, logos, trade names, copyrights, and other assets exclusively owned by 3Commas.</p>
+<p><strong>1.8 Marketing Guidelines</strong> — standards for promoting 3Commas products/brand (Annex 1, integral to these Terms).</p>
+<p><strong>1.9 Software</strong> — 3Commas SaaS, website at https://3commas.io, mobile apps, and APIs.</p>
+<p><strong>1.10 Tracking Code</strong> — auto-generated code for the Affiliate to attract new Qualified Clients.</p>
+<p><strong>1.11 Privacy laws</strong> — EU and BVI regulations governing personal data.</p>
+<p><strong>2. ELIGIBILITY</strong></p>
+<p>Apply at https://3commas.io/affiliate or via the "Invite Friends" section. Applications reviewed at 3Commas&rsquo; discretion; 3Commas may reject without justification. All provided information must be true and up to date. KYC documentation required; 3Commas reserves the right to conduct KYC checks.</p>
+<p><strong>3. ADVERTISING SCHEDULE AND GEO-TARGETING</strong></p>
+<p>Advertising permitted worldwide from contract date, except comprehensively sanctioned countries per Section 6. 3Commas may restrict services in certain regions at its discretion.</p>
+<p><strong>4. OBLIGATIONS OF THE AFFILIATE</strong></p>
+<p>Comply with all applicable laws, regulations, and marketing/consumer protection rules. The Affiliate shall not: enter agreements on 3Commas&rsquo; behalf; present themselves as a 3Commas employee/partner; collude with Clients; make warranties about the Software; harm 3Commas&rsquo; reputation. Non-3Commas materials must be submitted for approval before publication.</p>
+<p><strong>5. COMPENSATION</strong></p>
+<p><strong>5.1 Payment Terms.</strong> 3Commas pays an Affiliate Bonus (sum without VAT) based on two factors: (1) Subscription Bonus — a % of subscription fees paid by New Users; (2) Trading Volume Bonuses — tiered bonuses on total monthly trading volume of referred users.</p>
+<p><strong>5.2 General Payment Terms.</strong> Affiliate Bonus paid in USDC via TRC20 or ERC20 network. An invoice may be required before payment.</p>
+<p><strong>5.3 Trading Volume Bonus Tiers (per month):</strong></p>
+<div class="overflow-x-auto">
+<table class="w-full text-xs border-collapse border border-slate-600 my-2">
+  <thead><tr class="bg-slate-700">
+    <th class="border border-slate-600 px-2 py-1">Total Referred Trading Volume</th>
+    <th class="border border-slate-600 px-2 py-1">Bonus on Subscription</th>
+    <th class="border border-slate-600 px-2 py-1">Bonus on Trading Volume</th>
+  </tr></thead>
+  <tbody>
+    <tr><td class="border border-slate-600 px-2 py-1">&lt;$500,000</td><td class="border border-slate-600 px-2 py-1">30%</td><td class="border border-slate-600 px-2 py-1">No trading volume bonuses</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">$500,000+</td><td class="border border-slate-600 px-2 py-1">30%</td><td class="border border-slate-600 px-2 py-1">$28.00</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">$1,000,000+</td><td class="border border-slate-600 px-2 py-1">30%</td><td class="border border-slate-600 px-2 py-1">$56.00</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">$2,000,000+</td><td class="border border-slate-600 px-2 py-1">40%</td><td class="border border-slate-600 px-2 py-1">$130.00</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">$5,000,000+</td><td class="border border-slate-600 px-2 py-1">40%</td><td class="border border-slate-600 px-2 py-1">$278.00</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">$10,000,000+</td><td class="border border-slate-600 px-2 py-1">40%</td><td class="border border-slate-600 px-2 py-1">$555.00</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">$15,000,000+</td><td class="border border-slate-600 px-2 py-1">40%</td><td class="border border-slate-600 px-2 py-1">$648.00</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">$20,000,000+</td><td class="border border-slate-600 px-2 py-1">40%</td><td class="border border-slate-600 px-2 py-1">$833.00</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">$25,000,000+</td><td class="border border-slate-600 px-2 py-1">40%</td><td class="border border-slate-600 px-2 py-1">$1,000.00</td></tr>
+  </tbody>
+</table>
+</div>
+<p>Bonuses may be adjusted based on market, legal, or financial conditions with prior notice.</p>
+<p><strong>5.4 Additional Bonuses.</strong> Performance-based bonuses for reaching milestones. <strong>5.5 Withdrawals.</strong> Funds withdrawable to external wallet subject to Software-displayed limitations. <strong>5.6 Custom Plans.</strong> Available via a separate signed order form; standard terms apply until signing.</p>
+<p><strong>6. SANCTION COMPLIANCE</strong></p>
+<p>You warrant you are not on EU, UN, BVI, OFAC, U.S. Commerce, or UK OFSI sanctions lists; your use does not violate sanctions applicable in the BVI; you are not from a comprehensively sanctioned country. 3Commas may restrict services and terminate this Agreement if you become subject to sanctions.</p>
+<p><strong>7. MARKETING COMPLIANCE</strong></p>
+<p>Comply with Marketing Guidelines (Annex 1). Certain materials require prior written approval. 3Commas may monitor activities. Breaches may result in warnings, sanctions, suspension, or termination.</p>
+<p><strong>8. LIABILITY</strong></p>
+<p>3Commas is not liable for indirect, incidental, special, or consequential damages, or loss of revenue or profits.</p>
+<p><strong>9. GOVERNING LAW AND JURISDICTION</strong></p>
+<p>Governed by the laws of the British Virgin Islands. Disputes settled in the relevant court in the BVI.</p>
+<p><strong>10. CONFIDENTIALITY</strong></p>
+<p>Preserve Confidential Information; use only for Affiliate Program purposes; take reasonable safeguards; notify 3Commas of unauthorized use. All Confidential Information remains 3Commas property.</p>
+<p><strong>11. INTELLECTUAL PROPERTY</strong></p>
+<p>All IP exclusively owned by 3Commas. Limited, non-exclusive, revocable license for marketing only. Must not modify IP or register similar trademarks/domains without consent. Cease use upon termination. Unauthorized use must be indemnified.</p>
+<p><strong>12. INDEMNIFICATION</strong></p>
+<p>Affiliate indemnifies 3Commas against third-party claims and regulatory fines/penalties caused by Affiliate non-compliance. Does not apply to 3Commas&rsquo; own gross negligence or willful misconduct.</p>
+<p><strong>13. TERM AND TERMINATION</strong></p>
+<p>3Commas may terminate at any time, effective immediately, for any reason. Fraudulent activity results in automatic termination without payment of Affiliate Bonus.</p>
+<p><strong>14. PRIVACY AND PERSONAL DATA</strong></p>
+<p>Neither party acts as Controller/Processor for the other. Personal data processed per 3Commas Privacy Notice.</p>
+<p><strong>Annex 1 — Marketing Guidelines</strong></p>
+<p>No false/guaranteed profit claims; no risk-free or expertise claims; no misleading performance claims; no FOMO/FUD. All advertising must be clear, lawful, and properly disclose affiliate status, risks, and advertiser identity.</p>',
+    'aff_until_2024' => '<p class="text-xs text-slate-400 mb-3 italic">3COMMAS AFFILIATE PROGRAM TERMS AND CONDITIONS — effective as of October 28, 2024. Represented by 3Commas Technologies OÜ (Estonia, reg. 14125515).</p>
+<p><strong>BY SHARING THE AFFILIATE LINK</strong> you accept these terms. Accepting automatically terminates the Terms of Referral — simultaneous participation in Affiliate and Referral Programs is not permitted.</p>
+<p><strong>1. DEFINITIONS</strong></p>
+<p><strong>1.1 Affiliate / you</strong> — a natural person or legal entity with a Client Account, not banned/blocked/sanctioned, who has accepted the Affiliate Terms and intends to attract New Users via the Affiliate Link.</p>
+<p><strong>1.2 Affiliate Account</strong> — a separately displayed account available upon acceptance; funds accounted in USDT equivalent and accrued per Section 5.</p>
+<p><strong>1.3 Affiliate Program</strong> — the system by which the Affiliate earns a commission for referring customers via Affiliate Link.</p>
+<p><strong>1.4 Affiliate Link</strong> — an auto-generated hyperlink to the Software registration scenario, personalized for the Affiliate.</p>
+<p><strong>1.5 Client / New User</strong> — a person/entity who (a) registered via Affiliate Link or Tracking Code, (b) purchased and paid for a subscription for the first time, and (c) is not the Affiliate itself.</p>
+<p><strong>1.6 Confidential Information</strong> — sensitive/non-public data shared by 3Commas (business strategies, financial data, trade secrets, etc.).</p>
+<p><strong>1.7 Intellectual Property</strong> — trademarks, logos, trade names, copyrights, and other assets exclusively owned by 3Commas.</p>
+<p><strong>1.8 Marketing Guidelines</strong> — standards for promoting 3Commas products/brand (Annex 1, integral to these Terms).</p>
+<p><strong>1.9 Software</strong> — 3Commas SaaS, website at https://3commas.io, mobile apps, and APIs.</p>
+<p><strong>1.10 Tracking Code</strong> — auto-generated code for the Affiliate to attract new Qualified Clients.</p>
+<p><strong>1.11 Privacy laws</strong> — EU and Estonian regulations governing personal data.</p>
+<p><strong>2. ELIGIBILITY</strong></p>
+<p>Apply at https://3commas.io/affiliate or via the "Invite Friends" section. Applications reviewed at 3Commas&rsquo; discretion; 3Commas may reject without justification. All provided information must be true and up to date. KYC documentation required; 3Commas reserves the right to conduct KYC checks.</p>
+<p><strong>3. ADVERTISING SCHEDULE AND GEO-TARGETING</strong></p>
+<p>Advertising permitted worldwide from contract date, except comprehensively sanctioned countries per Section 6. 3Commas may restrict services in certain regions at its discretion.</p>
+<p><strong>4. OBLIGATIONS OF THE AFFILIATE</strong></p>
+<p>Comply with all applicable laws, regulations, and marketing/consumer protection rules. The Affiliate shall not: enter agreements on 3Commas&rsquo; behalf; present themselves as a 3Commas employee/partner; collude with Clients; make warranties about the Software; harm 3Commas&rsquo; reputation. Non-3Commas materials must be submitted for approval before publication.</p>
+<p><strong>5. COMPENSATION</strong></p>
+<p><strong>5.1 Payment Terms.</strong> 3Commas pays an Affiliate Fee (sum without VAT) comprising a fixed bonus plus a commission rate, based on: (1) Subscription Fees — a % of subscription fees paid by New Users; (2) Trading Volume Fees — tiered commissions on total monthly trading volume of referred users.</p>
+<p><strong>5.2 General Payment Terms.</strong> Affiliate Fee paid in USDT via TRC20 or ERC20 network. An invoice may be required before payment.</p>
+<p><strong>5.3 Trading Volume Tiers (per month):</strong></p>
+<div class="overflow-x-auto">
+<table class="w-full text-xs border-collapse border border-slate-600 my-2">
+  <thead><tr class="bg-slate-700">
+    <th class="border border-slate-600 px-2 py-1">Total Referred Trading Volume</th>
+    <th class="border border-slate-600 px-2 py-1">Commission on Subscription</th>
+    <th class="border border-slate-600 px-2 py-1">Commission on Trading Volume</th>
+  </tr></thead>
+  <tbody>
+    <tr><td class="border border-slate-600 px-2 py-1">&lt;$500,000</td><td class="border border-slate-600 px-2 py-1">30%</td><td class="border border-slate-600 px-2 py-1">No trading volume commissions</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">$500,000+</td><td class="border border-slate-600 px-2 py-1">30%</td><td class="border border-slate-600 px-2 py-1">$28.00</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">$1,000,000+</td><td class="border border-slate-600 px-2 py-1">30%</td><td class="border border-slate-600 px-2 py-1">$56.00</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">$2,000,000+</td><td class="border border-slate-600 px-2 py-1">40%</td><td class="border border-slate-600 px-2 py-1">$130.00</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">$5,000,000+</td><td class="border border-slate-600 px-2 py-1">40%</td><td class="border border-slate-600 px-2 py-1">$278.00</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">$10,000,000+</td><td class="border border-slate-600 px-2 py-1">40%</td><td class="border border-slate-600 px-2 py-1">$555.00</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">$15,000,000+</td><td class="border border-slate-600 px-2 py-1">40%</td><td class="border border-slate-600 px-2 py-1">$648.00</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">$20,000,000+</td><td class="border border-slate-600 px-2 py-1">40%</td><td class="border border-slate-600 px-2 py-1">$833.00</td></tr>
+    <tr><td class="border border-slate-600 px-2 py-1">$25,000,000+</td><td class="border border-slate-600 px-2 py-1">40%</td><td class="border border-slate-600 px-2 py-1">$1,000.00</td></tr>
+  </tbody>
+</table>
+</div>
+<p>Commissions may be adjusted based on market, legal, or financial conditions with prior notice.</p>
+<p><strong>5.4 Bonuses.</strong> Performance-based bonuses for reaching milestones. <strong>5.5 Withdrawals.</strong> Funds withdrawable to external wallet subject to Software-displayed limitations. <strong>5.6 Custom Plans.</strong> Available via a separate signed order form; standard terms apply until signing.</p>
+<p><strong>6. SANCTION COMPLIANCE</strong></p>
+<p>You warrant you are not on EU, UN, Estonia, OFAC, U.S. Commerce, or UK OFSI sanctions lists; your use does not violate sanctions applicable in Estonia; you are not from a comprehensively sanctioned country. 3Commas may restrict services and terminate this Agreement if you become subject to sanctions.</p>
+<p><strong>7. MARKETING COMPLIANCE</strong></p>
+<p>Comply with Marketing Guidelines (Annex 1). Certain materials require prior written approval. 3Commas may monitor activities. Breaches may result in warnings, sanctions, suspension, or termination.</p>
+<p><strong>8. LIABILITY</strong></p>
+<p>3Commas is not liable for indirect, incidental, special, or consequential damages, or loss of revenue or profits.</p>
+<p><strong>9. GOVERNING LAW AND JURISDICTION</strong></p>
+<p>Governed by the laws of the Republic of Estonia. Disputes settled in Harju County Court (Estonia).</p>
+<p><strong>10. CONFIDENTIALITY</strong></p>
+<p>Preserve Confidential Information; use only for Affiliate Program purposes; take reasonable safeguards; notify 3Commas of unauthorized use. All Confidential Information remains 3Commas property.</p>
+<p><strong>11. INTELLECTUAL PROPERTY</strong></p>
+<p>All IP exclusively owned by 3Commas. Limited, non-exclusive, revocable license for marketing only. Must not modify IP or register similar trademarks/domains without consent. Cease use upon termination.</p>
+<p><strong>12. INDEMNIFICATION</strong></p>
+<p>Affiliate indemnifies 3Commas against third-party claims and regulatory fines/penalties caused by Affiliate non-compliance. Does not apply to 3Commas&rsquo; own gross negligence or willful misconduct.</p>
+<p><strong>13. TERM AND TERMINATION</strong></p>
+<p>3Commas may terminate at any time, effective immediately, for any reason including law violations, fraud, or misrepresentation. Fraudulent activity results in automatic termination without payment of Affiliate Fee.</p>
+<p><strong>14. PRIVACY AND PERSONAL DATA</strong></p>
+<p>Neither party acts as Controller/Processor for the other. Personal data processed per 3Commas Privacy Notice.</p>
+<p><strong>Annex 1 — Marketing Guidelines</strong></p>
+<p>No false/guaranteed profit claims; no risk-free or expertise claims; no misleading performance claims; no FOMO/FUD. All advertising must be clear, lawful, and properly disclose affiliate status, risks, and advertiser identity.</p>',
+    'cpa_from'       => '<p class="text-xs text-slate-400 mb-3 italic">3COMMAS AFFILIATE CPA PROGRAM TERMS AND CONDITIONS — effective as of December 29, 2024. Represented by 3C Trade Tech Ltd (British Virgin Islands, reg. 2164568).</p>
+<p><strong>By sharing the Affiliate Link</strong> you accept and are bound by these Affiliate Terms.</p>
+<p><strong>1. DEFINITIONS</strong></p>
+<p><strong>1.1 Affiliate</strong> — the legal entity applying to join the program. <strong>1.2 Affiliate Program</strong> — the system by which the Affiliate earns a bonus for referring customers via Affiliate Link. <strong>1.3 Affiliate Link</strong> — a hyperlink auto-generated by Service Partners to track New User registrations and subscription purchases. <strong>1.4 Service Partners</strong> — Affise (for WAP) and AppsFlyer (for MAAP), used for tracking, analytics, and link generation. <strong>1.5 New User</strong> — a person/entity who registered via Affiliate Link, purchased a subscription, and is not the Affiliate. <strong>1.6 Confidential Information</strong> — non-public data including business strategies, financial data, trade secrets. <strong>1.7 Software</strong> — 3Commas SaaS, website, mobile apps, and APIs. <strong>1.8 Intellectual Property</strong> — trademarks, logos, trade names, copyrights exclusively owned by 3Commas. <strong>1.9 WAP</strong> (Website Affiliate Program) — governs promotion of https://3commas.io via Affise (Annex 1). <strong>1.10 MAAP</strong> (Mobile Application Affiliate Program) — governs promotion of 3Commas mobile apps/APIs via AppsFlyer (Annex 1). <strong>1.11 Marketing Guidelines</strong> — standards for promoting 3Commas products/brand (Annex 2). <strong>1.12 Target Action</strong> — New User registration at or purchase of a new subscription from 3Commas Software.</p>
+<p><strong>2. ACCEPTANCE</strong></p>
+<p>By sharing the Affiliate Link you accept these Affiliate Terms.</p>
+<p><strong>3. ADVERTISING SCHEDULE AND GEO TARGETING</strong></p>
+<p>Advertising permitted worldwide from contract date except comprehensively sanctioned countries (Russia, Belarus, Burma, Cote d\'Ivoire, Crimea, Cuba, DR Congo, Donetsk, Iran, Iraq, Liberia, Libya, Luhansk, Nicaragua, North Korea, Sierra Leone, Somalia, Sudan, Syria, Venezuela, Yemen, Zimbabwe).</p>
+<p><strong>Advertising is also prohibited in all EU countries:</strong> Austria, Belgium, Bulgaria, Croatia, Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Poland, Portugal, Romania, Slovakia, Slovenia, Spain, Sweden.</p>
+<p>3Commas may restrict or refuse services in certain regions at its sole discretion.</p>
+<p><strong>4. OBLIGATIONS OF THE AFFILIATE</strong></p>
+<p>Complete KYC verification; comply with all applicable laws and platform terms; acknowledge participation is conditioned on Target Actions process. The Affiliate shall not: enter agreements on 3Commas&rsquo; behalf; misrepresent themselves as 3Commas staff; collude with Clients; make warranties about the Software; harm 3Commas&rsquo; reputation. Non-3Commas materials require approval before publication.</p>
+<p><strong>5. AML/KYC</strong></p>
+<p>Provide all documentation required for AML/KYC (ID, proof of address, business registration, etc.). All information must be true and current. 3Commas may conduct AML/KYC checks and request additional documentation.</p>
+<p><strong>6. THIRD-PARTY</strong></p>
+<p>3Commas uses Service Partners (Affise, AppsFlyer) for data tracking. Parties operate independently. Issues with Service Partners must be addressed directly with them; no liability attributable to 3Commas.</p>
+<p><strong>7. COMPENSATION</strong></p>
+<p>Compensation determined monthly from Service Partner raw data. Discrepancies resolved in favor of Service Partner data. Invoice must be submitted within 10 business days of each month start or fee is forfeited. 3Commas may verify data; 3Commas records prevail on discrepancy; partial settlement permitted. No interest/penalties for delayed payment. Affiliate responsible for all applicable taxes.</p>
+<p><strong>8. RESTRICTIONS AND SANCTIONS COMPLIANCE</strong></p>
+<p>Prohibited traffic: Brand Context ads, Incent, Toolbar, Cashback, Coupons, Rebrokering, Doorway by brand, Co-registration, SMS spam, Email spam.</p>
+<p>Affiliate warrants that neither they nor New Users are on UN, BVI, OFAC, U.S. Commerce, or UK OFSI sanctions lists; use does not violate sanctions applicable in the BVI; they are not from comprehensively sanctioned countries or EU countries listed in Section 3. 3Commas may terminate or suspend services for sanctions compliance concerns.</p>
+<p><strong>9. MARKETING COMPLIANCE</strong></p>
+<p>Comply with Marketing Guidelines (Annex 2). Certain materials require prior written approval. Breaches may result in warnings, sanctions, suspension, or termination.</p>
+<p><strong>10. TERMINATION</strong> — 3Commas may terminate for any or no reason, effective immediately upon notice.</p>
+<p><strong>11. LIABILITY</strong> — 3Commas not liable for indirect, incidental, special, or consequential damages, or loss of revenue or profits.</p>
+<p><strong>12. GOVERNING LAW</strong> — Laws of the British Virgin Islands; disputes in relevant BVI court.</p>
+<p><strong>13. CONFIDENTIALITY</strong> — Preserve Confidential Information; use only for Affiliate Program purposes; all Confidential Information remains 3Commas property; report unauthorized disclosure immediately.</p>
+<p><strong>14. INTELLECTUAL PROPERTY</strong> — All IP exclusively owned by 3Commas. Limited, non-exclusive, revocable license for marketing. Must not modify IP or register similar marks without consent. Cease use upon termination.</p>
+<p><strong>15. INDEMNIFICATION</strong> — Affiliate indemnifies 3Commas against third-party claims and regulatory fines caused by Affiliate non-compliance. Does not apply to 3Commas&rsquo; own gross negligence/willful misconduct.</p>
+<p><strong>16. MODIFICATION</strong> — 3Commas may modify Terms at any time. Continued participation implies acceptance. Affiliates responsible for reviewing updates. Affiliates who accepted before September 18, 2024 continue under prior terms.</p>
+<p><strong>17–20. GENERAL PROVISIONS</strong> — Severability, No Waiver, Force Majeure, and Entire Agreement clauses apply.</p>
+<p><strong>Annex 1 — WAP &amp; MAAP Specific Provisions</strong></p>
+<p>WAP (via Affise) and MAAP (via AppsFlyer): Affiliate must register on respective platforms and agree to their T&amp;Cs/MSA. <strong>Specific Compensation:</strong> $3 per New User registration; $197 per new subscription purchase.</p>
+<p><strong>Annex 2 — Marketing Guidelines:</strong> No false/guaranteed profit, risk-free, or misleading claims; no FOMO/FUD. All advertising must be clear, compliant, and properly disclose affiliate status, risks, and advertiser identity.</p>',
+    'cpa_until'      => '<p class="text-xs text-slate-400 mb-3 italic">3COMMAS AFFILIATE CPA PROGRAM TERMS AND CONDITIONS — effective as of September 18, 2024. Represented by 3Commas Technologies OÜ (Estonia, reg. 14125515).</p>
+<p><strong>By sharing the Affiliate Link</strong> you accept and are bound by these Affiliate Terms.</p>
+<p><strong>1. DEFINITIONS</strong></p>
+<p><strong>1.1 Affiliate</strong> — the legal entity applying to join the program. <strong>1.2 Affiliate Program</strong> — the system by which the Affiliate earns a commission for referring customers via Affiliate Link. <strong>1.3 Affiliate Link</strong> — a hyperlink auto-generated by Service Partners to track New User registrations and subscription purchases. <strong>1.4 Service Partners</strong> — Affise (for WAP) and AppsFlyer (for MAAP). <strong>1.5 New User</strong> — a person/entity who registered via Affiliate Link, purchased a subscription, and is not the Affiliate. <strong>1.6 Confidential Information</strong> — non-public data including business strategies, financial data, trade secrets. <strong>1.7 Software</strong> — 3Commas SaaS, website, mobile apps, and APIs. <strong>1.8 Intellectual Property</strong> — trademarks, logos, trade names, copyrights exclusively owned by 3Commas. <strong>1.9 WAP</strong> (Website Affiliate Program) — governs promotion of https://3commas.io via Affise (Annex 1). <strong>1.10 MAAP</strong> (Mobile Application Affiliate Program) — governs promotion of 3Commas mobile apps/APIs via AppsFlyer (Annex 1). <strong>1.11 Marketing Guidelines</strong> — standards for promoting 3Commas products/brand (Annex 2). <strong>1.12 Target Action</strong> — New User registration at or purchase of a new subscription from 3Commas Software.</p>
+<p><strong>2. ACCEPTANCE</strong></p>
+<p>By sharing the Affiliate Link you accept these Affiliate Terms.</p>
+<p><strong>3. ADVERTISING SCHEDULE AND GEO TARGETING</strong></p>
+<p>Advertising permitted worldwide from contract date except comprehensively sanctioned countries (Russia, Belarus, Burma, Cote d\'Ivoire, Crimea, Cuba, DR Congo, Donetsk, Iran, Iraq, Liberia, Libya, Luhansk, Nicaragua, North Korea, Sierra Leone, Somalia, Sudan, Syria, Venezuela, Yemen, Zimbabwe). 3Commas may restrict or refuse services in certain regions at its sole discretion.</p>
+<p><strong>4. OBLIGATIONS OF THE AFFILIATE</strong></p>
+<p>Complete KYC verification; comply with all applicable laws and platform terms; acknowledge participation is conditioned on Target Actions process. The Affiliate shall not: enter agreements on 3Commas&rsquo; behalf; misrepresent themselves as 3Commas staff; collude with Clients; make warranties about the Software; harm 3Commas&rsquo; reputation. Non-3Commas materials require approval before publication.</p>
+<p><strong>5. AML/KYC</strong></p>
+<p>Provide all documentation required for AML/KYC (ID, proof of address, business registration, etc.). All information must be true and current. 3Commas may conduct AML/KYC checks.</p>
+<p><strong>6. THIRD-PARTY</strong></p>
+<p>3Commas uses Service Partners for data tracking. Parties operate independently. Issues with Service Partners must be addressed directly with them; no liability attributable to 3Commas.</p>
+<p><strong>7. COMPENSATION</strong></p>
+<p>Compensation determined monthly from Service Partner raw data. Discrepancies resolved in favor of Service Partner data. Invoice must be submitted within 10 business days of each month start or fee is forfeited. 3Commas may verify data; 3Commas records prevail on discrepancy; partial settlement permitted. No interest/penalties for delayed payment. Affiliate responsible for all applicable taxes.</p>
+<p><strong>8. RESTRICTIONS AND SANCTIONS COMPLIANCE</strong></p>
+<p>Prohibited traffic: Brand Context ads, Incent, Toolbar, Cashback, Coupons, Rebrokering, Doorway by brand, Co-registration, SMS spam, Email spam.</p>
+<p>Affiliate warrants that neither they nor New Users are on EU, UN, Estonia, OFAC, U.S. Commerce, or UK OFSI sanctions lists; use does not violate sanctions applicable in Estonia; they are not from comprehensively sanctioned countries listed in Section 3. 3Commas may terminate or suspend services for sanctions compliance concerns.</p>
+<p><strong>9. MARKETING COMPLIANCE</strong></p>
+<p>Comply with Marketing Guidelines (Annex 2). Certain materials require prior written approval. Breaches may result in warnings, sanctions, suspension, or termination.</p>
+<p><strong>10. TERMINATION</strong> — 3Commas may terminate for any or no reason, effective immediately upon notice.</p>
+<p><strong>11. LIABILITY</strong> — 3Commas not liable for indirect, incidental, special, or consequential damages, or loss of revenue or profits.</p>
+<p><strong>12. GOVERNING LAW</strong> — Laws of the Republic of Estonia; disputes in Harju County Court (Estonia).</p>
+<p><strong>13. CONFIDENTIALITY</strong> — Preserve Confidential Information; use only for Affiliate Program purposes; all Confidential Information remains 3Commas property; report unauthorized disclosure immediately.</p>
+<p><strong>14. INTELLECTUAL PROPERTY</strong> — All IP exclusively owned by 3Commas. Limited, non-exclusive, revocable license for marketing. Must not modify IP or register similar marks without consent. Cease use upon termination.</p>
+<p><strong>15. INDEMNIFICATION</strong> — Affiliate indemnifies 3Commas against third-party claims and regulatory fines caused by Affiliate non-compliance. Does not apply to 3Commas&rsquo; own gross negligence/willful misconduct.</p>
+<p><strong>16. MODIFICATION</strong> — 3Commas may modify Terms at any time. Continued participation implies acceptance. Affiliates who accepted before September 18, 2024 continue under prior terms.</p>
+<p><strong>17–20. GENERAL PROVISIONS</strong> — Severability, No Waiver, Force Majeure, and Entire Agreement clauses apply.</p>
+<p><strong>Annex 1 — WAP &amp; MAAP Specific Provisions</strong></p>
+<p>WAP (via Affise) and MAAP (via AppsFlyer): Affiliate must register on respective platforms and agree to their T&amp;Cs/MSA. <strong>Specific Compensation:</strong> $3 per New User registration; $197 per new subscription purchase.</p>
+<p><strong>Annex 2 — Marketing Guidelines:</strong> No false/guaranteed profit, risk-free, or misleading claims; no FOMO/FUD. All advertising must be clear, compliant, and properly disclose affiliate status, risks, and advertiser identity.</p>',
+    'gdpr'           => '<p class="text-xs text-slate-400 mb-3 italic">3Commas and GDPR — Our Commitment to Your Data Privacy</p>
+<p>At 3Commas, safeguarding your personal data is our top priority. In line with the General Data Protection Regulation (GDPR), we have implemented robust measures to ensure your privacy and security, strengthening our platform&rsquo;s commitment to transparency and trust.</p>
+<p><strong>What GDPR Compliance Means for You</strong></p>
+<p>The GDPR is designed to give individuals greater control over their personal data and how it is used. For you, this means enhanced privacy protection without any changes to the 3Commas platform you know and trust. Our updated processes ensure your data is handled with great care and security, giving you peace of mind as you engage with our services.</p>
+<p><strong>What We Have in Place</strong></p>
+<ul class="list-disc list-inside space-y-1 mb-3">
+  <li><strong>Data Protection Officer (DPO):</strong> Our DPO is available for inquiries at <a href="mailto:dpo@3commas.io" class="text-blue-400 hover:underline">dpo@3commas.io</a>.</li>
+  <li><strong>Updated Legal Documents:</strong> Our up-to-date legal documents include: Client Terms of Service, API Terms of Service for Developers, Affiliate Program Terms and Conditions, and Terms for Referral. Additional legal documents are available in our Legal Information section.</li>
+  <li><strong>Enhanced Privacy Notices:</strong> Our updated Privacy Notice outlines your rights under the GDPR and details how we process personal data. Job candidates also receive a Recruitment Privacy Notice to ensure transparency regarding their data.</li>
+  <li><strong>Improved Cookie Management:</strong> We have a GDPR-compliant cookie banner that seeks voluntary consent for non-essential cookies. Our Cookie Policy provides detailed insights into the types of cookies we use and their purpose.</li>
+  <li><strong>Internal Policy Upgrades:</strong> 3Commas&rsquo; internal policies and business processes align with GDPR&rsquo;s data collection and handling standards.</li>
+  <li><strong>Training &amp; Awareness:</strong> Our team receives ongoing GDPR-specific training, and our support staff is equipped to handle your privacy rights requests effectively.</li>
+  <li><strong>Automated Privacy Rights Requests:</strong> Users can easily submit Data Subject Access Requests (DSAR) through their 3Commas accounts.</li>
+  <li><strong>Enhanced Risk Management:</strong> We continually refine our processes to assess data risks and ensure prompt responses in the unlikely event of a data breach.</li>
+</ul>
+<p><strong>Ongoing Initiatives</strong></p>
+<p>Our dedication to privacy doesn&rsquo;t stop here. We are actively:</p>
+<ul class="list-disc list-inside space-y-1 mb-3">
+  <li><strong>Pursuing Confirmation:</strong> To validate our compliance efforts, we are working to further improve controls and, where necessary, implement new ones following industry standards and confirm their effectiveness.</li>
+  <li><strong>Building Transparency:</strong> We are developing a Trust Center to further improve visibility into our data protection practices.</li>
+</ul>
+<p><strong>Have Questions?</strong></p>
+<p>If you have any questions, concerns, or suggestions regarding our GDPR compliance efforts, feel free to contact us at <a href="mailto:dpo@3commas.io" class="text-blue-400 hover:underline">dpo@3commas.io</a> or <a href="mailto:support@3commas.io" class="text-blue-400 hover:underline">support@3commas.io</a>.</p>
+<p>At 3Commas, we&rsquo;re committed to upholding the highest standards of data privacy and security, ensuring your trust remains well-placed in our platform.</p>',
+    'refund'         => '<p class="text-xs text-slate-400 mb-3 italic">Refund Policy — effective as of December 18, 2025.</p>
+<p>Any capitalized term used herein shall have the meaning given to them in the Terms of Use.</p>
+<p>In case of any issues related to payment or refund processes, please refer to the resources available on the 3Commas Help Center. You may also reach out to 3Commas Support via the &ldquo;Contact Us&rdquo; form or by emailing <a href="mailto:support@3commas.io" class="text-blue-400 hover:underline">support@3commas.io</a>.</p>
+<p><strong>1. Refund for Terminating a Plan</strong></p>
+<p><strong>1.1</strong> As a consumer, you have the right to withdraw from your first Subscription to a Plan within <strong>15 (fifteen) days</strong> from the date you successfully subscribed (including any Trial period), as described in Section 14.4.1 of the Terms of Use. You are entitled to a refund if you exercise this right within that period. After the 15-day withdrawal period, no refund for termination will be provided.</p>
+<p><strong>1.2</strong> For second and all subsequent purchases of the same Subscription Plan, a grace period of <strong>24 (twenty-four) hours</strong> is provided for refund eligibility, after which no refunds can be issued.</p>
+<p><strong>2. Refunds via Paddle.com</strong></p>
+<p><strong>2.1</strong> If payment(s) for the Subscription were made via our merchant of record — Paddle.com (applicable for credit/debit card or PayPal payments) — then the refund will also be processed by Paddle. Your relationship with Paddle is governed by the Paddle Checkout Buyer Terms and Conditions.</p>
+<p><strong>3. Limitations and Waivers</strong></p>
+<p><strong>3.1</strong> You may take advantage of a refund for each disputed payment only once. If a refund has already been made, you shall have no right to further contest a refund request, dispute, or transaction reversal with 3Commas or any third-party payment service provider, bank, or financial institution.</p>
+<p><strong>3.2</strong> Refunds will be issued in the same currency as the original payment. If the original payment was made in cryptocurrency, the refund will be issued in <strong>USDC</strong>. With your consent, we reserve the right to offer alternative compensation — such as a discount on future services, an extended subscription period, or an upgraded subscription — in lieu of a monetary refund. All refund rules apply equally to subscriptions paid with referral bonuses; in such cases refunds are facilitated within the applicable grace period set forth in Section 1.1 above.</p>
+<p><strong>3.3</strong> The processing time for refunds varies depending on the payment provider, method, and individual banking procedures. We advise consulting your payment provider or financial institution for specific details regarding refund processing times.</p>
+<p><strong>3.4</strong> 3Commas is not responsible for any fees that may be applied by your payment service provider when processing a refund.</p>',
   ];
   ?>
 
