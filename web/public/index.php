@@ -29,10 +29,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
     $confirm  = $_POST['password_confirm'] ?? '';
 
-    // Human verification (honeypot + checkbox)
-    if (($_POST['website'] ?? '') !== '' || ($_POST['human_verify'] ?? '') !== '1') {
-      flash('error', 'Please complete the human verification.');
+    // Google reCAPTCHA v2 server-side verification
+    $recaptchaResponse = trim($_POST['g-recaptcha-response'] ?? '');
+    if ($recaptchaResponse === '') {
+      flash('error', 'Please complete the reCAPTCHA verification.');
       redirect('index.php?tab=signup');
+    }
+    $recaptchaSecret = env('RECAPTCHA_SECRET_KEY', '');
+    if ($recaptchaSecret !== '') {
+      $verifyResp = @file_get_contents(
+        'https://www.google.com/recaptcha/api/siteverify?secret=' . urlencode($recaptchaSecret) .
+        '&response=' . urlencode($recaptchaResponse) .
+        '&remoteip=' . urlencode($_SERVER['REMOTE_ADDR'] ?? '')
+      );
+      $verifyData = $verifyResp ? json_decode($verifyResp, true) : null;
+      if (!($verifyData['success'] ?? false)) {
+        flash('error', 'reCAPTCHA verification failed. Please try again.');
+        redirect('index.php?tab=signup');
+      }
     }
 
     if ($name === '' || $email === '' || $password === '') {
@@ -171,6 +185,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta name="twitter:image" content="<?= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . htmlspecialchars($_SERVER['HTTP_HOST'], ENT_QUOTES) ?>/images/fav.png">
 
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <script>
     tailwind.config = {
       theme: {
@@ -282,7 +297,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               </div>
 
               <div class="bg-white border border-slate-200 rounded-2xl p-2 sm:p-4 lg:p-6">
-                <form method="POST" action="" class="space-y-4">
+
+                <!-- Step 1: reCAPTCHA gate -->
+                <div id="recaptchaGate" class="flex flex-col items-center justify-center py-8 gap-5">
+                  <div class="text-center">
+                    <p class="text-sm font-semibold text-slate-700 mb-1">First, verify you're human</p>
+                    <p class="text-xs text-slate-400">Complete the check below to continue with registration</p>
+                  </div>
+                  <div class="g-recaptcha"
+                    data-sitekey="<?= htmlspecialchars(env('RECAPTCHA_SITE_KEY', '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'), ENT_QUOTES) ?>"
+                    data-callback="onRecaptchaPassed"
+                    data-expired-callback="onRecaptchaExpired">
+                  </div>
+                </div>
+
+                <!-- Step 2: Registration form (hidden until reCAPTCHA passed) -->
+                <form id="signupForm" method="POST" action="" class="space-y-4 hidden">
                   <?= csrf_field() ?>
                   <input type="hidden" name="auth_mode" value="signup">
 
@@ -314,19 +344,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       placeholder="Repeat password">
                   </div>
 
-                  <!-- Honeypot (bots fill this, humans don't see it) -->
-                  <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off">
-
-                  <!-- Human verification checkbox -->
-                  <div class="flex items-center gap-3 border border-slate-200 rounded-xl px-4 py-3 bg-slate-50 cursor-pointer select-none" onclick="toggleHuman()">
-                    <div id="humanCheckbox" class="w-5 h-5 rounded border-2 border-slate-300 flex items-center justify-center flex-shrink-0 transition-all">
-                      <svg id="humanCheckIcon" class="w-3 h-3 text-emerald-500 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
-                      </svg>
-                    </div>
-                    <span class="text-sm text-slate-600 flex-1">I'm not a robot</span>
-                    <svg class="w-8 h-8 opacity-30" viewBox="0 0 64 64" fill="none"><rect width="64" height="64" rx="8" fill="#10b981"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="28" font-weight="bold">3C</text></svg>
-                    <input type="hidden" name="human_verify" id="humanVerifyField" value="">
+                  <!-- Verified badge -->
+                  <div class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2.5">
+                    <svg class="w-4 h-4 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                    <span class="text-xs text-emerald-700 font-medium">Human verification passed</span>
                   </div>
 
                   <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-500/20 text-base">
@@ -379,22 +400,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   setAuthTab(initialAuthTab);
 
-  function toggleHuman() {
-    const field = document.getElementById('humanVerifyField');
-    const icon  = document.getElementById('humanCheckIcon');
-    const box   = document.getElementById('humanCheckbox');
-    const checked = field.value === '1';
-    if (!checked) {
-      field.value = '1';
-      icon.classList.remove('hidden');
-      box.classList.remove('border-slate-300');
-      box.classList.add('border-emerald-500', 'bg-emerald-50');
-    } else {
-      field.value = '';
-      icon.classList.add('hidden');
-      box.classList.remove('border-emerald-500', 'bg-emerald-50');
-      box.classList.add('border-slate-300');
-    }
+  function onRecaptchaPassed(token) {
+    document.getElementById('recaptchaGate').classList.add('hidden');
+    document.getElementById('signupForm').classList.remove('hidden');
+  }
+
+  function onRecaptchaExpired() {
+    document.getElementById('signupForm').classList.add('hidden');
+    document.getElementById('recaptchaGate').classList.remove('hidden');
   }
 
   document.getElementById('mobileMenuBtn').addEventListener('click', () => {
