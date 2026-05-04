@@ -17,6 +17,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer:v2
+
+      - name: Install Composer dependencies
+        working-directory: web
+        run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+
       - name: Prepare deployment directory
         run: |
           mkdir -p _deploy/public_html _deploy/src
@@ -24,9 +34,12 @@ jobs:
           cp -r web/public/. _deploy/public_html/
           # Private PHP includes go into src/ (sibling of public_html, not web-accessible)
           cp -r web/src/. _deploy/src/
+          # Vendor dependencies
+          cp -r web/vendor/. _deploy/vendor/
           # Copy environment template and composer manifest to account root
           cp web/.env.example _deploy/.env.example
           cp web/composer.json _deploy/composer.json
+          cp web/composer.lock _deploy/composer.lock
 
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
