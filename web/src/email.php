@@ -3,6 +3,24 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/config.php';
 
+function apply_email_branding(string $htmlBody): string
+{
+    $appUrl  = rtrim((string) env('APP_URL', ''), '/');
+    $logoUrl = $appUrl !== '' ? $appUrl . '/images/og-image.png' : '';
+
+    if ($logoUrl === '') {
+        return $htmlBody;
+    }
+
+    $logoBlock = <<<HTML
+    <div style="text-align:center;margin:0 0 16px;">
+      <img src="{$logoUrl}" alt="3Commas" style="max-width:180px;height:auto;display:inline-block;">
+    </div>
+    HTML;
+
+    return $logoBlock . "\n" . $htmlBody;
+}
+
 /**
  * Send an email via AWS SES (SesV2Client).
  * Wraps in try/catch so a missing SES config won't crash the app.
@@ -45,6 +63,8 @@ function send_email(string $to, string $subject, string $htmlBody, ?string &$deb
             ],
         ]);
 
+        $finalHtmlBody = apply_email_branding($htmlBody);
+
         $client->sendEmail([
             'FromEmailAddress' => sprintf('%s <%s>', $fromName, $fromEmail),
             'Destination'      => ['ToAddresses' => [$to]],
@@ -52,7 +72,7 @@ function send_email(string $to, string $subject, string $htmlBody, ?string &$deb
                 'Simple' => [
                     'Subject' => ['Data' => $subject, 'Charset' => 'UTF-8'],
                     'Body'    => [
-                        'Html' => ['Data' => $htmlBody, 'Charset' => 'UTF-8'],
+                'Html' => ['Data' => $finalHtmlBody, 'Charset' => 'UTF-8'],
                     ],
                 ],
             ],
