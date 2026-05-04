@@ -315,6 +315,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <form id="signupForm" method="POST" action="" class="space-y-4 hidden">
                   <?= csrf_field() ?>
                   <input type="hidden" name="auth_mode" value="signup">
+                  <input type="hidden" name="g-recaptcha-response" id="signupRecaptchaToken" value="">
 
                   <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1.5" for="signup_name">Full name</label>
@@ -401,11 +402,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   setAuthTab(initialAuthTab);
 
   function onRecaptchaPassed(token) {
+    document.getElementById('signupRecaptchaToken').value = token || '';
     document.getElementById('recaptchaGate').classList.add('hidden');
     document.getElementById('signupForm').classList.remove('hidden');
   }
 
   function onRecaptchaExpired() {
+    document.getElementById('signupRecaptchaToken').value = '';
     document.getElementById('signupForm').classList.add('hidden');
     document.getElementById('recaptchaGate').classList.remove('hidden');
   }
