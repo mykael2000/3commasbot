@@ -7,9 +7,11 @@ require_once __DIR__ . '/config.php';
  * Send an email via AWS SES (SesV2Client).
  * Wraps in try/catch so a missing SES config won't crash the app.
  */
-function send_email(string $to, string $subject, string $htmlBody): bool
+function send_email(string $to, string $subject, string $htmlBody, ?string &$debugError = null): bool
 {
     static $sdkLoaded = null;
+
+  $debugError = null;
 
     if ($sdkLoaded === null) {
         $vendorAutoload = WEB_ROOT . '/vendor/autoload.php';
@@ -21,14 +23,16 @@ function send_email(string $to, string $subject, string $htmlBody): bool
 
     try {
         if (!$sdkLoaded) {
-            error_log('[email] AWS SDK not installed; skipping email to ' . $to);
+        $debugError = 'AWS SDK not installed; missing vendor/autoload.php';
+        error_log('[email] ' . $debugError . '; skipping email to ' . $to);
             return false;
         }
 
         $fromEmail = env('SES_FROM_EMAIL', '');
         $fromName  = env('SES_FROM_NAME', '3Commas');
         if ($fromEmail === '') {
-            error_log('[email] SES_FROM_EMAIL not configured; skipping email to ' . $to);
+          $debugError = 'SES_FROM_EMAIL not configured';
+          error_log('[email] ' . $debugError . '; skipping email to ' . $to);
             return false;
         }
 
@@ -55,6 +59,7 @@ function send_email(string $to, string $subject, string $htmlBody): bool
         ]);
         return true;
     } catch (Throwable $e) {
+        $debugError = $e->getMessage();
         error_log('[email] Failed to send to ' . $to . ': ' . $e->getMessage());
         return false;
     }

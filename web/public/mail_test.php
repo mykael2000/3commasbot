@@ -27,20 +27,34 @@ echo "AWS_SECRET_ACCESS_KEY: " . (env('AWS_SECRET_ACCESS_KEY', '') !== '' ? 'SET
 
 require_once __DIR__ . '/../src/email.php';
 
-$to = $_GET['to'] ?? '';
+$to = trim((string)($_GET['to'] ?? $_POST['to'] ?? ''));
 if ($to === '' || !filter_var($to, FILTER_VALIDATE_EMAIL)) {
-    echo "Usage: mail_test.php?secret=debug1234&to=you@example.com\n";
+    echo "Enter a valid recipient email below to run the test.\n\n";
     echo '</pre>';
+    ?>
+    <form method="post" style="max-width:520px;margin:8px auto;padding:12px;border:1px solid #ddd;border-radius:8px;font-family:Arial,sans-serif;">
+      <input type="hidden" name="secret" value="<?= htmlspecialchars((string)($_GET['secret'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+      <label for="to" style="display:block;margin-bottom:6px;">Recipient Email</label>
+      <input id="to" name="to" type="email" required placeholder="you@example.com" style="width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;margin-bottom:10px;">
+      <button type="submit" style="padding:10px 14px;border:0;border-radius:6px;background:#0ea5e9;color:#fff;cursor:pointer;">Send Test Email</button>
+    </form>
+    <?php
     exit;
 }
 
 echo "Sending test email to: $to\n";
 
+$debugError = null;
 $result = send_email(
     $to,
     'Test Email from 3Commas',
-    '<h2>It works!</h2><p>This is a test email sent at ' . date('Y-m-d H:i:s') . '.</p>'
+    '<h2>It works!</h2><p>This is a test email sent at ' . date('Y-m-d H:i:s') . '.</p>',
+    $debugError
 );
 
-echo $result ? "\nSUCCESS: email sent.\n" : "\nFAILED: check error_log above or XAMPP/server PHP error log.\n";
+if ($result) {
+    echo "\nSUCCESS: email sent.\n";
+} else {
+    echo "\nFAILED: " . ($debugError ?: 'unknown error') . "\n";
+}
 echo '</pre>';
