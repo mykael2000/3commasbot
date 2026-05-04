@@ -40,7 +40,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             redirect('login.php');
         }
 
+        if (!$user['email_verified']) {
+            require_once __DIR__ . '/../src/email.php';
+            $code    = str_pad((string) random_int(100000, 999999), 6, '0', STR_PAD_LEFT);
+            $verTok  = bin2hex(random_bytes(32));
+            $expires = date('Y-m-d H:i:s', strtotime('+30 minutes'));
+            db()->prepare('UPDATE users SET email_verify_code=?, email_verify_token=?, email_verify_expires=? WHERE id=?')
+                ->execute([$code, $verTok, $expires, $user['id']]);
+            send_verification_email($user['email'], $user['name'], $code, $verTok);
+            $_SESSION['pending_verify_user_id'] = $user['id'];
+            flash('error', 'Please verify your email address. A new code has been sent.');
+            redirect('verify_email.php');
+        }
+
         login_user($user);
+
+        // Send login notification email
+        require_once __DIR__ . '/../src/email.php';
+        $loginTime = gmdate('d-m-Y H:i');
+        $ip        = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? 'Unknown';
+        $ua        = $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown';
+        send_login_notification_email($user['email'], $user['name'], $ip, $ua, $loginTime);
 
         if ($remember) {
             // Extend cookie lifetime to 30 days

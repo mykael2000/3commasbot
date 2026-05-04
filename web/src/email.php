@@ -125,6 +125,63 @@ function send_withdrawal_status_email(
     return send_email($email, $subject, $html);
 }
 
+function send_verification_email(string $email, string $name, string $code, string $token): bool
+{
+    $appUrl     = env('APP_URL', 'http://localhost');
+    $confirmUrl = $appUrl . '/verify_email.php?token=' . urlencode($token);
+    $subject    = 'Welcome to 3Commas!';
+    $html = <<<HTML
+    <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#0f172a;color:#fff;padding:32px;border-radius:8px;">
+      <h2 style="color:#10b981;margin-bottom:8px;">Welcome to 3Commas!</h2>
+      <p style="color:#cbd5e1;">Use the code below to confirm your 3Commas registration:</p>
+      <p style="text-align:center;margin:28px 0;">
+        <span style="display:inline-block;background:#111827;border:1px solid #334155;color:#10b981;padding:16px 36px;border-radius:10px;font-size:36px;font-weight:bold;letter-spacing:12px;">{$code}</span>
+      </p>
+      <p style="text-align:center;color:#94a3b8;margin-bottom:12px;">Or confirm automatically:</p>
+      <p style="text-align:center;margin:0 0 8px;">
+        <a href="{$confirmUrl}" style="background:#10b981;color:#fff;padding:13px 30px;border-radius:7px;text-decoration:none;font-weight:bold;display:inline-block;font-size:15px;">Confirm email</a>
+      </p>
+      <p style="font-size:12px;color:#64748b;text-align:center;margin-top:10px;">Use automatic confirmation in the same browser where you plan to open the 3Commas website</p>
+      <hr style="border-color:#334155;margin:24px 0;">
+      <p style="font-size:12px;color:#64748b;"><strong style="color:#94a3b8;">Note:</strong> Your confirmation code is valid for 30 minutes. Do not share it with anybody (including 3Commas team members) under any circumstances.</p>
+    </div>
+    HTML;
+    return send_email($email, $subject, $html);
+}
+
+function send_login_notification_email(string $email, string $name, string $ip, string $userAgent, string $loginTime): bool
+{
+    $safeIp        = htmlspecialchars($ip,        ENT_QUOTES, 'UTF-8');
+    $safeUa        = htmlspecialchars($userAgent, ENT_QUOTES, 'UTF-8');
+    $safeTime      = htmlspecialchars($loginTime, ENT_QUOTES, 'UTF-8');
+    $subject       = '3Commas Login Notification';
+    $html = <<<HTML
+    <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#0f172a;color:#fff;padding:32px;border-radius:8px;">
+      <h2 style="color:#10b981;">3Commas Login</h2>
+      <p>Dear {$name},</p>
+      <p>This is to notify you of a successful login to your account.</p>
+      <table style="width:100%;border-collapse:collapse;margin:20px 0;font-size:14px;">
+        <tr style="border-bottom:1px solid #334155;">
+          <td style="padding:10px 0;color:#94a3b8;width:130px;">Login Time</td>
+          <td style="padding:10px 0;color:#f1f5f9;">{$safeTime} UTC</td>
+        </tr>
+        <tr style="border-bottom:1px solid #334155;">
+          <td style="padding:10px 0;color:#94a3b8;">IP Address</td>
+          <td style="padding:10px 0;color:#f1f5f9;">{$safeIp}</td>
+        </tr>
+        <tr>
+          <td style="padding:10px 0;color:#94a3b8;vertical-align:top;">User Agent</td>
+          <td style="padding:10px 0;color:#f1f5f9;word-break:break-all;">{$safeUa}</td>
+        </tr>
+      </table>
+      <p style="font-size:14px;color:#cbd5e1;">If you were not the one to initiate this action or suspect there may be suspicious activity, please disable your account and contact our support at <a href="mailto:support@3commasbot.io" style="color:#10b981;">support@3commasbot.io</a> immediately. In this case your account may be blocked for security reasons, for 48 hours or more from the moment you contact our support team.</p>
+      <hr style="border-color:#334155;margin:24px 0;">
+      <p style="font-size:12px;color:#64748b;">3Commas Platform &middot; Automated Crypto Trading</p>
+    </div>
+    HTML;
+    return send_email($email, $subject, $html);
+}
+
 function send_security_otp_email(string $email, string $name, string $otpCode, string $actionLabel = 'security action'): bool
 {
         $safeAction = htmlspecialchars($actionLabel, ENT_QUOTES, 'UTF-8');

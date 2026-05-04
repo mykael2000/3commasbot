@@ -4,6 +4,7 @@ require_once __DIR__ . '/../src/config.php';
 require_once __DIR__ . '/../src/auth.php';
 require_once __DIR__ . '/../src/csrf.php';
 require_once __DIR__ . '/../src/helpers.php';
+require_once __DIR__ . '/../src/email.php';
 
 // Already logged in → go to dashboard
 if (is_logged_in()) {
@@ -27,6 +28,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email    = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
     $confirm  = $_POST['password_confirm'] ?? '';
+
+    // Human verification (honeypot + checkbox)
+    if (($_POST['website'] ?? '') !== '' || ($_POST['human_verify'] ?? '') !== '1') {
+      flash('error', 'Please complete the human verification.');
+      redirect('index.php?tab=signup');
+    }
 
     if ($name === '' || $email === '' || $password === '') {
       flash('error', 'All fields are required.');
@@ -64,11 +71,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $stmt->execute([$name, $email, $hashed, 'user', 'active', 0.0]);
       $userId = (int) $pdo->lastInsertId();
 
-      $user = $pdo->prepare('SELECT * FROM users WHERE id = ? LIMIT 1');
-      $user->execute([$userId]);
-      login_user($user->fetch());
-
-      redirect('app/index.php');
+      // Generate email verification code + token
+      $code    = str_pad((string) random_int(100000, 999999), 6, '0', STR_PAD_LEFT);
+      $verTok  = bin2hex(random_bytes(32));
+      $expires = date('Y-m-d H:i:s', strtotime('+30 minutes'));
+      $pdo->prepare('UPDATE users SET email_verify_code=?, email_verify_token=?, email_verify_expires=? WHERE id=?')
+          ->execute([$code, $verTok, $expires, $userId]);
+      send_verification_email($email, $name, $code, $verTok);
+      $_SESSION['pending_verify_user_id'] = $userId;
+      redirect('verify_email.php');
     } catch (Throwable $e) {
       flash('error', 'Registration failed. Please try again.');
       redirect('index.php?tab=signup');
@@ -99,7 +110,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       redirect('index.php?tab=signin');
         }
 
+        if (!$user['email_verified']) {
+            $code    = str_pad((string) random_int(100000, 999999), 6, '0', STR_PAD_LEFT);
+            $verTok  = bin2hex(random_bytes(32));
+            $expires = date('Y-m-d H:i:s', strtotime('+30 minutes'));
+            db()->prepare('UPDATE users SET email_verify_code=?, email_verify_token=?, email_verify_expires=? WHERE id=?')
+                ->execute([$code, $verTok, $expires, $user['id']]);
+            send_verification_email($user['email'], $user['name'], $code, $verTok);
+            $_SESSION['pending_verify_user_id'] = $user['id'];
+            flash('error', 'Please verify your email address. A new code has been sent.');
+            redirect('verify_email.php');
+        }
+
         login_user($user);
+
+        // Send login notification email
+        $loginTime = gmdate('d-m-Y H:i');
+        $ip        = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? 'Unknown';
+        $ua        = $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown';
+        send_login_notification_email($user['email'], $user['name'], $ip, $ua, $loginTime);
 
         if ($remember) {
             // Extend cookie lifetime to 30 days
@@ -285,6 +314,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       placeholder="Repeat password">
                   </div>
 
+                  <!-- Honeypot (bots fill this, humans don't see it) -->
+                  <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off">
+
+                  <!-- Human verification checkbox -->
+                  <div class="flex items-center gap-3 border border-slate-200 rounded-xl px-4 py-3 bg-slate-50 cursor-pointer select-none" onclick="toggleHuman()">
+                    <div id="humanCheckbox" class="w-5 h-5 rounded border-2 border-slate-300 flex items-center justify-center flex-shrink-0 transition-all">
+                      <svg id="humanCheckIcon" class="w-3 h-3 text-emerald-500 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                      </svg>
+                    </div>
+                    <span class="text-sm text-slate-600 flex-1">I'm not a robot</span>
+                    <svg class="w-8 h-8 opacity-30" viewBox="0 0 64 64" fill="none"><rect width="64" height="64" rx="8" fill="#10b981"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="28" font-weight="bold">3C</text></svg>
+                    <input type="hidden" name="human_verify" id="humanVerifyField" value="">
+                  </div>
+
                   <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-500/20 text-base">
                     Create Account
                   </button>
@@ -334,6 +378,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   });
 
   setAuthTab(initialAuthTab);
+
+  function toggleHuman() {
+    const field = document.getElementById('humanVerifyField');
+    const icon  = document.getElementById('humanCheckIcon');
+    const box   = document.getElementById('humanCheckbox');
+    const checked = field.value === '1';
+    if (!checked) {
+      field.value = '1';
+      icon.classList.remove('hidden');
+      box.classList.remove('border-slate-300');
+      box.classList.add('border-emerald-500', 'bg-emerald-50');
+    } else {
+      field.value = '';
+      icon.classList.add('hidden');
+      box.classList.remove('border-emerald-500', 'bg-emerald-50');
+      box.classList.add('border-slate-300');
+    }
+  }
 
   document.getElementById('mobileMenuBtn').addEventListener('click', () => {
     document.getElementById('mobileMenu').classList.toggle('hidden');
