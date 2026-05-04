@@ -62,7 +62,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       );
       $verifyData = $verifyResp ? json_decode($verifyResp, true) : null;
       if (!($verifyData['success'] ?? false)) {
-        flash('error', 'reCAPTCHA verification failed. Please try again.');
+        $errCodes = [];
+        if (isset($verifyData['error-codes']) && is_array($verifyData['error-codes'])) {
+          $errCodes = $verifyData['error-codes'];
+        }
+        $detail = $errCodes ? (' (' . implode(', ', $errCodes) . ')') : '';
+        flash('error', 'reCAPTCHA verification failed' . $detail . '.');
         redirect('index.php?tab=signup');
       }
     }
@@ -114,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $_SESSION['pending_verify_user_id'] = $userId;
       redirect('verify_email.php');
     } catch (Throwable $e) {
-      flash('error', 'Registration failed. Please try again.');
+      flash('error', 'Registration failed: ' . $e->getMessage());
       redirect('index.php?tab=signup');
     }
   }
