@@ -18,6 +18,24 @@ if (!in_array($activeAuthTab, ['signin', 'signup'], true)) {
   $activeAuthTab = 'signin';
 }
 
+function ensure_email_verification_columns(PDO $pdo): void
+{
+  $columns = [
+    'email_verified'       => "ALTER TABLE users ADD COLUMN email_verified tinyint(1) NOT NULL DEFAULT 0 AFTER status",
+    'email_verify_code'    => "ALTER TABLE users ADD COLUMN email_verify_code varchar(10) DEFAULT NULL",
+    'email_verify_token'   => "ALTER TABLE users ADD COLUMN email_verify_token varchar(64) DEFAULT NULL",
+    'email_verify_expires' => "ALTER TABLE users ADD COLUMN email_verify_expires datetime DEFAULT NULL",
+  ];
+
+  foreach ($columns as $column => $sql) {
+    $check = $pdo->prepare('SHOW COLUMNS FROM users LIKE ?');
+    $check->execute([$column]);
+    if (!$check->fetch()) {
+      $pdo->exec($sql);
+    }
+  }
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_verify();
 
@@ -71,6 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
       $pdo = db();
+      ensure_email_verification_columns($pdo);
 
       $check = $pdo->prepare('SELECT id FROM users WHERE email = ? LIMIT 1');
       $check->execute([$email]);
@@ -82,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       $hashed = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
       $stmt = $pdo->prepare('INSERT INTO users (name, email, password, role, status, balance) VALUES (?, ?, ?, ?, ?, ?)');
-      $stmt->execute([$name, $email, $hashed, 'user', 'active', 0.0]);
+      $stmt->execute([$name, $email, $hashed, 'user', 'inactive', 0.0]);
       $userId = (int) $pdo->lastInsertId();
 
       // Generate email verification code + token
