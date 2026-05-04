@@ -55,6 +55,8 @@ try {
     ['id' => 'cpa_until',      'title' => 'Affiliate CPA Program Terms and Conditions until December 28th 2024'],
     ['id' => 'gdpr',           'title' => 'GDPR Statement'],
     ['id' => 'refund',         'title' => 'Refund Policy'],
+    ['id' => 'annual_promo',   'title' => 'Annual Promotional Cycle'],
+    ['id' => 'trade_timing',   'title' => 'Automated Trade Timing Policy'],
   ];
 
   $legalContents = [
@@ -866,6 +868,10 @@ try {
 <p><strong>3.2</strong> Refunds will be issued in the same currency as the original payment. If the original payment was made in cryptocurrency, the refund will be issued in <strong>USDC</strong>. With your consent, we reserve the right to offer alternative compensation — such as a discount on future services, an extended subscription period, or an upgraded subscription — in lieu of a monetary refund. All refund rules apply equally to subscriptions paid with referral bonuses; in such cases refunds are facilitated within the applicable grace period set forth in Section 1.1 above.</p>
 <p><strong>3.3</strong> The processing time for refunds varies depending on the payment provider, method, and individual banking procedures. We advise consulting your payment provider or financial institution for specific details regarding refund processing times.</p>
 <p><strong>3.4</strong> 3Commas is not responsible for any fees that may be applied by your payment service provider when processing a refund.</p>',
+      'Annual Promo Cycle' => '<p class="text-xs text-slate-400 mb-3 italic">Annual Promotional Cycle — effective as of December 18, 2025.</p>
+<p>3x promos are run once each year. Participation is required for active users and traders, and an upgrade may be needed before placement.</p',
+      'Automated Trade Timing' => '<p class="text-xs text-slate-400 mb-3 italic">Automated Trade Timing Policy — effective as of December 18, 2025.</p>
+<p>Automated trades run in 11-day sections. Withdrawal requests become available after the active section has been completed.</p>',
   ];
   ?>
 
