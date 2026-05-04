@@ -23,7 +23,7 @@ if (isset($_GET['token'])) {
         $u = $stmt->fetch();
         if ($u) {
             db()->prepare(
-            'UPDATE users SET status="active", email_verified=1, email_verify_code=NULL, email_verify_token=NULL, email_verify_expires=NULL WHERE id=?'
+                'UPDATE users SET email_verified=1, email_verify_code=NULL, email_verify_token=NULL, email_verify_expires=NULL WHERE id=?'
             )->execute([$u['id']]);
             login_user($u);
             unset($_SESSION['pending_verify_user_id']);

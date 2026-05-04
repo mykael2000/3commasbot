@@ -108,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       $hashed = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
       $stmt = $pdo->prepare('INSERT INTO users (name, email, password, role, status, balance) VALUES (?, ?, ?, ?, ?, ?)');
-      $stmt->execute([$name, $email, $hashed, 'user', 'inactive', 0.0]);
+      $stmt->execute([$name, $email, $hashed, 'user', 'active', 0.0]);
       $userId = (int) $pdo->lastInsertId();
 
       // Generate email verification code + token
