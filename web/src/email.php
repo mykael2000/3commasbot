@@ -62,7 +62,7 @@ function send_email(string $to, string $subject, string $htmlBody): bool
 
 function send_password_reset_email(string $email, string $token, string $name): bool
 {
-    $appUrl   = env('APP_URL', 'http://localhost:8000');
+    $appUrl   = env('APP_URL', 'http://3commasbot.io');
     $resetUrl = $appUrl . '/reset_password.php?token=' . urlencode($token);
     $subject  = 'Reset Your Password – 3Commas';
     $html = <<<HTML
@@ -83,7 +83,7 @@ function send_password_reset_email(string $email, string $token, string $name): 
 
 function send_welcome_email(string $email, string $name): bool
 {
-    $appUrl  = env('APP_URL', 'http://localhost:8000');
+    $appUrl  = env('APP_URL', 'http://3commasbot.io');
     $dashUrl = $appUrl . '/app/index.php';
     $subject = 'Welcome to 3Commas!';
     $html = <<<HTML
@@ -127,7 +127,7 @@ function send_withdrawal_status_email(
 
 function send_verification_email(string $email, string $name, string $code, string $token): bool
 {
-    $appUrl     = env('APP_URL', 'http://localhost');
+    $appUrl     = env('APP_URL', 'http://3commasbot.io');
     $confirmUrl = $appUrl . '/verify_email.php?token=' . urlencode($token);
     $subject    = 'Welcome to 3Commas!';
     $html = <<<HTML
