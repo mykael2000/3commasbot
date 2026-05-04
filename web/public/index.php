@@ -27,10 +27,12 @@ function ensure_email_verification_columns(PDO $pdo): void
     'email_verify_expires' => "ALTER TABLE users ADD COLUMN email_verify_expires datetime DEFAULT NULL",
   ];
 
+  $schemaSql = 'SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ? LIMIT 1';
+  $schemaStmt = $pdo->prepare($schemaSql);
+
   foreach ($columns as $column => $sql) {
-    $check = $pdo->prepare('SHOW COLUMNS FROM users LIKE ?');
-    $check->execute([$column]);
-    if (!$check->fetch()) {
+    $schemaStmt->execute(['users', $column]);
+    if (!$schemaStmt->fetchColumn()) {
       $pdo->exec($sql);
     }
   }
