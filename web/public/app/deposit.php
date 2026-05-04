@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'confi
              VALUES (?, ?, ?, ?, ?, ?)'
         );
     $stmt->execute([$user['id'], $asset, 0, null, $addr, 'pending']);
-    flash('success', 'Deposit confirmation submitted. Admin will verify and approve it shortly.');
+    flash('success', 'Deposit confirmation submitted. Deposit will be confirmed shortly.');
     } catch (Throwable) {
     flash('error', 'Failed to submit deposit confirmation.');
     }

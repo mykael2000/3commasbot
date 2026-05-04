@@ -887,7 +887,7 @@ try {
       </div>
     </div>
   </div>
-  <?php endforeach; ?>
+  <?php endforeach; ?>  
 
   <script>
     function openLegalModal(id) {
@@ -926,13 +926,13 @@ try {
     </section>
 
     <?php if (empty($docs)): ?>
-      <div class="text-center py-16">
+      <!-- <div class="text-center py-16">
         <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
           <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
         </div>
         <p class="text-slate-500 font-medium">No documents available yet.</p>
         <p class="text-slate-400 text-sm mt-1">Check back later for terms, policies and reports.</p>
-      </div>
+      </div> -->
     <?php else: ?>
     <div class="space-y-3">
       <?php foreach ($docs as $doc): ?>
@@ -970,6 +970,28 @@ try {
     <?php endif; ?>
 
   </main>
+
+  <!-- ══════════════════════════════════
+       PLATFORM NOTES
+  ══════════════════════════════════ -->
+  <section class="max-w-2xl mx-auto px-4 pb-10 mt-2">
+    <div class="bg-white border border-slate-200 rounded-2xl p-5">
+      <div class="flex items-center gap-2 mb-4">
+        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+        <h2 class="text-sm font-bold text-slate-700 uppercase tracking-wider">Platform Notes</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div class="bg-slate-50 border border-slate-100 rounded-xl p-4">
+          <p class="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-1">Annual Promo Cycle</p>
+          <p class="text-sm text-slate-600">3x promos are run once each year. Participation is required for active users and traders, and an upgrade may be needed before placement.</p>
+        </div>
+        <div class="bg-slate-50 border border-slate-100 rounded-xl p-4">
+          <p class="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-1">Automated Trade Timing</p>
+          <p class="text-sm text-slate-600">Automated trades run in 11-day sections. Withdrawal requests become available after the active section has been completed.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
 </body>
 </html>
