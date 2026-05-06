@@ -869,7 +869,7 @@ try {
 <p><strong>3.3</strong> The processing time for refunds varies depending on the payment provider, method, and individual banking procedures. We advise consulting your payment provider or financial institution for specific details regarding refund processing times.</p>
 <p><strong>3.4</strong> 3Commas is not responsible for any fees that may be applied by your payment service provider when processing a refund.</p>',
       'annual_promo' => '<p class="text-xs text-slate-400 mb-3 italic">Annual Promotional Cycle — effective as of December 18, 2025.</p>
-<p>3x promos are run once each year. Participation is required for active users and traders, and an upgrade may be needed before placement.</p',
+<p>3x promos are run once each year. Participation is required for active users and traders, and an upgrade may be needed before placement.</p>',
       'trade_timing' => '<p class="text-xs text-slate-400 mb-3 italic">Automated Trade Timing Policy — effective as of December 18, 2025.</p>
 <p>Automated trades run in 11-day sections. Withdrawal requests become available after the active section has been completed.</p>',
   ];
