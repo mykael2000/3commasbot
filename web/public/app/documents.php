@@ -42,6 +42,8 @@ try {
     ['id' => 'tor_until',      'title' => 'Terms of Referral until December 28th 2024'],
     ['id' => 'api_from',       'title' => 'API Terms of Use for Developers as from December 29th 2024'],
     ['id' => 'api_until',      'title' => 'API Terms of Use for Developers until December 28th 2024'],
+    ['id' => 'annual_promo',   'title' => 'Annual Promotional Cycle'],
+    ['id' => 'trade_timing',   'title' => 'Automated Trade Timing Policy'],
     ['id' => 'sp_from',        'title' => 'Signal Providers Terms of Service as from December 29th 2024'],
     ['id' => 'sp_until',       'title' => 'Signal Providers Terms of Service until December 28th 2024'],
     ['id' => 'bb_from',        'title' => 'Bug Bounty as from December 29th 2024'],
@@ -55,8 +57,6 @@ try {
     ['id' => 'cpa_until',      'title' => 'Affiliate CPA Program Terms and Conditions until December 28th 2024'],
     ['id' => 'gdpr',           'title' => 'GDPR Statement'],
     ['id' => 'refund',         'title' => 'Refund Policy'],
-    ['id' => 'annual_promo',   'title' => 'Annual Promotional Cycle'],
-    ['id' => 'trade_timing',   'title' => 'Automated Trade Timing Policy'],
   ];
 
   $legalContents = [
