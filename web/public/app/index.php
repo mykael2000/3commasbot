@@ -182,6 +182,14 @@ try {
     $activePlan = $st->fetch() ?: null;
 } catch (Throwable) {}
 
+// Fetch the latest active admin notice
+$activeNotice = null;
+try {
+    $activeNotice = db()->query(
+        'SELECT * FROM notices WHERE is_active = 1 ORDER BY created_at DESC LIMIT 1'
+    )->fetch() ?: null;
+} catch (Throwable) {}
+
 // PHP prices JSON for JS exchange-rate widget (all 5 coins)
 $pricesJson = json_encode([
     'BTC'  => $prices['BTCUSDT'],
@@ -238,6 +246,55 @@ $pricesJson = json_encode([
     </style>
 </head>
 <body class="bg-white text-slate-900 min-h-screen pb-28 md:pb-4 antialiased">
+
+<?php if ($activeNotice): ?>
+<!-- Admin Notice Modal -->
+<div id="noticeModal" class="fixed inset-0 z-[999] flex items-center justify-center p-4" style="display:none!important" aria-modal="true" role="dialog">
+  <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" id="noticeBackdrop"></div>
+  <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md z-10 overflow-hidden">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-4 flex items-center gap-3">
+      <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
+        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+      </div>
+      <h2 class="font-bold text-white text-base leading-snug flex-1"><?= sanitize($activeNotice['subject']) ?></h2>
+      <button onclick="dismissNotice()" class="text-white/70 hover:text-white transition flex-shrink-0" aria-label="Close">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <!-- Body -->
+    <div class="px-6 py-5">
+      <p class="text-slate-700 text-sm leading-relaxed whitespace-pre-line"><?= sanitize($activeNotice['message']) ?></p>
+    </div>
+    <!-- Footer -->
+    <div class="px-6 pb-5">
+      <button onclick="dismissNotice()"
+        class="w-full bg-emerald-500 hover:bg-emerald-400 text-white font-semibold py-2.5 rounded-xl transition text-sm">
+        Got it
+      </button>
+    </div>
+  </div>
+</div>
+<script>
+  (function() {
+    var noticeId = <?= (int)$activeNotice['id'] ?>;
+    var key = 'noticed_' + noticeId;
+    if (!sessionStorage.getItem(key)) {
+      var modal = document.getElementById('noticeModal');
+      modal.style.removeProperty('display');
+      modal.classList.remove('hidden');
+    }
+  })();
+  function dismissNotice() {
+    var noticeId = <?= (int)$activeNotice['id'] ?>;
+    sessionStorage.setItem('noticed_' + noticeId, '1');
+    var modal = document.getElementById('noticeModal');
+    modal.style.display = 'none';
+  }
+  document.getElementById('noticeBackdrop').addEventListener('click', dismissNotice);
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') dismissNotice(); });
+</script>
+<?php endif; ?>
 
     <!-- ════════════════════════════════════════
          TOP HEADER

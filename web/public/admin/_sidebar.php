@@ -50,6 +50,7 @@ $_adminPage = $activeAdminPage ?? basename($_SERVER['PHP_SELF'] ?? '');
         'withdrawals.php'   => 'Withdrawals',
         'kyc.php'           => 'KYC Review',
         'documents.php'     => 'Documents',
+        'notices.php'       => 'Notices',
         'users.php'         => 'Users',
       ];
       foreach ($links as $file => $label):
