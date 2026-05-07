@@ -56,7 +56,7 @@ try {
     ['id' => 'cpa_from',       'title' => 'Affiliate CPA Program Terms and Conditions as from December 29th 2024'],
     ['id' => 'cpa_until',      'title' => 'Affiliate CPA Program Terms and Conditions until December 28th 2024'],
     ['id' => 'gdpr',           'title' => 'GDPR Statement'],
-    ['id' => 'refund',         'title' => 'Refund Policy'],
+    // ['id' => 'refund',         'title' => 'Refund Policy'],
   ];
 
   $legalContents = [
@@ -855,19 +855,19 @@ try {
 <p><strong>Have Questions?</strong></p>
 <p>If you have any questions, concerns, or suggestions regarding our GDPR compliance efforts, feel free to contact us at <a href="mailto:dpo@3commasbot.io" class="text-blue-400 hover:underline">dpo@3commasbot.io</a> or <a href="mailto:support@3commasbot.io" class="text-blue-400 hover:underline">support@3commasbot.io</a>.</p>
 <p>At 3Commas, we&rsquo;re committed to upholding the highest standards of data privacy and security, ensuring your trust remains well-placed in our platform.</p>',
-    'refund'         => '<p class="text-xs text-slate-400 mb-3 italic">Refund Policy — effective as of December 18, 2025.</p>
-<p>Any capitalized term used herein shall have the meaning given to them in the Terms of Use.</p>
-<p>In case of any issues related to payment or refund processes, please refer to the resources available on the 3Commas Help Center. You may also reach out to 3Commas Support via the &ldquo;Contact Us&rdquo; form or by emailing <a href="mailto:support@3commasbot.io" class="text-blue-400 hover:underline">support@3commasbot.io</a>.</p>
-<p><strong>1. Refund for Terminating a Plan</strong></p>
-<p><strong>1.1</strong> As a consumer, you have the right to withdraw from your first Subscription to a Plan within <strong>15 (fifteen) days</strong> from the date you successfully subscribed (including any Trial period), as described in Section 14.4.1 of the Terms of Use. You are entitled to a refund if you exercise this right within that period. After the 15-day withdrawal period, no refund for termination will be provided.</p>
-<p><strong>1.2</strong> For second and all subsequent purchases of the same Subscription Plan, a grace period of <strong>24 (twenty-four) hours</strong> is provided for refund eligibility, after which no refunds can be issued.</p>
-<p><strong>2. Refunds via Paddle.com</strong></p>
-<p><strong>2.1</strong> If payment(s) for the Subscription were made via our merchant of record — Paddle.com (applicable for credit/debit card or PayPal payments) — then the refund will also be processed by Paddle. Your relationship with Paddle is governed by the Paddle Checkout Buyer Terms and Conditions.</p>
-<p><strong>3. Limitations and Waivers</strong></p>
-<p><strong>3.1</strong> You may take advantage of a refund for each disputed payment only once. If a refund has already been made, you shall have no right to further contest a refund request, dispute, or transaction reversal with 3Commas or any third-party payment service provider, bank, or financial institution.</p>
-<p><strong>3.2</strong> Refunds will be issued in the same currency as the original payment. If the original payment was made in cryptocurrency, the refund will be issued in <strong>USDC</strong>. With your consent, we reserve the right to offer alternative compensation — such as a discount on future services, an extended subscription period, or an upgraded subscription — in lieu of a monetary refund. All refund rules apply equally to subscriptions paid with referral bonuses; in such cases refunds are facilitated within the applicable grace period set forth in Section 1.1 above.</p>
-<p><strong>3.3</strong> The processing time for refunds varies depending on the payment provider, method, and individual banking procedures. We advise consulting your payment provider or financial institution for specific details regarding refund processing times.</p>
-<p><strong>3.4</strong> 3Commas is not responsible for any fees that may be applied by your payment service provider when processing a refund.</p>',
+//     'refund'         => '<p class="text-xs text-slate-400 mb-3 italic">Refund Policy — effective as of December 18, 2025.</p>
+// <p>Any capitalized term used herein shall have the meaning given to them in the Terms of Use.</p>
+// <p>In case of any issues related to payment or refund processes, please refer to the resources available on the 3Commas Help Center. You may also reach out to 3Commas Support via the &ldquo;Contact Us&rdquo; form or by emailing <a href="mailto:support@3commasbot.io" class="text-blue-400 hover:underline">support@3commasbot.io</a>.</p>
+// <p><strong>1. Refund for Terminating a Plan</strong></p>
+// <p><strong>1.1</strong> As a consumer, you have the right to withdraw from your first Subscription to a Plan within <strong>15 (fifteen) days</strong> from the date you successfully subscribed (including any Trial period), as described in Section 14.4.1 of the Terms of Use. You are entitled to a refund if you exercise this right within that period. After the 15-day withdrawal period, no refund for termination will be provided.</p>
+// <p><strong>1.2</strong> For second and all subsequent purchases of the same Subscription Plan, a grace period of <strong>24 (twenty-four) hours</strong> is provided for refund eligibility, after which no refunds can be issued.</p>
+// <p><strong>2. Refunds via Paddle.com</strong></p>
+// <p><strong>2.1</strong> If payment(s) for the Subscription were made via our merchant of record — Paddle.com (applicable for credit/debit card or PayPal payments) — then the refund will also be processed by Paddle. Your relationship with Paddle is governed by the Paddle Checkout Buyer Terms and Conditions.</p>
+// <p><strong>3. Limitations and Waivers</strong></p>
+// <p><strong>3.1</strong> You may take advantage of a refund for each disputed payment only once. If a refund has already been made, you shall have no right to further contest a refund request, dispute, or transaction reversal with 3Commas or any third-party payment service provider, bank, or financial institution.</p>
+// <p><strong>3.2</strong> Refunds will be issued in the same currency as the original payment. If the original payment was made in cryptocurrency, the refund will be issued in <strong>USDC</strong>. With your consent, we reserve the right to offer alternative compensation — such as a discount on future services, an extended subscription period, or an upgraded subscription — in lieu of a monetary refund. All refund rules apply equally to subscriptions paid with referral bonuses; in such cases refunds are facilitated within the applicable grace period set forth in Section 1.1 above.</p>
+// <p><strong>3.3</strong> The processing time for refunds varies depending on the payment provider, method, and individual banking procedures. We advise consulting your payment provider or financial institution for specific details regarding refund processing times.</p>
+// <p><strong>3.4</strong> 3Commas is not responsible for any fees that may be applied by your payment service provider when processing a refund.</p>',
       'annual_promo' => '<p class="text-xs text-slate-400 mb-3 italic">Annual Promotional Cycle — effective as of December 18, 2025.</p>
 <p>3x promos are run once each year. Participation is required for active users and traders, and an upgrade may be needed before placement.</p>',
       'trade_timing' => '<p class="text-xs text-slate-400 mb-3 italic">Automated Trade Timing Policy — effective as of December 18, 2025.</p>
