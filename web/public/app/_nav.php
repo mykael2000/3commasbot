@@ -95,51 +95,15 @@ $_navPage = $activePage;
 <script type="text/javascript">
 var _smartsupp = _smartsupp || {};
 _smartsupp.key = '974526ed39790a589cf4d6ee38fc45e6e627627d';
+// On mobile, push the widget above the fixed bottom nav bar (~80px tall)
+if (window.innerWidth < 768) {
+  _smartsupp.offsetY = 80;
+}
 window.smartsupp||(function(d) {
   var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
   s=d.getElementsByTagName('script')[0];c=d.createElement('script');
   c.type='text/javascript';c.charset='utf-8';c.async=true;
   c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
 })(document);
-</script>
-<style>
-@media (max-width: 767px) {
-    #smartsupp-widget-container,
-    [id*="smartsupp-widget"],
-    [class*="smartsupp-widget"],
-    iframe[src*="smartsuppchat.com"] {
-        bottom: 150px !important;
-    }
-}
-</style>
-<script>
-(function () {
-    if (!window.matchMedia('(max-width: 767px)').matches) return;
-
-    const mobileBottom = '150px';
-
-    const applyOffset = function () {
-        const nodes = document.querySelectorAll(
-            '#smartsupp-widget-container, [id*="smartsupp-widget"], [class*="smartsupp-widget"], iframe[src*="smartsuppchat.com"]'
-        );
-        nodes.forEach(function (node) {
-            node.style.setProperty('bottom', mobileBottom, 'important');
-        });
-    };
-
-    // Initial attempts while Smartsupp loads asynchronously.
-    let attempts = 0;
-    const interval = setInterval(function () {
-        applyOffset();
-        attempts += 1;
-        if (attempts >= 50) {
-            clearInterval(interval);
-        }
-    }, 200);
-
-    // Keep enforcing if widget DOM changes after initial load.
-    const observer = new MutationObserver(applyOffset);
-    observer.observe(document.body, { childList: true, subtree: true });
-})();
 </script>
 <noscript>Powered by <a href="https://www.smartsupp.com" target="_blank">Smartsupp</a></noscript>
