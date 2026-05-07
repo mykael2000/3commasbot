@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add_p
 
     if ($subId <= 0) {
         flash('error', 'Invalid subscription.');
-        redirect('/admin/subscriptions.php');
+        redirect('/admin/subscriptions');
     }
 
     try {
@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add_p
     } catch (Throwable) {
         flash('error', 'Failed to add P&L update.');
     }
-    redirect('/admin/subscriptions.php');
+    redirect('/admin/subscriptions');
 }
 
 // ── Update subscription status ───────────────────────────────────────────────
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'updat
     $status = $_POST['status']       ?? '';
     if (!in_array($status, ['active','completed','cancelled'], true)) {
         flash('error', 'Invalid status.');
-        redirect('/admin/subscriptions.php');
+        redirect('/admin/subscriptions');
     }
     try {
         db()->prepare('UPDATE user_plans SET status = ? WHERE id = ?')->execute([$status, $subId]);
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'updat
     } catch (Throwable) {
         flash('error', 'Failed to update status.');
     }
-    redirect('/admin/subscriptions.php');
+    redirect('/admin/subscriptions');
 }
 
 // ── Load subscriptions ───────────────────────────────────────────────────────
@@ -220,7 +220,7 @@ if ($selectedId > 0) {
                 <?= $totalPnl >= 0 ? '+' : '' ?>$<?= format_currency(abs($totalPnl)) ?>
               </td>
               <td class="px-4 py-3 text-center">
-                <form method="POST" action="/admin/subscriptions.php" class="inline-flex items-center gap-1">
+                <form method="POST" action="/admin/subscriptions" class="inline-flex items-center gap-1">
                   <?= csrf_field() ?>
                   <input type="hidden" name="action" value="update_status">
                   <input type="hidden" name="id" value="<?= (int)$sub['id'] ?>">
@@ -247,7 +247,7 @@ if ($selectedId > 0) {
                 </div>
                 <!-- Inline PnL form -->
                 <div id="pnl-form-<?= (int)$sub['id'] ?>" class="hidden mt-2">
-                  <form method="POST" action="/admin/subscriptions.php" class="flex flex-col gap-1">
+                  <form method="POST" action="/admin/subscriptions" class="flex flex-col gap-1">
                     <?= csrf_field() ?>
                     <input type="hidden" name="action" value="add_pnl">
                     <input type="hidden" name="subscription_id" value="<?= (int)$sub['id'] ?>">

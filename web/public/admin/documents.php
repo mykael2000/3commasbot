@@ -21,16 +21,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
 
     if ($title === '') {
         flash('error', 'Title is required.');
-        redirect('/admin/documents.php');
+        redirect('/admin/documents');
     }
 
     if (!isset($_FILES['document']) || $_FILES['document']['error'] === UPLOAD_ERR_NO_FILE) {
         flash('error', 'Please select a file to upload.');
-        redirect('/admin/documents.php');
+        redirect('/admin/documents');
     }
     if ($_FILES['document']['error'] !== UPLOAD_ERR_OK) {
         flash('error', 'Upload error. Please try again.');
-        redirect('/admin/documents.php');
+        redirect('/admin/documents');
     }
 
     $allowed_exts = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'png', 'jpg', 'jpeg'];
@@ -39,11 +39,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
 
     if (!in_array($ext, $allowed_exts, true)) {
         flash('error', 'Invalid file type. Allowed: PDF, DOC, DOCX, XLS, XLSX, TXT, PNG, JPG.');
-        redirect('/admin/documents.php');
+        redirect('/admin/documents');
     }
     if ($_FILES['document']['size'] > $max_size) {
         flash('error', 'File exceeds the 20 MB limit.');
-        redirect('/admin/documents.php');
+        redirect('/admin/documents');
     }
 
     // Validate MIME type using finfo
@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
     $mimeType = $finfo->file($_FILES['document']['tmp_name']);
     if (!in_array($mimeType, $allowedMimes, true)) {
         flash('error', 'File content type is not allowed.');
-        redirect('/admin/documents.php');
+        redirect('/admin/documents');
     }
 
     // Ensure upload directory and .htaccess protection exist before any file operations
@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
 
     if (!move_uploaded_file($_FILES['document']['tmp_name'], $uploadDir . $safeName)) {
         flash('error', 'Failed to save file. Please try again.');
-        redirect('/admin/documents.php');
+        redirect('/admin/documents');
     }
 
     try {
@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
         @unlink($uploadDir . $safeName);
         flash('error', 'Failed to save document metadata.');
     }
-    redirect('/admin/documents.php');
+    redirect('/admin/documents');
 }
 
 // ── Toggle visibility ────────────────────────────────────────────────────────
@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'toggl
     } catch (Throwable) {
         flash('error', 'Failed to update visibility.');
     }
-    redirect('/admin/documents.php');
+    redirect('/admin/documents');
 }
 
 // ── Delete document ──────────────────────────────────────────────────────────
@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delet
     } catch (Throwable) {
         flash('error', 'Failed to delete document.');
     }
-    redirect('/admin/documents.php');
+    redirect('/admin/documents');
 }
 
 $docs = [];
@@ -160,7 +160,7 @@ try {
       <!-- Upload Form -->
       <div class="bg-slate-700 rounded-2xl p-5">
         <h2 class="font-bold text-white mb-4">Upload Document</h2>
-        <form method="POST" action="/admin/documents.php" enctype="multipart/form-data" class="space-y-3">
+        <form method="POST" action="/admin/documents" enctype="multipart/form-data" class="space-y-3">
           <?= csrf_field() ?>
           <input type="hidden" name="action" value="upload">
 
@@ -216,7 +216,7 @@ try {
             <div class="flex items-center gap-2 flex-shrink-0">
               <a href="/<?= sanitize($doc['file_path']) ?>" target="_blank" rel="noopener"
                 class="text-xs text-emerald-400 hover:text-emerald-300 transition">View</a>
-              <form method="POST" action="/admin/documents.php" class="inline">
+              <form method="POST" action="/admin/documents" class="inline">
                 <?= csrf_field() ?>
                 <input type="hidden" name="action" value="toggle">
                 <input type="hidden" name="id" value="<?= (int)$doc['id'] ?>">
@@ -224,7 +224,7 @@ try {
                   <?= $doc['public_visible'] ? 'Hide' : 'Show' ?>
                 </button>
               </form>
-              <form method="POST" action="/admin/documents.php" class="inline"
+              <form method="POST" action="/admin/documents" class="inline"
                 onsubmit="return confirm('Delete this document?')">
                 <?= csrf_field() ?>
                 <input type="hidden" name="action" value="delete">

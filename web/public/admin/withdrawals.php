@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'updat
 
     if ($id <= 0 || !$status) {
         flash('error', 'Invalid request.');
-        redirect('/admin/withdrawals.php');
+        redirect('/admin/withdrawals');
     }
 
     try {
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'updat
     } catch (Throwable) {
         flash('error', 'Failed to update withdrawal.');
     }
-    redirect('/admin/withdrawals.php');
+    redirect('/admin/withdrawals');
 }
 
 $withdrawals = [];
@@ -128,7 +128,7 @@ try {
               <td class="px-4 py-3">
                 <?php if ($w['status'] === 'pending'): ?>
                 <div class="flex flex-col gap-2 items-end">
-                  <form method="POST" action="/admin/withdrawals.php" class="flex flex-col gap-1 w-48">
+                  <form method="POST" action="/admin/withdrawals" class="flex flex-col gap-1 w-48">
                     <?= csrf_field() ?>
                     <input type="hidden" name="action" value="update">
                     <input type="hidden" name="id" value="<?= (int)$w['id'] ?>">

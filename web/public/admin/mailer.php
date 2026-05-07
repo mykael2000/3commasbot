@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($subject === '' || $heading === '' || $body_text === '') {
         flash('error', 'Subject, heading, and body are required.');
-        redirect('/admin/mailer.php');
+        redirect('/admin/mailer');
     }
 
     // Build recipient list
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $recipients[] = ['name' => 'Valued Member', 'email' => $custom_email];
         } else {
             flash('error', 'Invalid custom email address.');
-            redirect('/admin/mailer.php');
+            redirect('/admin/mailer');
         }
     } else {
         // Specific user ID
@@ -61,13 +61,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         if (empty($recipients)) {
             flash('error', 'Selected user not found.');
-            redirect('/admin/mailer.php');
+            redirect('/admin/mailer');
         }
     }
 
     // Send to each recipient
-    $sent   = 0;
-    $failed = 0;
+    $sent      = 0;
+    $failed    = 0;
+    $lastError = '';
     foreach ($recipients as $r) {
         $html = build_admin_email(
             heading: $heading,
@@ -77,12 +78,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             footer_note: $footer_note,
             recipient_name: $r['name']
         );
-        $ok = send_email($r['email'], $subject, $html);
+        $debugError = null;
+        $ok = send_email($r['email'], $subject, $html, $debugError);
         if ($ok) {
             $sent++;
             $sendResults[] = ['email' => $r['email'], 'status' => 'sent'];
         } else {
             $failed++;
+            if ($debugError !== null && $lastError === '') {
+                $lastError = $debugError;
+            }
             $sendResults[] = ['email' => $r['email'], 'status' => 'failed'];
         }
     }
@@ -90,9 +95,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($failed === 0) {
         flash('success', "All {$sent} email(s) sent successfully.");
     } else {
-        flash('error', "{$sent} sent, {$failed} failed. Check server logs.");
+        $errMsg = "{$sent} sent, {$failed} failed.";
+        if ($lastError !== '') {
+            $errMsg .= ' Reason: ' . $lastError;
+        }
+        flash('error', $errMsg);
     }
-    redirect('/admin/mailer.php');
+    redirect('/admin/mailer');
 }
 
 /**
@@ -266,7 +275,7 @@ $activeAdminPage = 'mailer.php';
           Compose Email
         </h2>
 
-        <form method="POST" action="/admin/mailer.php" id="mailForm" class="space-y-4">
+        <form method="POST" action="/admin/mailer" id="mailForm" class="space-y-4">
           <?= csrf_field() ?>
 
           <!-- Recipient -->

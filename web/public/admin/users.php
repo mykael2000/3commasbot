@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'toggl
     } catch (Throwable) {
         flash('error', 'Failed to update user status.');
     }
-    redirect('/admin/users.php');
+    redirect('/admin/users');
 }
 
 // Toggle role
@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'toggl
     // Prevent self-demotion
     if ($id === (int)($_SESSION['user_id'] ?? 0)) {
         flash('error', 'You cannot change your own role.');
-        redirect('/admin/users.php');
+        redirect('/admin/users');
     }
     try {
         $pdo  = db();
@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'toggl
     } catch (Throwable) {
         flash('error', 'Failed to update user role.');
     }
-    redirect('/admin/users.php');
+    redirect('/admin/users');
 }
 
 // Update balance
@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'updat
 
   if ($id <= 0 || $balance < 0 || $btcBalance < 0 || $ethBalance < 0 || $bnbBalance < 0 || $solBalance < 0 || $equity < 0 || $margin < 0 || $freeMargin < 0) {
         flash('error', 'Invalid balance value.');
-        redirect('/admin/users.php');
+        redirect('/admin/users');
     }
     try {
         db()->prepare(
@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'updat
     } catch (Throwable) {
     flash('error', 'Failed to update balances and dashboard stats.');
     }
-    redirect('/admin/users.php');
+    redirect('/admin/users');
 }
 
 $users = [];
@@ -169,7 +169,7 @@ try {
                 </span>
               </td>
               <td class="px-4 py-3 text-right">
-                <form method="POST" action="/admin/users.php" class="flex flex-wrap items-center justify-end gap-1">
+                <form method="POST" action="/admin/users" class="flex flex-wrap items-center justify-end gap-1">
                   <?= csrf_field() ?>
                   <input type="hidden" name="action" value="update_balance">
                   <input type="hidden" name="id" value="<?= (int)$u['id'] ?>">
@@ -225,7 +225,7 @@ try {
               <td class="px-4 py-3">
                 <div class="flex gap-2 justify-end">
                   <!-- Toggle Status -->
-                  <form method="POST" action="/admin/users.php">
+                  <form method="POST" action="/admin/users">
                     <?= csrf_field() ?>
                     <input type="hidden" name="action" value="toggle_status">
                     <input type="hidden" name="id" value="<?= (int)$u['id'] ?>">
@@ -236,7 +236,7 @@ try {
                   </form>
                   <!-- Toggle Role -->
                   <?php if ((int)$u['id'] !== (int)($_SESSION['user_id'] ?? 0)): ?>
-                  <form method="POST" action="/admin/users.php">
+                  <form method="POST" action="/admin/users">
                     <?= csrf_field() ?>
                     <input type="hidden" name="action" value="toggle_role">
                     <input type="hidden" name="id" value="<?= (int)$u['id'] ?>">

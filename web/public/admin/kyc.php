@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($action === 'reject' && $id > 0) {
         if ($note === '') {
             flash('error', 'A rejection reason is required.');
-            redirect('/admin/kyc.php');
+            redirect('/admin/kyc');
         }
         try {
             db()->prepare(
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash('error', 'Failed to reject KYC.');
         }
     }
-    redirect('/admin/kyc.php');
+    redirect('/admin/kyc');
 }
 
 // Filter
@@ -162,7 +162,7 @@ try {
         <!-- Actions -->
         <?php if ($sub['status'] === 'pending'): ?>
         <div class="flex flex-wrap gap-3">
-          <form method="POST" action="/admin/kyc.php" onsubmit="return confirm('Approve this KYC?')">
+          <form method="POST" action="/admin/kyc" onsubmit="return confirm('Approve this KYC?')">
             <?= csrf_field() ?>
             <input type="hidden" name="action" value="approve">
             <input type="hidden" name="id" value="<?= (int)$sub['id'] ?>">
@@ -171,7 +171,7 @@ try {
             </button>
           </form>
 
-          <form method="POST" action="/admin/kyc.php" class="flex items-center gap-2"
+          <form method="POST" action="/admin/kyc" class="flex items-center gap-2"
             onsubmit="return confirm('Reject this KYC?')">
             <?= csrf_field() ?>
             <input type="hidden" name="action" value="reject">
@@ -184,7 +184,7 @@ try {
           </form>
         </div>
         <?php elseif ($sub['status'] === 'rejected'): ?>
-        <form method="POST" action="/admin/kyc.php" onsubmit="return confirm('Re-approve this KYC?')">
+        <form method="POST" action="/admin/kyc" onsubmit="return confirm('Re-approve this KYC?')">
           <?= csrf_field() ?>
           <input type="hidden" name="action" value="approve">
           <input type="hidden" name="id" value="<?= (int)$sub['id'] ?>">

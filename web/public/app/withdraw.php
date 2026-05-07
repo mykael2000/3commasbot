@@ -48,12 +48,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($amount <= 0) {
         flash('error', 'Please enter a valid amount greater than zero.');
-        redirect('/app/withdraw.php');
+        redirect('/app/withdraw');
     }
 
     if (!isset($balances[$asset]) || $amount > $balances[$asset]) {
         flash('error', 'Insufficient balance for ' . $asset . '.');
-        redirect('/app/withdraw.php');
+        redirect('/app/withdraw');
     }
 
     if ($method === 'bank') {
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($bankName === '' || $accountName === '' || $accountNo === '') {
             flash('error', 'Bank name, account holder name, and account number are required.');
-            redirect('/app/withdraw.php');
+            redirect('/app/withdraw');
         }
 
         $address = "Bank: {$bankName} | {$accountName} | Acct: {$accountNo}" . ($routing ? " | Routing: {$routing}" : '');
@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $address = trim($_POST['wallet_address'] ?? '');
         if ($address === '') {
             flash('error', 'Wallet address is required for crypto withdrawal.');
-            redirect('/app/withdraw.php');
+            redirect('/app/withdraw');
         }
     }
 
@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (Throwable) {
         flash('error', 'Failed to submit withdrawal request.');
     }
-    redirect('/app/withdraw.php');
+    redirect('/app/withdraw');
 }
 
 // Fetch withdrawal history

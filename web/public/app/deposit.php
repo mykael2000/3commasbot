@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'confi
 
   if ($asset === '' || $addr === '') {
     flash('error', 'Please select a valid deposit address.');
-        redirect('/app/deposit.php');
+        redirect('/app/deposit');
     }
 
     try {
@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'confi
     } catch (Throwable) {
     flash('error', 'Failed to submit deposit confirmation.');
     }
-    redirect('/app/deposit.php');
+    redirect('/app/deposit');
 }
 
 // Fetch deposit addresses

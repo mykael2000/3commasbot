@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add')
 
     if ($name === '') {
         flash('error', 'Trader name is required.');
-        redirect('/admin/copy_traders.php');
+        redirect('/admin/copy_traders');
     }
 
     try {
@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add')
         flash('error', 'Failed to create copy trader.');
     }
 
-    redirect('/admin/copy_traders.php');
+    redirect('/admin/copy_traders');
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit') {
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit'
 
     if ($id <= 0 || $name === '') {
         flash('error', 'Invalid trader data.');
-        redirect('/admin/copy_traders.php');
+        redirect('/admin/copy_traders');
     }
 
     try {
@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit'
         flash('error', 'Failed to update copy trader.');
     }
 
-    redirect('/admin/copy_traders.php');
+    redirect('/admin/copy_traders');
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete') {
@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delet
         flash('error', 'Failed to delete copy trader.');
     }
 
-    redirect('/admin/copy_traders.php');
+    redirect('/admin/copy_traders');
 }
 
 $traders = [];
@@ -127,7 +127,7 @@ if (isset($_GET['edit'])) {
     <div class="grid gap-6 lg:grid-cols-3">
       <section class="rounded-2xl bg-slate-700 p-5">
         <h2 class="mb-4 font-bold text-white"><?= $editTrader ? 'Edit Trader' : 'Add Trader' ?></h2>
-        <form method="POST" action="/admin/copy_traders.php" class="space-y-3">
+        <form method="POST" action="/admin/copy_traders" class="space-y-3">
           <?= csrf_field() ?>
           <input type="hidden" name="action" value="<?= $editTrader ? 'edit' : 'add' ?>">
           <?php if ($editTrader): ?>
@@ -200,7 +200,7 @@ if (isset($_GET['edit'])) {
                 </td>
                 <td class="px-4 py-3 text-right">
                   <a href="/admin/copy_traders.php?edit=<?= (int)$trader['id'] ?>" class="mr-3 text-xs text-emerald-400 hover:text-emerald-300">Edit</a>
-                  <form method="POST" action="/admin/copy_traders.php" class="inline" onsubmit="return confirm('Delete this trader?')">
+                  <form method="POST" action="/admin/copy_traders" class="inline" onsubmit="return confirm('Delete this trader?')">
                     <?= csrf_field() ?>
                     <input type="hidden" name="action" value="delete">
                     <input type="hidden" name="id" value="<?= (int)$trader['id'] ?>">

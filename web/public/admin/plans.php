@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add')
 
     if ($name === '' || $minD <= 0 || $maxD <= 0 || $days <= 0 || $roi <= 0) {
         flash('error', 'All fields are required and must be positive.');
-        redirect('/admin/plans.php');
+        redirect('/admin/plans');
     }
 
     try {
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add')
     } catch (Throwable) {
         flash('error', 'Failed to add plan.');
     }
-    redirect('/admin/plans.php');
+    redirect('/admin/plans');
 }
 
 // Handle Edit
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit'
 
     if ($id <= 0 || $name === '') {
         flash('error', 'Invalid form data.');
-        redirect('/admin/plans.php');
+        redirect('/admin/plans');
     }
 
     try {
@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit'
     } catch (Throwable) {
         flash('error', 'Failed to update plan.');
     }
-    redirect('/admin/plans.php');
+    redirect('/admin/plans');
 }
 
 // Handle Delete
@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delet
     } catch (Throwable) {
         flash('error', 'Failed to delete plan.');
     }
-    redirect('/admin/plans.php');
+    redirect('/admin/plans');
 }
 
 $plans = [];
@@ -124,7 +124,7 @@ if (isset($_GET['edit'])) {
       <!-- Add / Edit Form -->
       <div class="bg-slate-700 rounded-2xl p-5">
         <h2 class="font-bold text-white mb-4"><?= $editPlan ? 'Edit Plan' : 'Add New Plan' ?></h2>
-        <form method="POST" action="/admin/plans.php" class="space-y-3">
+        <form method="POST" action="/admin/plans" class="space-y-3">
           <?= csrf_field() ?>
           <input type="hidden" name="action" value="<?= $editPlan ? 'edit' : 'add' ?>">
           <?php if ($editPlan): ?>
@@ -219,7 +219,7 @@ if (isset($_GET['edit'])) {
                 </td>
                 <td class="px-4 py-3 text-right">
                   <a href="/admin/plans.php?edit=<?= (int)$p['id'] ?>" class="text-emerald-400 hover:text-emerald-300 text-xs mr-3">Edit</a>
-                  <form method="POST" action="/admin/plans.php" class="inline" onsubmit="return confirm('Delete this plan?')">
+                  <form method="POST" action="/admin/plans" class="inline" onsubmit="return confirm('Delete this plan?')">
                     <?= csrf_field() ?>
                     <input type="hidden" name="action" value="delete">
                     <input type="hidden" name="id" value="<?= (int)$p['id'] ?>">

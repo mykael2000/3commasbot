@@ -40,12 +40,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'updat
 
     if ($id <= 0 || $status === null) {
         flash('error', 'Invalid request.');
-        redirect('/admin/deposits.php');
+        redirect('/admin/deposits');
     }
 
     if ($status === 'approved' && $amount <= 0) {
         flash('error', 'Approved deposits require an amount greater than zero.');
-        redirect('/admin/deposits.php');
+        redirect('/admin/deposits');
     }
 
     try {
@@ -59,13 +59,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'updat
         if (!$deposit) {
             $pdo->rollBack();
             flash('error', 'Deposit request not found.');
-            redirect('/admin/deposits.php');
+            redirect('/admin/deposits');
         }
 
         if ($deposit['status'] !== 'pending') {
             $pdo->rollBack();
             flash('error', 'This deposit request was already reviewed.');
-            redirect('/admin/deposits.php');
+            redirect('/admin/deposits');
         }
 
         if ($status === 'approved') {
@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'updat
         flash('error', 'Failed to process deposit request.');
     }
 
-    redirect('/admin/deposits.php');
+    redirect('/admin/deposits');
 }
 
 $deposits = [];
@@ -183,7 +183,7 @@ try {
               <td class="px-4 py-3">
                 <?php if ($d['status'] === 'pending'): ?>
                 <div class="flex flex-col gap-2 items-end">
-                  <form method="POST" action="/admin/deposits.php" class="flex flex-col gap-1 w-56">
+                  <form method="POST" action="/admin/deposits" class="flex flex-col gap-1 w-56">
                     <?= csrf_field() ?>
                     <input type="hidden" name="action" value="update">
                     <input type="hidden" name="id" value="<?= (int)$d['id'] ?>">

@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 flash('error', 'Failed to create notice.');
             }
         }
-        redirect('/admin/notices.php');
+        redirect('/admin/notices');
     }
 
     if ($action === 'toggle') {
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (Throwable) {
             flash('error', 'Failed to update notice.');
         }
-        redirect('/admin/notices.php');
+        redirect('/admin/notices');
     }
 
     if ($action === 'delete') {
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (Throwable) {
             flash('error', 'Failed to delete notice.');
         }
-        redirect('/admin/notices.php');
+        redirect('/admin/notices');
     }
 }
 
@@ -104,7 +104,7 @@ $activeAdminPage = 'notices.php';
     <!-- Create Notice Form -->
     <div class="bg-slate-700 rounded-2xl p-6 mb-8 max-w-2xl">
       <h2 class="text-base font-bold text-white mb-4">New Notice</h2>
-      <form method="POST" action="/admin/notices.php" class="space-y-4">
+      <form method="POST" action="/admin/notices" class="space-y-4">
         <?= csrf_field() ?>
         <input type="hidden" name="action" value="create">
         <div>
@@ -149,7 +149,7 @@ $activeAdminPage = 'notices.php';
         </div>
         <div class="flex items-center gap-2">
           <!-- Toggle active/inactive -->
-          <form method="POST" action="/admin/notices.php">
+          <form method="POST" action="/admin/notices">
             <?= csrf_field() ?>
             <input type="hidden" name="action" value="toggle">
             <input type="hidden" name="id" value="<?= (int)$n['id'] ?>">
@@ -162,7 +162,7 @@ $activeAdminPage = 'notices.php';
             </button>
           </form>
           <!-- Delete -->
-          <form method="POST" action="/admin/notices.php"
+          <form method="POST" action="/admin/notices"
             onsubmit="return confirm('Delete this notice?')">
             <?= csrf_field() ?>
             <input type="hidden" name="action" value="delete">
