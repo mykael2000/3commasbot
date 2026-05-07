@@ -5,20 +5,30 @@ require_once __DIR__ . '/config.php';
 
 function apply_email_branding(string $htmlBody): string
 {
-    $appUrl  = rtrim((string) env('APP_URL', ''), '/');
-    $logoUrl = $appUrl !== '' ? $appUrl . '/images/og-image.png' : '';
-
-    if ($logoUrl === '') {
+    // Full HTML documents (from build_admin_email) handle their own branding
+    if (stripos(ltrim($htmlBody), '<!DOCTYPE') === 0) {
         return $htmlBody;
     }
 
-    $logoBlock = <<<HTML
-    <div style="text-align:center;margin:0 0 16px;">
-      <img src="{$logoUrl}" alt="3Commas" style="max-width:180px;height:auto;display:inline-block;">
-    </div>
+    $appUrl  = rtrim((string) env('APP_URL', ''), '/');
+    $logoUrl = $appUrl !== '' ? $appUrl . '/images/favicon.png' : '';
+
+    $logoImg = $logoUrl !== ''
+        ? '<img src="' . $logoUrl . '" alt="" width="32" height="32" style="display:block;border:0;width:32px;height:32px;">'
+        : '';
+
+    $brandBlock = <<<HTML
+    <table align="center" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto 20px;">
+      <tr>
+        <td style="vertical-align:middle;padding-right:10px;">{$logoImg}</td>
+        <td style="vertical-align:middle;">
+          <span style="font-family:Arial,sans-serif;font-size:22px;font-weight:800;color:#10b981;letter-spacing:-0.5px;">3Commas</span>
+        </td>
+      </tr>
+    </table>
     HTML;
 
-    return $logoBlock . "\n" . $htmlBody;
+    return $brandBlock . "\n" . $htmlBody;
 }
 
 /**

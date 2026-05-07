@@ -116,6 +116,7 @@ function build_admin_email(
     string $recipient_name
 ): string {
     $appUrl   = rtrim((string) env('APP_URL', 'https://3commasbot.io'), '/');
+    $logoUrl  = $appUrl . '/images/favicon.png';
     $year     = date('Y');
     $cta_block = '';
     if ($cta_label !== '' && filter_var($cta_url, FILTER_VALIDATE_URL)) {
@@ -154,6 +155,7 @@ function build_admin_email(
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" type="image/png" href="/images/favicon.png">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <title>{$safe_heading}</title>
     </head>
@@ -166,8 +168,17 @@ function build_admin_email(
               <!-- Header brand bar -->
               <tr>
                 <td style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);border-radius:16px 16px 0 0;padding:28px 32px;text-align:center;">
-                  <span style="font-family:Arial,sans-serif;font-size:22px;font-weight:800;color:#10b981;letter-spacing:-0.5px;">3Commas</span>
-                  <span style="font-family:Arial,sans-serif;font-size:12px;color:#64748b;display:block;margin-top:4px;letter-spacing:1px;text-transform:uppercase;">Automated Crypto Trading</span>
+                  <table align="center" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto 6px;">
+                    <tr>
+                      <td style="vertical-align:middle;padding-right:10px;">
+                        <img src="{$logoUrl}" alt="" width="36" height="36" style="display:block;border:0;border-radius:6px;width:36px;height:36px;">
+                      </td>
+                      <td style="vertical-align:middle;">
+                        <span style="font-family:Arial,sans-serif;font-size:24px;font-weight:800;color:#10b981;letter-spacing:-0.5px;">3Commas</span>
+                      </td>
+                    </tr>
+                  </table>
+                  <span style="font-family:Arial,sans-serif;font-size:12px;color:#64748b;display:block;margin-top:2px;letter-spacing:1px;text-transform:uppercase;">Automated Crypto Trading</span>
                 </td>
               </tr>
 
@@ -243,6 +254,7 @@ $activeAdminPage = 'mailer.php';
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="/images/favicon.png">
   <title>Email Users – Admin</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
