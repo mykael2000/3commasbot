@@ -152,6 +152,41 @@ window.smartsupp||(function(d) {
   c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
 })(document);
 </script>
+<style>
+@media (max-width: 767px) {
+  #smartsupp-widget-container,
+  [id*="smartsupp-widget"],
+  [class*="smartsupp-widget"],
+  iframe[src*="smartsuppchat.com"] {
+    bottom: 150px !important;
+  }
+}
+</style>
+<script>
+(function () {
+  if (!window.matchMedia('(max-width: 767px)').matches) return;
+
+  const mobileBottom = '150px';
+  const applyOffset = function () {
+    const nodes = document.querySelectorAll('#smartsupp-widget-container, [id*="smartsupp-widget"], [class*="smartsupp-widget"], iframe[src*="smartsuppchat.com"]');
+    nodes.forEach(function (node) {
+      node.style.setProperty('bottom', mobileBottom, 'important');
+    });
+  };
+
+  let attempts = 0;
+  const interval = setInterval(function () {
+    applyOffset();
+    attempts += 1;
+    if (attempts >= 50) {
+      clearInterval(interval);
+    }
+  }, 200);
+
+  const observer = new MutationObserver(applyOffset);
+  observer.observe(document.body, { childList: true, subtree: true });
+})();
+</script>
 <noscript>Powered by <a href="https://www.smartsupp.com" target="_blank">Smartsupp</a></noscript>
 </body>
 </html>

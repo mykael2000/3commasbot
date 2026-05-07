@@ -108,7 +108,7 @@ window.smartsupp||(function(d) {
     [id*="smartsupp-widget"],
     [class*="smartsupp-widget"],
     iframe[src*="smartsuppchat.com"] {
-        bottom: 110px !important;
+        bottom: 150px !important;
     }
 }
 </style>
@@ -116,7 +116,7 @@ window.smartsupp||(function(d) {
 (function () {
     if (!window.matchMedia('(max-width: 767px)').matches) return;
 
-    const mobileBottom = '110px';
+    const mobileBottom = '150px';
 
     const applyOffset = function () {
         const nodes = document.querySelectorAll(
