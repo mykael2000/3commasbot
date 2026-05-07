@@ -115,11 +115,11 @@ if (!in_array($activeTab, ['bank', 'crypto'])) {
     <div class="flex gap-2 bg-slate-100 p-1 rounded-xl">
       <a href="payment_methods.php?tab=bank"
         class="flex-1 text-center py-2 rounded-lg text-sm font-semibold transition <?= $activeTab === 'bank' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700' ?>">
-        🏦 Bank Account
+        Bank Account
       </a>
       <a href="payment_methods.php?tab=crypto"
         class="flex-1 text-center py-2 rounded-lg text-sm font-semibold transition <?= $activeTab === 'crypto' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700' ?>">
-        ₿ Crypto Address
+        Crypto Address
       </a>
     </div>
 
