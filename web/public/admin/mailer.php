@@ -17,7 +17,7 @@ try {
     $allUsers = db()->query('SELECT id, name, email FROM users ORDER BY name ASC')->fetchAll();
 } catch (Throwable) {}
 
-// ── Handle POST ───────────────────────────────────────────────────────────────
+// â”€â”€ Handle POST â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $sendResults = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Build recipient list
-    $recipients = []; // [ ['name'=>…, 'email'=>…], … ]
+    $recipients = []; // [ ['name'=>â€¦, 'email'=>â€¦], â€¦ ]
     if ($recipient === 'all') {
         foreach ($allUsers as $u) {
             $recipients[] = ['name' => $u['name'], 'email' => $u['email']];
@@ -155,7 +155,6 @@ function build_admin_email(
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link rel="icon" type="image/png" href="/images/favicon.png">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <title>{$safe_heading}</title>
     </head>
@@ -254,8 +253,7 @@ $activeAdminPage = 'mailer.php';
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/png" href="/images/favicon.png">
-  <title>Email Users – Admin</title>
+  <title>Email Users â€“ Admin</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-800 text-white min-h-screen">
@@ -278,7 +276,7 @@ $activeAdminPage = 'mailer.php';
 
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 items-start">
 
-      <!-- ── Compose Form ───────────────────────────── -->
+      <!-- â”€â”€ Compose Form â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
       <div class="bg-slate-700 rounded-2xl p-6">
         <h2 class="text-base font-bold text-white mb-5 flex items-center gap-2">
           <span class="w-6 h-6 bg-emerald-500/20 rounded-lg flex items-center justify-center">
@@ -298,7 +296,7 @@ $activeAdminPage = 'mailer.php';
               <option value="all">All Users (<?= count($allUsers) ?>)</option>
               <option value="custom">Custom Email Address</option>
               <?php foreach ($allUsers as $u): ?>
-                <option value="<?= (int)$u['id'] ?>"><?= sanitize($u['name']) ?> — <?= sanitize($u['email']) ?></option>
+                <option value="<?= (int)$u['id'] ?>"><?= sanitize($u['name']) ?> â€” <?= sanitize($u['email']) ?></option>
               <?php endforeach; ?>
             </select>
           </div>
@@ -331,7 +329,7 @@ $activeAdminPage = 'mailer.php';
             <label class="block text-sm font-medium text-slate-300 mb-1.5">Message Body <span class="text-red-400">*</span></label>
             <textarea name="body_text" id="f_body" required rows="6"
               class="w-full bg-slate-600 border border-slate-500 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-slate-400 resize-none"
-              placeholder="Write your message here… (line breaks are preserved)"></textarea>
+              placeholder="Write your message hereâ€¦ (line breaks are preserved)"></textarea>
           </div>
 
           <!-- CTA Button (optional) -->
@@ -348,7 +346,7 @@ $activeAdminPage = 'mailer.php';
                 <label class="block text-xs text-slate-400 mb-1">Button URL</label>
                 <input type="url" name="cta_url" id="f_cta_url"
                   class="w-full bg-slate-600 border border-slate-500 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-slate-400"
-                  placeholder="https://…">
+                  placeholder="https://â€¦">
               </div>
             </div>
           </div>
@@ -374,7 +372,7 @@ $activeAdminPage = 'mailer.php';
         </form>
       </div>
 
-      <!-- ── Live Preview ───────────────────────────── -->
+      <!-- â”€â”€ Live Preview â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
       <div class="bg-slate-700 rounded-2xl p-6 xl:sticky xl:top-8">
         <h2 class="text-base font-bold text-white mb-4 flex items-center gap-2">
           <span class="w-6 h-6 bg-blue-500/20 rounded-lg flex items-center justify-center">
@@ -393,7 +391,7 @@ $activeAdminPage = 'mailer.php';
             </div>
             <div class="flex items-center gap-2">
               <span class="text-xs text-slate-500 w-10 flex-shrink-0">Subject:</span>
-              <span id="previewSubject" class="text-xs text-white font-medium">—</span>
+              <span id="previewSubject" class="text-xs text-white font-medium">â€”</span>
             </div>
           </div>
           <!-- Iframe preview -->
@@ -422,7 +420,7 @@ $activeAdminPage = 'mailer.php';
     const ctaLabel   = document.getElementById('f_cta_label').value;
     const ctaUrl     = document.getElementById('f_cta_url').value;
     const footerNote = document.getElementById('f_footer').value;
-    const subject    = document.getElementById('f_subject').value || '—';
+    const subject    = document.getElementById('f_subject').value || 'â€”';
 
     document.getElementById('previewSubject').textContent = subject;
 
