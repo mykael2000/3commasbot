@@ -37,11 +37,8 @@ function ensure_live_trades_table(): void
 
 ensure_live_trades_table();
 
-$mode = in_array($_GET['mode'] ?? '', ['demo', 'live'], true) ? $_GET['mode'] : 'demo';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $mode = in_array($_POST['mode'] ?? '', ['demo', 'live'], true) ? $_POST['mode'] : 'demo';
-}
+// Demo mode is disabled: keep trading page in live mode only.
+$mode = 'live';
 
 // Handle Place Order
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'open') {
@@ -190,19 +187,21 @@ $user = current_user();
 
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 px-4 py-3 flex items-center justify-between">
     <span class="text-xl font-extrabold text-emerald-400">Trading</span>
-    <span class="<?= $mode === 'live' ? 'bg-emerald-500/15 text-emerald-700' : 'bg-yellow-500/20 text-yellow-500' ?> text-xs font-bold px-3 py-1 rounded-full">
-      <?= $mode === 'live' ? 'LIVE - Real Balance' : 'DEMO - Simulated' ?>
+    <span class="bg-emerald-500/15 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full">
+      LIVE - Real Balance
     </span>
   </header>
 
   <main class="max-w-lg mx-auto px-4 py-6 space-y-6">
 
     <div class="bg-white border border-slate-200 rounded-2xl p-3">
-      <div class="grid grid-cols-2 gap-2">
+      <div class="grid grid-cols-1 gap-2">
+        <?php if (false): ?>
         <a href="trading.php?mode=demo"
           class="text-center rounded-xl py-2.5 text-sm font-semibold transition <?= $mode === 'demo' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' ?>">
           Demo Trading
         </a>
+        <?php endif; ?>
         <a href="trading.php?mode=live"
           class="text-center rounded-xl py-2.5 text-sm font-semibold transition <?= $mode === 'live' ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' ?>">
           Live Trading
@@ -222,7 +221,7 @@ $user = current_user();
 
     <!-- Order Form -->
     <div class="bg-white border border-slate-200 rounded-2xl p-5">
-      <h2 class="font-bold text-slate-900 mb-4">Place <?= $mode === 'live' ? 'Live' : 'Demo' ?> Order</h2>
+      <h2 class="font-bold text-slate-900 mb-4">Place Live Order</h2>
 
       <form method="POST" action="trading.php?mode=<?= $mode ?>" id="tradeForm" class="space-y-4">
         <?= csrf_field() ?>
@@ -276,7 +275,7 @@ $user = current_user();
 
         <button type="submit"
           class="w-full bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-3 rounded-xl transition">
-          Place <?= $mode === 'live' ? 'Live' : 'Demo' ?> Order
+          Place Live Order
         </button>
       </form>
     </div>
@@ -334,10 +333,11 @@ $user = current_user();
     </div>
     <?php else: ?>
     <div class="bg-white border border-slate-200 rounded-2xl p-8 text-center">
-      <p class="text-slate-600">No open positions. Place a <?= $mode === 'live' ? 'live' : 'demo' ?> order above.</p>
+      <p class="text-slate-600">No open positions. Place a live order above.</p>
     </div>
     <?php endif; ?>
 
+    <?php if (false): ?>
     <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
       <div class="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
         <h2 class="font-bold text-slate-900">Demo History</h2>
@@ -359,6 +359,7 @@ $user = current_user();
         <?php endforeach; ?>
       <?php endif; ?>
     </div>
+    <?php endif; ?>
 
     <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
       <div class="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
